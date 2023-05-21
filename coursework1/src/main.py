@@ -44,6 +44,7 @@ def print_verbose(plan: dict) -> None:
 
 def args() -> ArgumentParser:
     parser = ArgumentParser()
+    parser.add_argument("-p", "--problem", action="store")
     parser.add_argument("-v", "--verbose", action="store_true")
     return parser.parse_args()
 
@@ -51,7 +52,7 @@ def args() -> ArgumentParser:
 if __name__ == '__main__':
     args = args()
     plan = pddl_plan(
-        get_definitions("../pddl/domain.pddl", "../pddl/swords.pddl")
+        get_definitions("../pddl/domain.pddl", f"../pddl/{args.problem}.pddl")
     )
     save_plan(plan, "response.json")
     

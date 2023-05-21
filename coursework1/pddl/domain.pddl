@@ -2,22 +2,23 @@
 
 (define 
     (domain runescape)
-    
-    (:requirements :strips :equality :conditional-effects)
+
+    (:requirements :strips :equality :typing :universal-preconditions :conditional-effects)
 
     (:types
-        player
-        storage mine furnace anvil - location
-        axe pickaxe hammer - tool
-        rock ore bars - material
+        player - object
+        anvil farm forest furnace mine storage - location
+        component material tool weapon - resource
+        bars chickens ore rock trees wood - material
+        arrowhead feathers shafts - component
+        axe hammer knife pickaxe - tool
+        arrow sword - weapon
     )
 
     (:predicates
         (at ?p - player ?l - location)
-        (equipped ?p - player ?t - tool)
-        ; (has ?a -  ?m - )
-        (has ?p - player ?m - material)
-        (has_sword ?p - player)
+        (has ?o - (either player location) ?r - resource)
+        (includes ?o - weapon ?c - component)
     )
 
     (:action move-to
@@ -40,32 +41,34 @@
     (:action store
         :parameters (
             ?character - player
-            ?item - tool
+            ?item - resource
             ?location - storage
         )
         :precondition (and 
             (at ?character ?location)
-            (equipped ?character ?item)
+            (has ?character ?item)
         )
         :effect (and 
-            (not (equipped ?character ?item))
+            (has ?location ?item)
+            (not (has ?character ?item))
         )
     )
     
     (:action equip
         :parameters (
             ?character - player
-            ?item - tool
+            ?item - resource
             ?location - storage
         )
         :precondition (and 
             (at ?character ?location)
             (forall (?t - tool)
-                (not (equipped ?character ?t))
+                (not (has ?character ?t))
             )
+            (has ?location ?item)
         )
         :effect (and 
-            (equipped ?character ?item)
+            (has ?character ?item)
         )
     )
     
@@ -74,14 +77,16 @@
             ?miner - player
             ?location - mine
             ?tool - pickaxe
-            ?produces - ore
+            ?material - rock
+            ?resource - ore
         )
         :precondition (and 
             (at ?miner ?location)
-            (equipped ?miner ?tool)
+            (has ?miner ?tool)
+            (has ?location ?material)
         )
         :effect (and 
-            (has ?miner ?produces)
+            (has ?miner ?resource)
         )
     )
 
@@ -90,14 +95,14 @@
             ?smelter - player
             ?location - furnace
             ?material - ore
-            ?produces - bars
+            ?resource - bars
         )
         :precondition (and 
             (at ?smelter ?location)
             (has ?smelter ?material)
         )
         :effect (and 
-            (has ?smelter ?produces)
+            (has ?smelter ?resource)
             (not (has ?smelter ?material))
         )
     )
@@ -107,15 +112,127 @@
             ?smither - player
             ?location - anvil
             ?tool - hammer
-            ?produces - bars
+            ?material - bars
+            ?resource - (either arrowhead sword)
         )
         :precondition (and 
             (at ?smither ?location)
-            (has ?smither ?produces)
-            (equipped ?smither ?tool)
+            (has ?smither ?material)
+            (has ?smither ?tool)
         )
         :effect (and 
-            (has_sword ?smither)
+            (has ?smither ?resource)
+            (not (has ?smither ?material))
         )
     )
+
+    (:action chop-trees
+        :parameters (
+            ?lumberjack - player
+            ?location - forest
+            ?tool - axe
+            ?material - trees
+            ?resource - wood
+        )
+        :precondition (and 
+            (at ?lumberjack ?location)
+            (has ?lumberjack ?tool)
+            (has ?location ?material)
+        )
+        :effect (and 
+            (has ?lumberjack ?resource)
+        )
+    )
+
+    (:action fletch-shafts
+        :parameters (
+            ?fletcher - player
+            ?tool - knife
+            ?material - wood
+            ?resource - shafts
+        )
+        :precondition (and 
+            (has ?fletcher ?material)
+        )
+        :effect (and 
+            (has ?fletcher ?resource)
+            (not (has ?fletcher ?material))
+        )
+    )
+
+    (:action hunt-chicken
+        :parameters (
+            ?poacher - player
+            ?location - farm
+            ?material - chickens
+            ?resource - feathers
+        )
+        :precondition (and 
+            (has ?location ?material)
+        )
+        :effect (and 
+            (has ?poacher ?resource)    
+        )
+    )
+    
+    (:action affix
+        :parameters (
+            ?archer - player
+            ?weapon - arrow
+            ?item - component
+        )
+        :precondition (and 
+            (has ?archer ?item)
+        )
+        :effect (and 
+            (includes ?weapon ?item)
+            (not (has ?archer ?item))
+            (when 
+                (and
+                    (exists (?a - arrowhead) 
+                        (includes ?weapon ?a)
+                    )
+                    (exists (?f - feathers) 
+                        (includes ?weapon ?f)
+                    )
+                    (exists (?s - shafts) 
+                        (includes ?weapon ?s)
+                    )
+                )
+                (and
+                    (has ?archer ?weapon)
+                )
+            )
+        )
+    )
+    
+    
+    ; (:axiom
+    ;     :vars (?s - site)
+    ;     :context (and
+    ;         (walls-built ?s)
+    ;         (windows-fitted ?s)
+    ;         (cables-installed ?s)
+    ;     )
+    ;     :implies (site-built ?s)
+    ; )
+    
+
+    ; (:event arrow-assembled
+    ;     :parameters (
+    ;         ?arrow - arrow
+    ;     )
+    ;     :precondition (and
+    ;         (exists (?shafts - shafts) 
+    ;             where (has ?arrow ?shafts)
+    ;         )
+    ;         (exists (?arrowhead - arrowhead) 
+    ;             where (has ?arrow ?arrowhead)
+    ;         )
+    ;     )
+    ;     :effect (and
+    ;         (exists (?arrow) )
+    ;     )
+    ; )
+    
 )

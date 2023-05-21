@@ -10,15 +10,23 @@
         Anvil - anvil
         Pickaxe - pickaxe
         Hammer - hammer
+        Rock - rock
         Ore - ore
         Bars - bars
+        Sword - sword
     )
 
     (:init
         (at Player Shed)
+        (has Shed Pickaxe)
+        (has Shed Hammer)
+        (has Mine Rock)
     )
 
     (:goal (and
-        (has_sword Player)
+        (has Shed Sword)
+        (forall (?item - resource)
+            (not (has Player ?item))
+        )
     ))
 )
