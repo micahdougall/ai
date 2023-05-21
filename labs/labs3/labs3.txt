@@ -1,0 +1,25 @@
+Let's break down the statement and represent it using predicates, formulas, objects, relations, and functions.
+
+Objects:
+
+Fillipos: Refers to the lecturer named Fillipos.
+Lecturer: Represents the role or profession of Fillipos.
+C: Denotes the programming language C.
+Students: Refers to the individuals who are being taught.
+Neighboring countries: Represents the countries adjacent to Fillipos' location.
+Relations or Properties:
+
+Teaches: Represents the action of Fillipos imparting knowledge.
+Torture: Represents the negative experience endured by the students.
+In: Indicates the location where Fillipos teaches.
+All: Indicates the universality of the statement, applying to all neighboring countries.
+Functions:
+None in this statement.
+
+Formulas:
+
+Teaches(Fillipos, C): Fillipos teaches the programming language C.
+Torture(Students): Students experience torture.
+In(Fillipos, Location): Fillipos teaches in a particular location.
+Neighboring(Location, Country): The location is a neighboring country.
+For all Location, Country: ∀Location ∀Country (Neighboring(Location, Country) → In(Fillipos, Location))
