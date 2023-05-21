@@ -2,165 +2,120 @@
 
 (define 
     (domain runescape)
-
-    ;TODO: Investigate libraries
-    ; (:requirements :strips :fluents :durative-actions :timed-initial-literals :typing :conditional-effects :negative-preconditions :duration-inequalities :equality)
-
-    ; (:requirements :strips :equality :fluents)
+    
     (:requirements :strips :equality :conditional-effects)
-    ; :disjunctive-preconditions = allow use of or
-    ; :equality (= 1 1)
 
-    (:types ;todo: enumerate types and their hierarchy here, e.g. car truck bus - vehicle
+    (:types
         player
         storage mine furnace anvil - location
         axe pickaxe hammer - tool
-        ; sword
-        
+        rock ore bars - material
     )
-    ; (:constants
-    ;     P - player
-    ; )
 
-    ; un-comment following line if constants are needed
-    ;(:constants )
-
-    ; Create condition to limit tools in hand
-
-
-    (:predicates ;todo: define predicates here
+    (:predicates
         (at ?p - player ?l - location)
-        ; (at_mine ?p - player)
-        (has_rock ?p - player)
-        (has_ore ?p - player)
-        (has_smithable_bars ?p - player)
-        ; (has_ore ?p - player)
-        ; (has_pickaxe ?p - player)
         (equipped ?p - player ?t - tool)
-        ; (has_axe ?p - player)
+        ; (has ?a -  ?m - )
+        (has ?p - player ?m - material)
         (has_sword ?p - player)
     )
 
-    ; ()
-
-
-    ; Not availabe in 1.2
-    ; (:functions ;todo: define numeric functions here
-    ;     (rock-count ?p - player)
-    ; )
-
-    
     (:action move-to
         :parameters (
-            ?p - player
+            ?character - player
             ?from - location
             ?to - location
         )
         :precondition (and
-            (at ?p ?from)
-            (not (at ?p ?to))
+            (at ?character ?from)
+            (not (at ?character ?to))
             (not (= ?from ?to))
         )
         :effect (and 
-            (at ?p ?to)
-            (not (at ?p ?from))
+            (at ?character ?to)
+            (not (at ?character ?from))
         )
     )
 
-    (:action sheath
+    (:action store
         :parameters (
-            ?p - player
-            ?t - tool
-            ?l - storage
+            ?character - player
+            ?item - tool
+            ?location - storage
         )
         :precondition (and 
-            (at ?p ?l)
-            (equipped ?p ?t)
+            (at ?character ?location)
+            (equipped ?character ?item)
         )
         :effect (and 
-            (not (equipped ?p ?t))
+            (not (equipped ?character ?item))
         )
     )
-    
     
     (:action equip
         :parameters (
-            ?p - player
-            ?t - tool
-            ?l - storage
+            ?character - player
+            ?item - tool
+            ?location - storage
         )
         :precondition (and 
-            (at ?p ?l)
-            ; (not (equipped ?p ?t))
-            (forall (?x - tool)
-                (not (equipped ?p ?x))
+            (at ?character ?location)
+            (forall (?t - tool)
+                (not (equipped ?character ?t))
             )
         )
         :effect (and 
-            (equipped ?p ?t)
+            (equipped ?character ?item)
         )
     )
     
-
-
-    ;define actions here
     (:action mine-rocks
         :parameters (
-            ?p - player
-            ?l - mine
-            ?t - pickaxe
+            ?miner - player
+            ?location - mine
+            ?tool - pickaxe
+            ?produces - ore
         )
-        ; :parameters (?l - location)
         :precondition (and 
-            (at ?p ?l)
-            (has_rock ?p)
-            ; (has_pickaxe ?p)
-            (equipped ?p ?t)
-            ; (exists (?r - rock))
+            (at ?miner ?location)
+            (equipped ?miner ?tool)
         )
         :effect (and 
-            (has_ore ?p)
-            (not (has_rock ?p))
-            ; (increase (rock-count ?p) 1)
+            (has ?miner ?produces)
         )
     )
 
     (:action smelt-ore
         :parameters (
-            ?p - player 
-            ?l - furnace
+            ?smelter - player
+            ?location - furnace
+            ?material - ore
+            ?produces - bars
         )
         :precondition (and 
-            (at ?p ?l)
-            (has_ore ?p)
+            (at ?smelter ?location)
+            (has ?smelter ?material)
         )
         :effect (and 
-            (has_smithable_bars ?p)
-            (not (has_ore ?p))
+            (has ?smelter ?produces)
+            (not (has ?smelter ?material))
         )
     )
 
-    (:action smith-bars
+    (:action smithe-bars
         :parameters (
-            ?p - player
-            ?l - anvil
-            ?t - hammer
+            ?smither - player
+            ?location - anvil
+            ?tool - hammer
+            ?produces - bars
         )
         :precondition (and 
-            (at ?p ?l)
-            (has_smithable_bars ?p)
-            (equipped ?p ?t)
+            (at ?smither ?location)
+            (has ?smither ?produces)
+            (equipped ?smither ?tool)
         )
         :effect (and 
-            (has_sword ?p)
+            (has_sword ?smither)
         )
     )
-    
-
-
-    
-    
-
-    ; (axiom)
-
 )
