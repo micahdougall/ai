@@ -1,8 +1,7 @@
-(define 
-    (problem makesword) 
+(define (problem makesword)
     (:domain runescape)
 
-    (:objects 
+    (:objects
         Player - player
         Shed - storage
         Mine - mine
@@ -21,12 +20,17 @@
         (has Shed Pickaxe)
         (has Shed Hammer)
         (has Mine Rock)
+        ; (= (travelled) 1)
     )
 
-    (:goal (and
-        (has Shed Sword)
-        (forall (?item - resource)
-            (not (has Player ?item))
+    (:goal
+        (and
+            (has Shed Sword)
+            (forall
+                (?item - resource)
+                (not (has Player ?item))
+            )
+            ; (= (travelled) 3)
         )
-    ))
+    )
 )

@@ -3,7 +3,10 @@
 (define 
     (domain runescape)
 
-    (:requirements :strips :equality :typing :universal-preconditions :conditional-effects)
+    ; (:requirements :strips ::negative-preconditions ::fluents)
+    ; (:requirements :strips :equality :typing :universal-preconditions :conditional-effects :fluents :negative-preconditions)
+    (:requirements :strips :equality :typing :universal-preconditions :conditional-effects :negative-preconditions)
+    ; (:requirements :strips :typing :negative-preconditions)
 
     (:types
         player - object
@@ -21,6 +24,10 @@
         (includes ?o - weapon ?c - component)
     )
 
+    (:functions
+        (travelled)
+    )
+
     (:action move-to
         :parameters (
             ?character - player
@@ -35,6 +42,7 @@
         :effect (and 
             (at ?character ?to)
             (not (at ?character ?from))
+            ; (increase (travelled) 1)
         )
     )
 
@@ -119,6 +127,7 @@
             (at ?smither ?location)
             (has ?smither ?material)
             (has ?smither ?tool)
+            ; (>= (travelled) 10)
         )
         :effect (and 
             (has ?smither ?resource)
@@ -205,6 +214,10 @@
             )
         )
     )
+
+    ; (:metric minimise (
+    ;     (travelled)
+    ; ))
     
     
     ; (:axiom
