@@ -1,1 +1,2 @@
-# ai
+**/__pycache__/
+**/images/large
