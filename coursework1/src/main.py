@@ -27,12 +27,13 @@ def save_plan(plan_dict: dict, full_response: str) -> None:
 
 
 def print_actions_lite(actions: list[dict]) -> None:
+    print(f"{len(actions)} actions needed:")
     for each in actions:
         matches = re.search(
             r":action ([-a-zA-Z]+)[\s]+:parameters ([(][ a-zA-Z-]+[)])",
             each.get("action")
         )
-        print(f"{matches.group(1)} -> {matches.group(2)}")
+        print(f"    {matches.group(1)} -> {matches.group(2)}")
 
 
 def print_verbose(plan: dict) -> None:
