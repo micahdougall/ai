@@ -1,67 +1,17 @@
+from properties import Config
+from planner.request import SolverRequest
+from planner.response import SolverResponse, SolverResult
+
 from argparse import ArgumentParser
-import requests
 import json
-import re
-from pddlpy import pddl
+from os.path import abspath, dirname, join
+# from pddlpy import pddl
 
 
-def get_definitions(domain_file: str, problem_file: str) -> dict:
-    with open(domain_file) as d, open(problem_file) as p:
-        return {
-            "domain": d.read(),
-            "problem": p.read()
-        }
-
-
-def pddl_plan(request: dict) -> dict:
-    return requests.post(
-        "http://solver.planning.domains/solve",
-        verify=False,
-        json=request
-    ).json()
-
-
-def save_plan(plan_dict: dict, full_response: str) -> None:
-    with open(full_response, "w") as f:
-        f.write(json.dumps(plan_dict))
-
-
-def print_actions_lite(actions: list[dict]) -> None:
-    print(f"{len(actions)} actions needed:")
-    for each in actions:
-        matches = re.search(
-            r":action ([-a-zA-Z]+)[\s]+:parameters ([(][ a-zA-Z-]+[)])",
-            each.get("action")
-        )
-        print(f"    {matches.group(1)} -> {matches.group(2)}")
-
-
-def print_verbose(plan: dict) -> None:
-    print(f"""{plan.get("result", {}).get("output")}""")
-    for each in plan.get("result", {}).get("plan"):
-        print(f"""{each.get("action")}\n""")
-
-
-def make_plan(domain_file: str, problem_file: str) -> None:
-    plan = pddl_plan(
-        get_definitions(f"../pddl/{domain_file}.pddl", f"../pddl/{problem_file}.pddl")
-    )
-    save_plan(plan, f"../resources/{problem_file}-response.json")
-    return plan
-
-
-def get_plan(problem_file: str) -> dict:
-    with open(f"../resources/{problem_file}-response.json") as file:
-        return json.load(file)
-
-
-def render_plan(plan: dict, verbose: bool) -> None:
-    (
-        print_verbose(plan) 
-        if verbose
-        else print_actions_lite(plan.get("result", {}).get("plan"))
-    )
-
+def print_plan(result: SolverResult, verbose: bool) -> None:
+    print(repr(result) if verbose else result)
+    for action in result.plan:
+        print(repr(action) if verbose else action)
 
 
 def args() -> ArgumentParser:
@@ -76,13 +26,26 @@ def args() -> ArgumentParser:
 if __name__ == '__main__':
     args = args()
 
-    plan = (
-        make_plan(args.domain, args.problem)
-        if args.solve
-        else get_plan(args.problem)
-    )
-    render_plan(plan, args.verbose)
-
+    root = abspath(join(dirname(__file__), "../"))
+    with open(join(root, "config.json")) as options:
+        config = Config(json.load(options))
     
+    SolverRequest.url = config.solver_url
+    SolverRequest.pddl_dir = join(root, config.pddl_dir)
+    SolverRequest.resources = join(root, config.resources)
+    SolverResponse.resources = join(root, config.resources)
 
-    aig-upf/universal-pddl-parser .. temporal-planning
+    response = (
+        SolverRequest(args.domain, args.problem).get_response()
+        if args.solve
+        else SolverResponse.read(args.problem)
+    )
+
+    if not response.valid:
+        print(
+            f"Output: \n\t{response.result.output}\n"
+            f"Parse Status: \n\t{response.result.parse_status}\n"
+            f"Error: \n\t{response.result.error}"
+        )
+    else:
+        print_plan(response.result, args.verbose)

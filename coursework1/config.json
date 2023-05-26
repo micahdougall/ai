@@ -1,0 +1,5 @@
+{
+    "resources": "resources",
+    "pddl_dir": "pddl",
+    "solver_url": "http://solver.planning.domains/solve"
+}
