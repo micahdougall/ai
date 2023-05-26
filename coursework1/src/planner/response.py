@@ -10,6 +10,15 @@ from typing_extensions import override
 class SolverAction:
     action: str
     name: str
+    pddl_action: str = field(init=False)
+    pddl_params: list[str] = field(init=False)
+
+    def __post_init__(self) -> None:
+        args = self.name.strip("()").split(" ")
+        self.pddl_action = args[0]
+        self.pddl_params = [
+            param for param in args[1:]
+        ]
 
     @override
     def __str__(self) -> str:

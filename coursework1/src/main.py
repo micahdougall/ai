@@ -1,4 +1,5 @@
-from properties import Config
+from config import Config
+from planner.parser import Action
 from planner.request import SolverRequest
 from planner.response import SolverResponse, SolverResult
 
@@ -6,12 +7,24 @@ from argparse import ArgumentParser
 import json
 from os.path import abspath, dirname, join
 # from pddlpy import pddl
+import pddlpy
+import pddl
 
 
 def print_plan(result: SolverResult, verbose: bool) -> None:
     print(repr(result) if verbose else result)
     for action in result.plan:
         print(repr(action) if verbose else action)
+
+
+def game_actions(result: SolverResult) -> None:
+    for action in result.plan:
+        # args = line.trim("()").split(" ")
+        # l = list(args)
+        # for l in list:
+        #     print(l)
+        print(action.pddl_action)
+        print(action.pddl_params)
 
 
 def args() -> ArgumentParser:
@@ -26,6 +39,34 @@ def args() -> ArgumentParser:
 if __name__ == '__main__':
     args = args()
 
+    # prob = pddlpy.DomainProblem("../pddl/domain.pddl", "../pddl/sword.pddl")
+    # state = list(prob.initialstate())
+
+    
+    # for each in state:
+        # print(f"State: {each}")
+    #     # print(each.ground(0))
+
+    #     (a, b, c) = each
+    #     print(a)
+        # for param in each:
+            # print(f"    param: {param}")
+    # for each in prob.goals():
+    #     print("Goals:")
+    #     for param in each:
+    #         print(f"    param: {param}")
+    #         print(param)
+    # print(prob.goals())
+    # for item, name in prob.worldobjects().items():
+    #     print(f"{item} -> {name}")
+    # print(list(prob.operators()))
+    # for each in prob.operators():
+        # print(f"this is an op: {each}")
+    # print(prob.ground_operator('move-to'))
+
+
+    # exit()
+
     root = abspath(join(dirname(__file__), "../"))
     with open(join(root, "config.json")) as options:
         config = Config(json.load(options))
@@ -34,6 +75,10 @@ if __name__ == '__main__':
     SolverRequest.pddl_dir = join(root, config.pddl_dir)
     SolverRequest.resources = join(root, config.resources)
     SolverResponse.resources = join(root, config.resources)
+
+    pddl_dir = join(root, config.pddl_dir)
+    Action.parse_actions(pddl_dir)
+    exit()
 
     response = (
         SolverRequest(args.domain, args.problem).get_response()
@@ -48,4 +93,5 @@ if __name__ == '__main__':
             f"Error: \n\t{response.result.error}"
         )
     else:
-        print_plan(response.result, args.verbose)
+        # print_plan(response.result, args.verbose)
+        game_actions(response.result)

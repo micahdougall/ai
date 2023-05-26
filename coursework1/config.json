@@ -1,5 +1,7 @@
 {
     "resources": "resources",
     "pddl_dir": "pddl",
-    "solver_url": "http://solver.planning.domains/solve"
+    "solver_url": "http://solver.planning.domains/solve",
+    "validator_url": "http://solver.planning.domains/validate",
+    "solve_validator_url": "http://solver.planning.domains/solve-and-validate"
 }

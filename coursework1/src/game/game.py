@@ -6,6 +6,8 @@ import pygame
 
 
 
+
+
 from pygame.locals import (
     K_UP,
     K_DOWN,
@@ -36,7 +38,7 @@ all_sprites = pygame.sprite.Group()
 all_sprites.add(player)
 
 
-def is_quit(event):
+def is_quit(event: pygame.event.Event):
     return (
         event.type == pygame.QUIT
         or (

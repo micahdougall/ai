@@ -24,9 +24,9 @@
         (includes ?o - weapon ?c - component)
     )
 
-    (:functions
-        (travelled)
-    )
+    ; (:functions
+    ;     (travelled)
+    ; )
 
     (:action move-to
         :parameters (
