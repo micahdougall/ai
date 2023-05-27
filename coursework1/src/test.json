@@ -1,1 +1,0 @@
-{"status": "error", "result": {"val_status": "err", "error": "Validator output does not look as expected.", "val_stdout": "Checking plan: /tmp/solver_planning_domains_tmp_26e3VaRLCHxCW/plan\nPlan executed successfully - checking goal\nPlan valid\nFinal value: 14 \n\nSuccessful plans:\nValue: 14\n /tmp/solver_planning_domains_tmp_26e3VaRLCHxCW/plan 14 \n\n", "val_stderr": ""}}

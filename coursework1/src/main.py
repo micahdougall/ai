@@ -78,8 +78,8 @@ if __name__ == '__main__':
     pddl_dir = join(root, config.pddl_dir)
 
     # Action.parse_actions(pddl_dir)
-    parse_domain(join(root, "pddl/domain.pddl"))
-
+    domain = parse_domain(join(root, "pddl/domain.pddl"))
+    print(domain.actions)
     print("exit")
     exit()
 
