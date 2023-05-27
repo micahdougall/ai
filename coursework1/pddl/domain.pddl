@@ -42,7 +42,6 @@
         :effect (and 
             (at ?character ?to)
             (not (at ?character ?from))
-            ; (increase (travelled) 1)
         )
     )
 
@@ -127,7 +126,6 @@
             (at ?smither ?location)
             (has ?smither ?material)
             (has ?smither ?tool)
-            ; (>= (travelled) 10)
         )
         :effect (and 
             (has ?smither ?resource)

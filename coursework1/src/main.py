@@ -78,6 +78,9 @@ if __name__ == '__main__':
 
     pddl_dir = join(root, config.pddl_dir)
     Action.parse_actions(pddl_dir)
+
+
+    print("exit")
     exit()
 
     response = (
@@ -93,5 +96,5 @@ if __name__ == '__main__':
             f"Error: \n\t{response.result.error}"
         )
     else:
-        # print_plan(response.result, args.verbose)
-        game_actions(response.result)
+        print_plan(response.result, args.verbose)
+        # game_actions(response.result)

@@ -55,14 +55,17 @@ class Action():
         ) as domain:
             domain_string = domain.read()
 
+        word = " a-zA-Z0-9-"
+        predicate = r"\(\)=?a-zA-Z0-9-\s"
         matches = findall(
-            r":action ([ a-zA-Z0-9-]+)[\s]*"
-            r":parameters[\s]*[(][\s]*([ ?a-zA-Z0-9-[\s]+)[\s]*[)][\s]*"
-            r":precondition[\s]*[(]and[\s]*([()][ ?a-zA-Z0-9-[)][\s]+)[\s]*[)][\s]*",
-            # r":effect[\s]*[(]and[\s]*([()][ ?a-zA-Z0-9-[)][\s]+)[\s][)]",
+            rf":action ([{word}]+)\s*"
+            rf":parameters\s*\(\s*([{predicate}]*)\s*\)\s*"
+            rf":precondition\s*\(and\s*([{predicate}]*)\s*\)\s*"
+            rf":effect\s*\(and\s*([{predicate}]*)\s\)\s*\)",
             domain_string
         )
         for match in matches:
-            action = Action(match[0], (match[1].strip().split("\n")))
-            print(action)
+            print(match)
+            # action = Action(match[0], (match[1].strip().split("\n")))
+            # print(action)
 
