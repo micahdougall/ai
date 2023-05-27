@@ -1,14 +1,13 @@
 from config import Config
-from planner.parser import Action
-from planner.request import SolverRequest
-from planner.response import SolverResponse, SolverResult
+from planner.parser.domain import parse_domain
+from planner.parser.action import Action
+from planner.http.request import SolverRequest
+from planner.http.response import SolverResponse, SolverResult
 
 from argparse import ArgumentParser
 import json
 from os.path import abspath, dirname, join
-# from pddlpy import pddl
-import pddlpy
-import pddl
+# from pddlpy import http
 
 
 def print_plan(result: SolverResult, verbose: bool) -> None:
@@ -39,7 +38,7 @@ def args() -> ArgumentParser:
 if __name__ == '__main__':
     args = args()
 
-    # prob = pddlpy.DomainProblem("../pddl/domain.pddl", "../pddl/sword.pddl")
+    # prob = pddlpy.DomainProblem("../http/domain.http", "../http/sword.http")
     # state = list(prob.initialstate())
 
     
@@ -77,8 +76,9 @@ if __name__ == '__main__':
     SolverResponse.resources = join(root, config.resources)
 
     pddl_dir = join(root, config.pddl_dir)
-    Action.parse_actions(pddl_dir)
 
+    # Action.parse_actions(pddl_dir)
+    parse_domain(join(root, "pddl/domain.pddl"))
 
     print("exit")
     exit()

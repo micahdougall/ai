@@ -1,6 +1,6 @@
 import pddlpy
 
-domain_problem = pddlpy.DomainProblem("domain.pddl", "problem.pddl")
+domain_problem = pddlpy.DomainProblem("domain.http", "problem.http")
 
 domain_problem.initialstate()
 

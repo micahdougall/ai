@@ -1,13 +1,13 @@
-from typing import ClassVar
-from planner.response import SolverResponse
+from .response import SolverResponse
 
 from dataclasses import dataclass, field
 from os.path import join
 from requests import post
+from typing import ClassVar
 
 
 @dataclass
-class SolverRequest():
+class SolverRequest:
     domain: str
     problem: str
     domain_file: str = field(init=False)

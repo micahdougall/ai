@@ -27,8 +27,8 @@ parser.add_argument('demonumber', metavar='N', type=int, nargs='+',
 def run_demo(demonumber):
     print('===')
     print(f'Run DEMO {demonumber}')
-    domainfile = "./examples-pddl/domain-0%d.pddl" % demonumber
-    problemfile = "./examples-pddl/problem-0%d.pddl" % demonumber
+    domainfile = "./examples-http/domain-0%d.http" % demonumber
+    problemfile = "./examples-http/problem-0%d.http" % demonumber
     domprob = pddlpy.DomainProblem(domainfile, problemfile)
     print()
     print("DOMAIN PROBLEM")

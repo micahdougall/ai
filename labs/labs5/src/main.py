@@ -2,7 +2,7 @@ from planner.request import SolverRequest
 from planner.response import SolverResponse, SolverResult
 
 from argparse import ArgumentParser
-# from pddlpy import pddl
+# from pddlpy import http
 
 
 def get_solver_response(domain_file: str, problem_file: str) -> None:
