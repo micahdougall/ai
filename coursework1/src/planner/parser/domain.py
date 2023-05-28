@@ -1,22 +1,23 @@
-import re
-
 from .action import Action
 from .predicate import Predicate, Parameter, Type
-from .util import is_negated, parameter_items, predicate_args
+from .util import predicate_args, split_string
 
 from dataclasses import dataclass
+from dataclass_wizard import JSONWizard
 from re import findall, search
 
 
+# @dataclass
+# class TypeMap:
+#
+
 @dataclass
-class Domain:
-    types: list[Type]
+class Domain(JSONWizard):
+    # types: list[Type]
+    # types: dict[str, str]
+    types: Type
     predicates: list[Predicate]
     actions: list[Action]
-
-
-def split_string(lines: str) -> list[str]:
-    return lines.strip().split("\n")
 
 
 def parse_domain(domain_file: str) -> Domain:
@@ -33,17 +34,38 @@ def parse_domain(domain_file: str) -> Domain:
     )
     lines = split_string(type_regx_matches.group(1))
 
-    types: list[Type] = []
+    # types: list[Type] = []
+    # for line in lines:
+    #     (children, parent) = line.strip().split(" - ")
+    #     objs = children.split(" ")
+    #
+    #     if parent not in Type.type_names(types):
+    #         types.append(Type(parent))
+    #
+    #     types += [
+    #         Type(obj, parent) for obj in objs
+    #     ]
+
+    root = Type("object")
     for line in lines:
         (children, parent) = line.strip().split(" - ")
         objs = children.split(" ")
 
-        if parent not in Type.type_names(types):
-            types.append(Type(parent))
+        if parent == "object":
+            parent_node = root
+        else:
+            if root.get_node(parent) is None:
+                # print(
+                #     f"""adding {parent} becuase get_node = {root.get_node(parent)}"""
+                # )
+                root.children.append(Type(parent))
+            # else:
+            # print(f"{parent} already exists in root")
+            parent_node = root.get_node(parent)
+        # print(f"Parent is now {parent_node}")
 
-        types += [
-            Type(obj, parent) for obj in objs
-        ]
+        for obj in objs:
+            parent_node.children.append(Type(obj))
 
     pred_regx_matches = search(
         rf":predicates\s*([{pred_pattern}]*)\s*\)",
@@ -101,4 +123,4 @@ def parse_domain(domain_file: str) -> Domain:
         )
         actions.append(action)
 
-    return Domain(types, predicates, actions)
+    return Domain(root, predicates, actions)

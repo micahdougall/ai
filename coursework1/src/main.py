@@ -1,5 +1,6 @@
 from config import Config
 from planner.parser.domain import parse_domain
+from planner.parser.problem import parse_problem
 from planner.parser.action import Action
 from planner.http.request import SolverRequest
 from planner.http.response import SolverResponse, SolverResult
@@ -78,8 +79,13 @@ if __name__ == '__main__':
     pddl_dir = join(root, config.pddl_dir)
 
     # Action.parse_actions(pddl_dir)
+    # problem = parse_problem(join(root, "pddl/sword.pddl"))
+    # problem = parse_problem(join(root, "pddl/domain.pddl"))
+    # print(problem.types)
+    # print("exit")
+
     domain = parse_domain(join(root, "pddl/domain.pddl"))
-    print(domain)
+    print(domain.types)
     print("exit")
     exit()
 

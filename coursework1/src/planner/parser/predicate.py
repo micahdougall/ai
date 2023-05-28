@@ -1,6 +1,7 @@
-
+# from collections.abc import dict_items
 from dataclasses import dataclass, field
 from dataclass_wizard import JSONWizard, json_field
+from itertools import chain
 from pyre_extensions import override
 from re import match
 from typing import Self
@@ -8,26 +9,68 @@ from typing import Self
 
 @dataclass
 class Type:
-    name: str
-    parent: Self = None
+    type: str
+    children: list[Self] = field(default_factory=list)
 
-    def __post_init__(self):
-        self.parent = (
-            "object"
-            if self.parent is None
-               and self.name != "object"
-            else self.parent
+    def nodes(self) -> list[Self]:
+        return list(
+            chain.from_iterable(
+                [t.nodes for t in self.children]
+            )
         )
 
-    @override
-    def __str__(self) -> str:
-        return self.name
+    def get_node(self, search: str) -> Self | None:
+        # print(f"Getting node: {search} from {self.type}")
+        if self.children:
+            # optional = next(
+            #     filter(
+            #         lambda t: t.type == search,
+            #         self.children
+            #     )
+            # ) or next([
+            #     c.get_node(search) for c in self.children
+            # ])
+            for c in self.children:
+                # print(c.type)
+                if c.type == search:
+                    # print("found")
+                    return c
+            return None
+        # else:
+        #     print(f"{self.type} has no children")
+        # else:
+        #     optional = None
+        # print(optional)
+        # return optional
 
-    @classmethod
-    def type_names(cls, types: list[Self]) -> list[str]:
-        return [
-            type.name for type in types
-        ]
+# @dataclass
+# class Type:
+#     name: str
+#     parent: Self = None
+#
+#     def __post_init__(self):
+#         self.parent = (
+#             "object"
+#             if self.parent is None
+#                and self.name != "object"
+#             else self.parent
+#         )
+#
+#     @override
+#     def __str__(self) -> str:
+#         return self.name
+#
+#     # @override
+#     # def __repr__(self) -> str:
+#     #     return f"{self.name}: {self.parent}"
+#
+#     @classmethod
+#     def type_names(cls, types: list[Self]) -> list[str]:
+#         return [
+#             type.name for type in types
+#         ]
+
+
 
 
 @dataclass
