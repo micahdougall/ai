@@ -1,5 +1,7 @@
+import re
+
 from .action import Action
-from .predicate import Predicate, Parameter
+from .predicate import Predicate, Parameter, Type
 from .util import is_negated, parameter_items, predicate_args
 
 from dataclasses import dataclass
@@ -8,68 +10,95 @@ from re import findall, search
 
 @dataclass
 class Domain:
+    types: list[Type]
     predicates: list[Predicate]
     actions: list[Action]
+
+
+def split_string(lines: str) -> list[str]:
+    return lines.strip().split("\n")
 
 
 def parse_domain(domain_file: str) -> Domain:
     with open(domain_file) as domain:
         domain_string = domain.read()
 
-    word = " a-zA-Z0-9-"
-    predicate = r"\(\)=?a-zA-Z0-9-\s"
+    word = "a-zA-Z0-9 -"
+    types = r"a-zA-Z0-9-\s"
+    pred_pattern = r"\(\)=?a-zA-Z0-9-\s"
 
-    matches = search(
-        rf":predicates\s*([{predicate}]*)\s*\)",
+    type_regx_matches = search(
+        rf":types\s*([{types}]*)\s*\)",
         domain_string
     )
-    lines = matches.group(1).strip().split("\n")
+    lines = split_string(type_regx_matches.group(1))
+
+    types: list[Type] = []
+    for line in lines:
+        (children, parent) = line.strip().split(" - ")
+        objs = children.split(" ")
+
+        if parent not in Type.type_names(types):
+            types.append(Type(parent))
+
+        types += [
+            Type(obj, parent) for obj in objs
+        ]
+
+    pred_regx_matches = search(
+        rf":predicates\s*([{pred_pattern}]*)\s*\)",
+        domain_string
+    )
+    lines = split_string(pred_regx_matches.group(1))
 
     predicates = [
         Predicate(
-            preposition=predicate_args(line)[0],
+            preposition=predicate_args(predicate)[0],
             parameters=[
                 Parameter.from_string(p)
-                for p in predicate_args(line)[1:]
+                for p in predicate_args(pred_pattern)[1:]
             ]
         )
-        for line in lines
+        for predicate in lines
     ]
 
-    matches = findall(
+    action_regx_matches = findall(
         rf":action ([{word}]+)\s*"
-        rf":parameters\s*\(\s*([{predicate}]*)\s*\)\s*"
-        rf":precondition\s*\(and\s*([{predicate}]*)\s*\)\s*"
-        rf":effect\s*\(and\s*([{predicate}]*)\s\)\s*\)",
+        rf":parameters\s*\(\s*([{pred_pattern}]*)\s*\)\s*"
+        rf":precondition\s*\(and\s*([{pred_pattern}]*)\s*\)\s*"
+        rf":effect\s*\(and\s*([{pred_pattern}]*)\s\)\s*\)",
         domain_string
     )
 
     actions: list[Action] = []
-    for match in matches:
-        parameters = [
-            Parameter.from_string(params)
-            for params in match[1].strip().split("\n")
+    for match in action_regx_matches[:1]:
+        action_regx = match[0]
+        (param_regx, cond_regx, effect_regx) = [
+            split_string(each) for each in match[1:]
         ]
+        parameters = [
+            Parameter.from_string(parameter)
+            for parameter in param_regx
+        ]
+        param_types = Parameter.types_dict(parameters)
         preconditions = [
             Predicate.from_precondition(
-                predicate_args(line),
-                Parameter.types_dict(parameters)
+                predicate_args(condition), param_types
             )
-            for line in match[2].strip().split("\n")
+            for condition in cond_regx
         ]
         effects = [
             Predicate.from_precondition(
-                predicate_args(line),
-                Parameter.types_dict(parameters)
+                predicate_args(effect), param_types
             )
-            for line in match[3].strip().split("\n")
+            for effect in effect_regx
         ]
         action = Action(
-            name=match[0],
+            name=action_regx,
             parameters=parameters,
             precondition=preconditions,
             effect=effects
         )
         actions.append(action)
 
-    return Domain(predicates, actions)
+    return Domain(types, predicates, actions)

@@ -1,5 +1,4 @@
 
-
 from dataclasses import dataclass, field
 from dataclass_wizard import JSONWizard, json_field
 from pyre_extensions import override
@@ -10,11 +9,25 @@ from typing import Self
 @dataclass
 class Type:
     name: str
-    # parent: Self = field(init=False)
+    parent: Self = None
+
+    def __post_init__(self):
+        self.parent = (
+            "object"
+            if self.parent is None
+               and self.name != "object"
+            else self.parent
+        )
 
     @override
     def __str__(self) -> str:
         return self.name
+
+    @classmethod
+    def type_names(cls, types: list[Self]) -> list[str]:
+        return [
+            type.name for type in types
+        ]
 
 
 @dataclass
@@ -45,7 +58,7 @@ class Parameter(JSONWizard):
         )
 
     @classmethod
-    def types_dict(cls, parameters: list[Self]) -> dict[str,Type]:
+    def types_dict(cls, parameters: list[Self]) -> dict[str ,Type]:
         return {
             list(p.__dict__.values())[0]: list(p.__dict__.values())[1]
             for p in parameters

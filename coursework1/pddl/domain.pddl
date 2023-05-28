@@ -37,7 +37,7 @@
         :precondition (and
             (at ?character ?from)
             (not (at ?character ?to))
-            (not (= ?from ?to))
+            (not (= ?fr om ?to))
         )
         :effect (and 
             (at ?character ?to)
