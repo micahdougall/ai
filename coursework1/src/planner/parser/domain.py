@@ -10,6 +10,7 @@ from re import search
 @dataclass
 class Domain(JSONWizard):
     """Class to represent a planning Domain"""
+    name: str
     types: Type
     predicates: list[Predicate]
     actions: list[Action]
@@ -23,6 +24,11 @@ def parse_domain(domain_file: str) -> Domain:
     word = "a-zA-Z0-9 -"
     types = r"a-zA-Z0-9-\s"
     pred_pattern = r"\(\)=?a-zA-Z0-9-\s"
+
+    domain_name = search(
+        rf"\(define\s*\(domain\s*([{word}]*)\)",
+        domain_string
+    ).group(1)
 
     type_regx_matches = search(
         rf":types\s*([{types}]*)\s*\)",
@@ -64,4 +70,4 @@ def parse_domain(domain_file: str) -> Domain:
 
     actions = parse_actions(domain_string, predicates)
 
-    return Domain(root, predicates, actions)
+    return Domain(domain_name, root, predicates, actions)

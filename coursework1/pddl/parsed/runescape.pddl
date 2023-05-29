@@ -157,6 +157,7 @@
         )
         :precondition (and 
             (has ?fletcher ?material)
+            (has ?fletcher ?tool)
         )
         :effect (and 
             (has ?fletcher ?resource)
@@ -172,6 +173,7 @@
             ?resource - feathers
         )
         :precondition (and 
+            (at ?poacher ?location)
             (has ?location ?material)
         )
         :effect (and 

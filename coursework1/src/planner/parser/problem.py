@@ -4,15 +4,17 @@ from .predicate import Condition, Predicate, Parameter
 from .util import split_string, split_negated
 
 from dataclasses import dataclass
+from dataclass_wizard import JSONWizard
 from re import search
 
 
 @dataclass
-class Problem:
+class Problem(JSONWizard):
     """Class to represent a planning Problem"""
+    name: str
     objects: list[Parameter]
-    state: list[Predicate]
-    goal: list[Action]
+    init: list[Condition]
+    goal: list[Condition]
 
 
 def parse_problem(problem_file: str, domain: Domain) -> Problem:
@@ -23,6 +25,11 @@ def parse_problem(problem_file: str, domain: Domain) -> Problem:
     word = "a-zA-Z0-9 -"
     types = r"a-zA-Z0-9-\s"
     pred_pattern = r"\(\)=?a-zA-Z0-9-\s"
+
+    problem_name = search(
+        rf"\(define\s*\(problem\s*([{word}]*)\)",
+        problem_string
+    ).group(1)
 
     obj_regx_matches = search(
         rf":objects\s*([{types}]*)\s*\)",
@@ -63,4 +70,4 @@ def parse_problem(problem_file: str, domain: Domain) -> Problem:
         for aim in goal_lines
     ]
 
-    return Problem(objects, init, goal)
+    return Problem(problem_name, objects, init, goal)

@@ -1,0 +1,564 @@
+{
+    "name": "makesword",
+    "objects": [
+        {
+            "name": "Player",
+            "types": {
+                "type": "player",
+                "children": []
+            }
+        },
+        {
+            "name": "Shed",
+            "types": {
+                "type": "storage",
+                "children": []
+            }
+        },
+        {
+            "name": "Mine",
+            "types": {
+                "type": "mine",
+                "children": []
+            }
+        },
+        {
+            "name": "Furnace",
+            "types": {
+                "type": "furnace",
+                "children": []
+            }
+        },
+        {
+            "name": "Anvil",
+            "types": {
+                "type": "anvil",
+                "children": []
+            }
+        },
+        {
+            "name": "Pickaxe",
+            "types": {
+                "type": "pickaxe",
+                "children": []
+            }
+        },
+        {
+            "name": "Hammer",
+            "types": {
+                "type": "hammer",
+                "children": []
+            }
+        },
+        {
+            "name": "Rock",
+            "types": {
+                "type": "rock",
+                "children": []
+            }
+        },
+        {
+            "name": "Ore",
+            "types": {
+                "type": "ore",
+                "children": []
+            }
+        },
+        {
+            "name": "Bars",
+            "types": {
+                "type": "bars",
+                "children": []
+            }
+        },
+        {
+            "name": "Sword",
+            "types": {
+                "type": "sword",
+                "children": []
+            }
+        }
+    ],
+    "init": [
+        {
+            "predicate": {
+                "preposition": "at",
+                "parameters": [
+                    {
+                        "name": "p",
+                        "types": {
+                            "type": "player",
+                            "children": []
+                        }
+                    },
+                    {
+                        "name": "l",
+                        "types": {
+                            "type": "location",
+                            "children": []
+                        }
+                    }
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "Player",
+                    "types": {
+                        "type": "player",
+                        "children": []
+                    }
+                },
+                {
+                    "name": "Shed",
+                    "types": {
+                        "type": "storage",
+                        "children": []
+                    }
+                }
+            ],
+            "negation": false
+        },
+        {
+            "predicate": {
+                "preposition": "has",
+                "parameters": [
+                    {
+                        "name": "o",
+                        "types": [
+                            {
+                                "type": "player",
+                                "children": []
+                            },
+                            {
+                                "type": "location",
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "name": "r",
+                        "types": {
+                            "type": "resource",
+                            "children": []
+                        }
+                    }
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "Shed",
+                    "types": {
+                        "type": "storage",
+                        "children": []
+                    }
+                },
+                {
+                    "name": "Pickaxe",
+                    "types": {
+                        "type": "pickaxe",
+                        "children": []
+                    }
+                }
+            ],
+            "negation": false
+        },
+        {
+            "predicate": {
+                "preposition": "has",
+                "parameters": [
+                    {
+                        "name": "o",
+                        "types": [
+                            {
+                                "type": "player",
+                                "children": []
+                            },
+                            {
+                                "type": "location",
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "name": "r",
+                        "types": {
+                            "type": "resource",
+                            "children": []
+                        }
+                    }
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "Shed",
+                    "types": {
+                        "type": "storage",
+                        "children": []
+                    }
+                },
+                {
+                    "name": "Hammer",
+                    "types": {
+                        "type": "hammer",
+                        "children": []
+                    }
+                }
+            ],
+            "negation": false
+        },
+        {
+            "predicate": {
+                "preposition": "has",
+                "parameters": [
+                    {
+                        "name": "o",
+                        "types": [
+                            {
+                                "type": "player",
+                                "children": []
+                            },
+                            {
+                                "type": "location",
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "name": "r",
+                        "types": {
+                            "type": "resource",
+                            "children": []
+                        }
+                    }
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "Mine",
+                    "types": {
+                        "type": "mine",
+                        "children": []
+                    }
+                },
+                {
+                    "name": "Rock",
+                    "types": {
+                        "type": "rock",
+                        "children": []
+                    }
+                }
+            ],
+            "negation": false
+        }
+    ],
+    "goal": [
+        {
+            "predicate": {
+                "preposition": "has",
+                "parameters": [
+                    {
+                        "name": "o",
+                        "types": [
+                            {
+                                "type": "player",
+                                "children": []
+                            },
+                            {
+                                "type": "location",
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "name": "r",
+                        "types": {
+                            "type": "resource",
+                            "children": []
+                        }
+                    }
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "Shed",
+                    "types": {
+                        "type": "storage",
+                        "children": []
+                    }
+                },
+                {
+                    "name": "Sword",
+                    "types": {
+                        "type": "sword",
+                        "children": []
+                    }
+                }
+            ],
+            "negation": false
+        },
+        {
+            "predicate": {
+                "preposition": "has",
+                "parameters": [
+                    {
+                        "name": "o",
+                        "types": [
+                            {
+                                "type": "player",
+                                "children": []
+                            },
+                            {
+                                "type": "location",
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "name": "r",
+                        "types": {
+                            "type": "resource",
+                            "children": []
+                        }
+                    }
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "Player",
+                    "types": {
+                        "type": "player",
+                        "children": []
+                    }
+                },
+                {
+                    "name": "Pickaxe",
+                    "types": {
+                        "type": "pickaxe",
+                        "children": []
+                    }
+                }
+            ],
+            "negation": false
+        },
+        {
+            "predicate": {
+                "preposition": "has",
+                "parameters": [
+                    {
+                        "name": "o",
+                        "types": [
+                            {
+                                "type": "player",
+                                "children": []
+                            },
+                            {
+                                "type": "location",
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "name": "r",
+                        "types": {
+                            "type": "resource",
+                            "children": []
+                        }
+                    }
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "Player",
+                    "types": {
+                        "type": "player",
+                        "children": []
+                    }
+                },
+                {
+                    "name": "Hammer",
+                    "types": {
+                        "type": "hammer",
+                        "children": []
+                    }
+                }
+            ],
+            "negation": false
+        },
+        {
+            "predicate": {
+                "preposition": "has",
+                "parameters": [
+                    {
+                        "name": "o",
+                        "types": [
+                            {
+                                "type": "player",
+                                "children": []
+                            },
+                            {
+                                "type": "location",
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "name": "r",
+                        "types": {
+                            "type": "resource",
+                            "children": []
+                        }
+                    }
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "Player",
+                    "types": {
+                        "type": "player",
+                        "children": []
+                    }
+                },
+                {
+                    "name": "Rock",
+                    "types": {
+                        "type": "rock",
+                        "children": []
+                    }
+                }
+            ],
+            "negation": false
+        },
+        {
+            "predicate": {
+                "preposition": "has",
+                "parameters": [
+                    {
+                        "name": "o",
+                        "types": [
+                            {
+                                "type": "player",
+                                "children": []
+                            },
+                            {
+                                "type": "location",
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "name": "r",
+                        "types": {
+                            "type": "resource",
+                            "children": []
+                        }
+                    }
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "Player",
+                    "types": {
+                        "type": "player",
+                        "children": []
+                    }
+                },
+                {
+                    "name": "Ore",
+                    "types": {
+                        "type": "ore",
+                        "children": []
+                    }
+                }
+            ],
+            "negation": false
+        },
+        {
+            "predicate": {
+                "preposition": "has",
+                "parameters": [
+                    {
+                        "name": "o",
+                        "types": [
+                            {
+                                "type": "player",
+                                "children": []
+                            },
+                            {
+                                "type": "location",
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "name": "r",
+                        "types": {
+                            "type": "resource",
+                            "children": []
+                        }
+                    }
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "Player",
+                    "types": {
+                        "type": "player",
+                        "children": []
+                    }
+                },
+                {
+                    "name": "Bars",
+                    "types": {
+                        "type": "bars",
+                        "children": []
+                    }
+                }
+            ],
+            "negation": false
+        },
+        {
+            "predicate": {
+                "preposition": "has",
+                "parameters": [
+                    {
+                        "name": "o",
+                        "types": [
+                            {
+                                "type": "player",
+                                "children": []
+                            },
+                            {
+                                "type": "location",
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "name": "r",
+                        "types": {
+                            "type": "resource",
+                            "children": []
+                        }
+                    }
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "Player",
+                    "types": {
+                        "type": "player",
+                        "children": []
+                    }
+                },
+                {
+                    "name": "Sword",
+                    "types": {
+                        "type": "sword",
+                        "children": []
+                    }
+                }
+            ],
+            "negation": false
+        }
+    ]
+}

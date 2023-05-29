@@ -1,5 +1,5 @@
 (define 
-    (problem makesword) 
+    (problem makearrow) 
     (:domain runescape)
 
     (:objects 

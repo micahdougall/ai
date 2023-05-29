@@ -1,4 +1,5 @@
 from config import Config
+from output import game_actions, print_plan, write_as_json
 from planner.http.request import SolverRequest
 from planner.http.response import SolverResponse, SolverResult
 from planner.parser.domain import parse_domain
@@ -9,24 +10,10 @@ import json
 from os.path import abspath, dirname, join
 
 
-def print_plan(result: SolverResult, verbose: bool) -> None:
-    """Prints the plan from a solver result object"""
-    print(repr(result) if verbose else result)
-    for action in result.plan:
-        print(repr(action) if verbose else action)
-
-
-def game_actions(result: SolverResult) -> None:
-    """Prints the actions from a solver result object"""
-    for action in result.plan:
-        print(action.pddl_action)
-        print(action.pddl_params)
-
-
 def args() -> ArgumentParser:
     parser = ArgumentParser()
     parser.add_argument("-s", "--solve", action="store_true")
-    parser.add_argument("-d", "--domain", action="store", default="domain")
+    parser.add_argument("-d", "--domain", action="store", default="runescape")
     parser.add_argument("-p", "--problem", action="store")
     parser.add_argument("-v", "--verbose", action="store_true")
     return parser.parse_args()
@@ -34,34 +21,46 @@ def args() -> ArgumentParser:
 
 if __name__ == '__main__':
     args = args()
-
     root = abspath(join(dirname(__file__), "../"))
     with open(join(root, "config.json")) as options:
         config = Config(json.load(options))
-    
-    SolverRequest.url = config.solver_url
-    SolverRequest.pddl_dir = join(root, config.pddl_dir)
-    SolverRequest.resources = join(root, config.resources)
-    SolverResponse.resources = join(root, config.resources)
 
-    pddl_dir = join(root, config.pddl_dir)
-
+    # Parse domain and problem file into meaningful objects
+    pddl_parsed_dir = join(root, config.pddl_parsed_dir)
     domain = parse_domain(
-        join(root, "pddl/domain-parsable.pddl")
+        join(pddl_parsed_dir, f"{args.domain}.pddl")
     )
-    problem = parse_problem(
-        join(root, "pddl/sword-parsable.pddl"),
+    write_as_json(
+        join(root, config.objects),
         domain
     )
-    print(problem.goal)
+    problem = parse_problem(
+        join(pddl_parsed_dir, f"{args.problem}.pddl"),
+        domain
+    )
+    write_as_json(
+        join(root, config.objects),
+        problem
+    )
+    for condition in problem.init:
+        print(
+            f"Preposition: {condition.predicate.preposition}"
+            f"  -> takes Parameters:\n"
+            f"{chr(10).join([str(p) for p in condition.predicate.parameters])}"
+        )
     exit()
+    # Config for solver requests
+    SolverRequest.url = config.solver_url
+    SolverRequest.pddl_dir = join(root, config.pddl_api_dir)
+    SolverRequest.responses = join(root, config.responses)
+    SolverResponse.responses = join(root, config.responses)
 
+    # Get response from Solver API
     response = (
         SolverRequest(args.domain, args.problem).get_response()
         if args.solve
         else SolverResponse.read(args.problem)
     )
-
     if not response.valid:
         print(
             f"Output: \n\t{response.result.output}\n"

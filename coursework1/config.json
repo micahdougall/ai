@@ -1,6 +1,8 @@
 {
-    "resources": "resources",
-    "pddl_dir": "pddl",
+    "responses": "resources/responses",
+    "objects": "resources/objects",
+    "pddl_api_dir": "pddl/api",
+    "pddl_parsed_dir": "pddl/parsed",
     "solver_url": "http://solver.planning.domains/solve",
     "validator_url": "http://solver.planning.domains/validate",
     "solve_validator_url": "http://solver.planning.domains/solve-and-validate"

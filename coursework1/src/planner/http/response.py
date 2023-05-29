@@ -6,6 +6,7 @@ from typing import ClassVar, Self
 from typing_extensions import override
 
 
+
 @dataclass
 class SolverAction:
     """Class to represent an action in a SolverResponse"""
@@ -28,7 +29,9 @@ class SolverAction:
             r":action ([ a-zA-Z0-9-]+)[\s]+:parameters ([(][ a-zA-Z0-9-]+[)])",
             self.action
         )
-        return f"    {matches.group(1)} -> {matches.group(2)}"
+        return f"""
+            \033[96m{matches.group(1)} -> \033[95m{matches.group(2)}\033[49m
+        """.strip()
     
     @override
     def __repr__(self) -> str:
@@ -66,7 +69,7 @@ class SolverResponse(JSONWizard):
     status: str
     result: SolverResult
     valid: bool = field(init=False)
-    resources: ClassVar[str]
+    responses: ClassVar[str]
     file_suffix: ClassVar[str] = "-response.json"
 
     def __post_init__(self):
@@ -74,14 +77,14 @@ class SolverResponse(JSONWizard):
 
     def write(self, problem) -> Self:
         """Writes to a file"""
-        with open(join(self.resources, f"{problem}{__class__.file_suffix}"), "w") as f:
-            f.write(self.to_json())
+        with open(join(self.responses, f"{problem}{__class__.file_suffix}"), "w") as f:
+            f.write(self.to_json(indent=4))
         return self
 
     @classmethod
     def read(cls, problem) -> Self:
         """Reads from a file"""
         with open(
-            join(__class__.resources, f"{problem}{__class__.file_suffix}")
+            join(__class__.responses, f"{problem}{__class__.file_suffix}")
         ) as file:
             return cls.from_json(file.read())

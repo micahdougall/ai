@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 from dataclass_wizard import JSONWizard
 from itertools import chain
+from pyre_extensions import override
 from re import match
 from typing import Self
 
@@ -20,28 +21,31 @@ class Type:
         )
 
     def get_node(self, search: str) -> Self | None:
-        """Returns a specific Type node from descendents"""
-        if self.children:
-            # return next(
-            #     filter(
-            #         lambda c: c.type == search,
-            #         self.children
-            #     ), None
-            # ) or next(
-            #     iter(
-            #         [c.get_node(search) for c in self.children]
-            #     )
-            # )
-            for c in self.children:
-                if c.type == search:
-                    return c
-            else:
+        """Returns a specific Type node from descendents
+
+        Equivalent to:
+            if self.children:
                 for c in self.children:
-                    opt = c.get_node(search)
-                    if opt:
-                        return opt
-        else:
-            return None
+                    if c.type == search:
+                        return c
+                else:
+                    for c in self.children:
+                        opt = c.get_node(search)
+                        if opt:
+                            return opt
+            else:
+                return None
+        """
+        return next(
+            filter(
+                lambda c: c.type == search,
+                self.children
+            ), None
+        ) or next(
+            iter(
+                [c.get_node(search) for c in self.children]
+            )
+        ) if self.children else None
 
 
 @dataclass
@@ -49,6 +53,10 @@ class Parameter(JSONWizard):
     """Class to represent a parameter for a predicate"""
     name: str
     types: Type | list[Type]
+    
+    @override
+    def __str__(self) -> str:
+        return f"{self.name} -> types: ({([t.type for t in self.types] if isinstance(self.types, list) else self.types)})"
 
     @classmethod
     def from_string(cls, param: str) -> Self:
