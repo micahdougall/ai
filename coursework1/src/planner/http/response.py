@@ -6,10 +6,10 @@ from typing import ClassVar, Self
 from typing_extensions import override
 
 
-
 @dataclass
 class SolverAction:
     """Class to represent an action in a SolverResponse"""
+
     action: str
     name: str
     pddl_action: str = field(init=False)
@@ -19,20 +19,18 @@ class SolverAction:
         """Splits action text into actions and params"""
         args = self.name.strip("()").split(" ")
         self.pddl_action = args[0]
-        self.pddl_params = [
-            param for param in args[1:]
-        ]
+        self.pddl_params = [param for param in args[1:]]
 
     @override
     def __str__(self) -> str:
         matches = search(
             r":action ([ a-zA-Z0-9-]+)[\s]+:parameters ([(][ a-zA-Z0-9-]+[)])",
-            self.action
+            self.action,
         )
         return f"""
             \033[96m{matches.group(1)} -> \033[95m{matches.group(2)}\033[49m
         """.strip()
-    
+
     @override
     def __repr__(self) -> str:
         return self.action
@@ -41,6 +39,7 @@ class SolverAction:
 @dataclass
 class SolverResult:
     """Class to represent the result of a plan from the solver"""
+
     output: str
     parse_status: str
     error: str = None
@@ -57,7 +56,7 @@ class SolverResult:
     @override
     def __str__(self) -> str:
         return f"{self.length} actions needed:"
-    
+
     @override
     def __repr__(self) -> str:
         return self.output
@@ -66,6 +65,7 @@ class SolverResult:
 @dataclass
 class SolverResponse(JSONWizard):
     """Class to represent a response from the solver"""
+
     status: str
     result: SolverResult
     valid: bool = field(init=False)

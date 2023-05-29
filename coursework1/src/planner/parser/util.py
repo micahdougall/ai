@@ -1,7 +1,7 @@
 import re
 
 
-def predicate_args(text: str) -> list[str]:
+def list_params(text: str) -> list[str]:
     """Splits a string of predicate arguments"""
     return text.strip(" ()").split(" ?")
 

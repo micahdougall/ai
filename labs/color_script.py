@@ -2,8 +2,8 @@
 
 print("\\033[XXm")
 
-for i in range(30,37+1):
-    print("\033[%dm%d\t\t\033[%dm%d" % (i,i,i+60,i+60))
+for i in range(30, 37 + 1):
+    print("\033[%dm%d\t\t\033[%dm%d" % (i, i, i + 60, i + 60))
 
 print("\033[39m\\033[49m - Reset colour")
 print("\\033[2K - Clear Line")

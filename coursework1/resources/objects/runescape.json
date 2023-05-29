@@ -154,7 +154,32 @@
                     "name": "l",
                     "types": {
                         "type": "location",
-                        "children": []
+                        "children": [
+                            {
+                                "type": "anvil",
+                                "children": []
+                            },
+                            {
+                                "type": "farm",
+                                "children": []
+                            },
+                            {
+                                "type": "forest",
+                                "children": []
+                            },
+                            {
+                                "type": "furnace",
+                                "children": []
+                            },
+                            {
+                                "type": "mine",
+                                "children": []
+                            },
+                            {
+                                "type": "storage",
+                                "children": []
+                            }
+                        ]
                     }
                 }
             ]
@@ -171,7 +196,32 @@
                         },
                         {
                             "type": "location",
-                            "children": []
+                            "children": [
+                                {
+                                    "type": "anvil",
+                                    "children": []
+                                },
+                                {
+                                    "type": "farm",
+                                    "children": []
+                                },
+                                {
+                                    "type": "forest",
+                                    "children": []
+                                },
+                                {
+                                    "type": "furnace",
+                                    "children": []
+                                },
+                                {
+                                    "type": "mine",
+                                    "children": []
+                                },
+                                {
+                                    "type": "storage",
+                                    "children": []
+                                }
+                            ]
                         }
                     ]
                 },
@@ -179,7 +229,24 @@
                     "name": "r",
                     "types": {
                         "type": "resource",
-                        "children": []
+                        "children": [
+                            {
+                                "type": "component",
+                                "children": []
+                            },
+                            {
+                                "type": "material",
+                                "children": []
+                            },
+                            {
+                                "type": "tool",
+                                "children": []
+                            },
+                            {
+                                "type": "weapon",
+                                "children": []
+                            }
+                        ]
                     }
                 }
             ]
@@ -191,14 +258,36 @@
                     "name": "o",
                     "types": {
                         "type": "weapon",
-                        "children": []
+                        "children": [
+                            {
+                                "type": "arrow",
+                                "children": []
+                            },
+                            {
+                                "type": "sword",
+                                "children": []
+                            }
+                        ]
                     }
                 },
                 {
                     "name": "c",
                     "types": {
                         "type": "component",
-                        "children": []
+                        "children": [
+                            {
+                                "type": "arrowhead",
+                                "children": []
+                            },
+                            {
+                                "type": "feathers",
+                                "children": []
+                            },
+                            {
+                                "type": "shafts",
+                                "children": []
+                            }
+                        ]
                     }
                 }
             ]
@@ -208,17 +297,11 @@
             "parameters": [
                 {
                     "name": "a",
-                    "types": {
-                        "type": "object",
-                        "children": []
-                    }
+                    "types": null
                 },
                 {
                     "name": "b",
-                    "types": {
-                        "type": "object",
-                        "children": []
-                    }
+                    "types": null
                 }
             ]
         }

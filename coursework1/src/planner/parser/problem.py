@@ -11,6 +11,7 @@ from re import search
 @dataclass
 class Problem(JSONWizard):
     """Class to represent a planning Problem"""
+
     name: str
     objects: list[Parameter]
     init: list[Condition]
@@ -27,46 +28,27 @@ def parse_problem(problem_file: str, domain: Domain) -> Problem:
     pred_pattern = r"\(\)=?a-zA-Z0-9-\s"
 
     problem_name = search(
-        rf"\(define\s*\(problem\s*([{word}]*)\)",
-        problem_string
+        rf"\(define\s*\(problem\s*([{word}]*)\)", problem_string
     ).group(1)
 
-    obj_regx_matches = search(
-        rf":objects\s*([{types}]*)\s*\)",
-        problem_string
-    )
+    obj_regx_matches = search(rf":objects\s*([{types}]*)\s*\)", problem_string)
     obj_lines = split_string(obj_regx_matches.group(1))
 
-    objects = [
-        Parameter.from_string(obj)
-        for obj in obj_lines
-    ]
+    objects = [Parameter.from_string(obj) for obj in obj_lines]
 
-    init_regx_matches = search(
-        rf":init\s*([{pred_pattern}]*)\s*\)",
-        problem_string
-    )
+    init_regx_matches = search(rf":init\s*([{pred_pattern}]*)\s*\)", problem_string)
     init_lines = split_string(init_regx_matches.group(1))
     init = [
-        Condition.build(
-            state.strip(" ()").split(" "),
-            domain.predicates,
-            objects
-        )
+        Condition.build(state.strip(" ()").split(" "), domain.predicates, objects)
         for state in init_lines
     ]
 
     goal_regx_matches = search(
-        rf":goal\s*\(and\s*([{pred_pattern}]*)\s*\)\s*\)\s*\)",
-        problem_string
+        rf":goal\s*\(and\s*([{pred_pattern}]*)\s*\)\s*\)\s*\)", problem_string
     )
     goal_lines = split_string(goal_regx_matches.group(1))
     goal = [
-        Condition.build(
-            split_negated(aim),
-            domain.predicates,
-            objects
-        )
+        Condition.build(split_negated(aim), domain.predicates, objects)
         for aim in goal_lines
     ]
 

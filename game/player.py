@@ -18,7 +18,9 @@ SCREEN_HEIGHT = 600
 class Player(pygame.sprite.Sprite):
     def __init__(self) -> None:
         super().__init__()
-        self.surface = pygame.image.load("images/small/character-one.png").convert_alpha()
+        self.surface = pygame.image.load(
+            "images/small/character-one.png"
+        ).convert_alpha()
         self.surface.set_colorkey((255, 255, 255), RLEACCEL)
         # self.surface = pygame.Surface((75, 75))
         # self.surface.fill((255, 255, 255))
@@ -34,7 +36,7 @@ class Player(pygame.sprite.Sprite):
         if pressed_keys[K_RIGHT]:
             self.rect.move_ip(1, 0)
 
-      # Keep player on the screen
+        # Keep player on the screen
         if self.rect.left < 0:
             self.rect.left = 0
         if self.rect.right > SCREEN_WIDTH:
@@ -43,5 +45,3 @@ class Player(pygame.sprite.Sprite):
             self.rect.top = 0
         if self.rect.bottom >= SCREEN_HEIGHT:
             self.rect.bottom = SCREEN_HEIGHT
-
-

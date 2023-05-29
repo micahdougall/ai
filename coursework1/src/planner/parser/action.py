@@ -1,5 +1,5 @@
 from .predicate import Condition, Predicate, Parameter
-from .util import predicate_args, split_string
+from .util import list_params, split_string
 
 from dataclasses import dataclass
 from dataclass_wizard import JSONWizard
@@ -9,16 +9,14 @@ from re import findall
 @dataclass
 class Action(JSONWizard):
     """Class to represent an action in a domain"""
+
     name: str
     parameters: list[Parameter]
     precondition: list[Condition]
     effect: list[Condition]
 
 
-def parse_actions(
-        domain_string: str,
-        predicates: list[Predicate]
-) -> list[Action]:
+def parse_actions(domain_string: str, predicates: list[Predicate]) -> list[Action]:
     """Parses actions from a domain file string"""
 
     word = "a-zA-Z0-9 -"
@@ -30,7 +28,7 @@ def parse_actions(
         rf":parameters\s*\(\s*([{pred_pattern}]*)\s*\)\s*"
         rf":precondition\s*\(and\s*([{pred_pattern}]*)\s*\)\s*"
         rf":effect\s*\(and\s*([{pred_pattern}]*)\s\)\s*\)",
-        domain_string
+        domain_string,
     )
 
     actions: list[Action] = []
@@ -40,26 +38,15 @@ def parse_actions(
             split_string(each) for each in match[1:]
         ]
 
-        parameters = [
-            Parameter.from_string(parameter)
-            for parameter in param_regx
-        ]
+        parameters = [Parameter.from_string(parameter) for parameter in param_regx]
 
         preconditions = [
-            Condition.build(
-                predicate_args(condition),
-                predicates,
-                parameters
-            )
+            Condition.build(list_params(condition), predicates, parameters)
             for condition in cond_regx
         ]
 
         effects = [
-            Condition.build(
-                predicate_args(effect),
-                predicates,
-                parameters
-            )
+            Condition.build(list_params(effect), predicates, parameters)
             for effect in effect_regx
         ]
 
@@ -68,6 +55,6 @@ def parse_actions(
                 name=action_regx,
                 parameters=parameters,
                 precondition=preconditions,
-                effect=effects
+                effect=effects,
             )
         )

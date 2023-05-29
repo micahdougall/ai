@@ -24,12 +24,7 @@ def get_map(filepath: str) -> dict:
 def draw_graph(graph: nx.Graph) -> None:
     # graph = nx.petersen_graph()
     pos = nx.spring_layout(graph)
-    nx.draw(
-        graph,
-        pos,
-        with_labels=True,
-        font_weight="bold"
-    )
+    nx.draw(graph, pos, with_labels=True, font_weight="bold")
     edge_weight = nx.get_edge_attributes(graph, "weight")
     nx.draw_networkx_edge_labels(graph, pos, edge_labels=edge_weight)
     plt.show()
@@ -51,16 +46,10 @@ def draw_pygraph(nodes) -> None:
     graph.draw("file.png")
 
 
-
-if __name__ == '__main__':
-    wales_graph = create_graph(
-        get_map("resources/wales.json")
-    )
+if __name__ == "__main__":
+    wales_graph = create_graph(get_map("resources/wales.json"))
     route = find_shortest_path(wales_graph, "Wrexham", "Cardiff")
     print(route)
     draw_graph(wales_graph)
 
-    wales_graph = draw_pygraph(
-        get_map("resources/wales.json")
-    )
-
+    wales_graph = draw_pygraph(get_map("resources/wales.json"))

@@ -5,9 +5,6 @@ from cloud import Cloud
 import pygame
 
 
-
-
-
 from pygame.locals import (
     K_UP,
     K_DOWN,
@@ -17,6 +14,7 @@ from pygame.locals import (
     KEYDOWN,
     QUIT,
 )
+
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
@@ -39,17 +37,13 @@ all_sprites.add(player)
 
 
 def is_quit(event: pygame.event.Event):
-    return (
-        event.type == pygame.QUIT
-        or (
-            event.type == pygame.KEYDOWN
-            and event.key == K_ESCAPE
-        )
+    return event.type == pygame.QUIT or (
+        event.type == pygame.KEYDOWN and event.key == K_ESCAPE
     )
+
 
 running = True
 while running:
-
     for event in pygame.event.get():
         if is_quit(event):
             running = False
@@ -67,7 +61,6 @@ while running:
     enemies.update()
     clouds.update()
 
-
     screen.fill((135, 206, 250))
     # screen.fill((255, 255, 255))
     # screen.fill((0, 0, 0))
@@ -76,16 +69,15 @@ while running:
         screen.blit(entity.surface, entity.rect)
 
     if pygame.sprite.spritecollideany(player, enemies):
-            # If so, then remove the player and stop the loop
+        # If so, then remove the player and stop the loop
         player.kill()
         running = False
-        
+
     # surface = pygame.Surface((50, 50))
     # surface.fill((0, 0, 0))
     # rectangle = surface.get_rect()
     # screen.blit(player.surface, (400 - surface.get_width()/2, 300 - surface.get_height()/2))
     screen.blit(player.surface, player.rect)
-
 
     # pygame.draw.circle(screen, (0, 0, 255), (100, 100), 25)
 

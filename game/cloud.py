@@ -16,8 +16,9 @@ from pygame.locals import (
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
+
 # Define the cloud object by extending pygame.sprite.Sprite
- # Use an image for a better-looking sprite
+# Use an image for a better-looking sprite
 class Cloud(pygame.sprite.Sprite):
     def __init__(self):
         super(Cloud, self).__init__()
@@ -30,9 +31,9 @@ class Cloud(pygame.sprite.Sprite):
                 random.randint(0, SCREEN_HEIGHT),
             )
         )
- 
-     # Move the cloud based on a constant speed
-     # Remove the cloud when it passes the left edge of the screen
+
+    # Move the cloud based on a constant speed
+    # Remove the cloud when it passes the left edge of the screen
     def update(self):
         self.rect.move_ip(-5, 0)
         if self.rect.right < 0:
