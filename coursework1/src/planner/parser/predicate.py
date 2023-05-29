@@ -66,7 +66,6 @@ class Parameter(JSONWizard):
         root = Type.get_root()
         return cls(
             name=objs[0].strip("?"),
-            # TODO: Change to lookup on class variable
             types=[root.get(element) for element in types.group(1).split(" ")]
             if types
             else root.get(objs[1])

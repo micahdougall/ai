@@ -31,18 +31,25 @@ if __name__ == "__main__":
     write_as_json(join(root, config.objects), domain)
     problem = parse_problem(join(pddl_parsed_dir, f"{args.problem}.pddl"), domain)
     write_as_json(join(root, config.objects), problem)
-    for condition in problem.init:
-        print(
-            f"Preposition: {condition.predicate.preposition}"
-            f"  -> takes Parameters:\n\t"
-            f"{(chr(10) + chr(9)).join([str(p) for p in condition.predicate.parameters])}\n"
-        )
+
+    # Print example for init state
+    if args.verbose:
+        print("Print-out example for init state for problem file...\n\n")
+        for condition in problem.init:
+            print(
+                f"Preposition: {condition.predicate.preposition}"
+                f"  -> takes Parameters:\n\t"
+                f"{(chr(10) + chr(9)).join([str(p) for p in condition.predicate.parameters])}\n"
+            )
+        print("Serializing problem object...\n\n")
+        print(problem.to_json(indent=4))
 
     # Config for solver requests
+    response_dir = config.responses if args.solve else config.local
     SolverRequest.url = config.solver_url
     SolverRequest.pddl_dir = join(root, config.pddl_api_dir)
-    SolverRequest.responses = join(root, config.responses)
-    SolverResponse.responses = join(root, config.responses)
+    SolverRequest.responses = join(root, response_dir)
+    SolverResponse.responses = join(root, response_dir)
 
     # Get response from Solver API
     response = (

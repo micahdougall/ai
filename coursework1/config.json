@@ -1,5 +1,6 @@
 {
     "responses": "resources/responses",
+    "local": "resources/local",
     "objects": "resources/objects",
     "pddl_api_dir": "pddl/api",
     "pddl_parsed_dir": "pddl/parsed",

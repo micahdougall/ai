@@ -1,7 +1,7 @@
 {
     "status": "ok",
     "result": {
-        "output": "\npredicate INCLUDES is declared to use unknown or empty type COMPONENT\n\n\nwarning: parameter ?WEAPON of op AFFIX has unknown or empty type ARROW. skipping op\nwarning: parameter ?LOCATION of op HUNT-CHICKEN has unknown or empty type FARM. skipping op\nwarning: parameter ?TOOL of op FLETCH-SHAFTS has unknown or empty type KNIFE. skipping op\nwarning: parameter ?LOCATION of op CHOP-TREES has unknown or empty type FOREST. skipping op --- OK.\n Match tree built with 25 nodes.\n\nPDDL problem description loaded: \n\tDomain: RUNESCAPE\n\tProblem: MAKESWORD\n\t#Actions: 25\n\t#Fluents: 24\nLandmarks found: 6\nStarting search with IW (time budget is 60 secs)...\nrel_plan size: 9\n#RP_fluents 13\nCaption\n{#goals, #UNnachieved,  #Achieved} -> IW(max_w)\n\n{6/6/0}:IW(1) -> [2][3][4][5][6][7]rel_plan size: 7\n#RP_fluents 10\n{6/5/1}:IW(1) -> [2][3]rel_plan size: 5\n#RP_fluents 8\n{6/4/2}:IW(1) -> [2][3][4]rel_plan size: 4\n#RP_fluents 5\n{6/3/3}:IW(1) -> [2][3]rel_plan size: 1\n#RP_fluents 1\n{6/1/5}:IW(1) -> [2]rel_plan size: 0\n#RP_fluents 0Plan found with cost: 1.87844e+20\nTotal time: -1.8999e-10\nNodes generated during search: 70\nNodes expanded during search: 41\nIW search completed\n",
+        "output": "\npredicate INCLUDES is declared to use unknown or empty type COMPONENT\n\n\nwarning: parameter ?WEAPON of op AFFIX has unknown or empty type ARROW. skipping op\nwarning: parameter ?LOCATION of op HUNT-CHICKEN has unknown or empty type FARM. skipping op\nwarning: parameter ?TOOL of op FLETCH-SHAFTS has unknown or empty type KNIFE. skipping op\nwarning: parameter ?LOCATION of op CHOP-TREES has unknown or empty type FOREST. skipping op --- OK.\n Match tree built with 25 nodes.\n\nPDDL problem description loaded: \n\tDomain: RUNESCAPE\n\tProblem: MAKESWORD\n\t#Actions: 25\n\t#Fluents: 24\nLandmarks found: 6\nStarting search with IW (time budget is 60 secs)...\nrel_plan size: 9\n#RP_fluents 13\nCaption\n{#goals, #UNnachieved,  #Achieved} -> IW(max_w)\n\n{6/6/0}:IW(1) -> [2][3][4][5][6][7]rel_plan size: 7\n#RP_fluents 10\n{6/5/1}:IW(1) -> [2][3]rel_plan size: 5\n#RP_fluents 8\n{6/4/2}:IW(1) -> [2][3][4]rel_plan size: 4\n#RP_fluents 5\n{6/3/3}:IW(1) -> [2][3]rel_plan size: 1\n#RP_fluents 1\n{6/1/5}:IW(1) -> [2]rel_plan size: 0\n#RP_fluents 0Plan found with cost: -7.70499e+09\nTotal time: -1.8999e-10\nNodes generated during search: 70\nNodes expanded during search: 41\nIW search completed\n",
         "parseStatus": "ok",
         "error": null,
         "type": "full",
@@ -157,8 +157,8 @@
         "valStdout": null,
         "valStderr": null,
         "valStatus": null,
-        "planPath": "/tmp/solver_planning_domains_tmp_2UrqW1Tiefqrf/plan",
-        "logPath": "/tmp/solver_planning_domains_tmp_2UrqW1Tiefqrf/log"
+        "planPath": "/tmp/solver_planning_domains_tmp_24VljVn8zzHOv/plan",
+        "logPath": "/tmp/solver_planning_domains_tmp_24VljVn8zzHOv/log"
     },
     "valid": true
 }

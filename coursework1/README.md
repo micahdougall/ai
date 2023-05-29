@@ -14,7 +14,6 @@ This README outlines the required setup to run the program, and outlines the cho
 - [Integration](#integration)
   - [HTTP](#http)
   - [Parser](#parser)
-- [System](#system)
 - [References](#references)
 
 
@@ -31,16 +30,29 @@ Various PDDL problem and domain files can be found in the [pddl/](pddl/) directo
 
 ## Requirements
 
-- Python (version 3.11).
+- Python (version 3.11.3).
 - Packages in [requirements file](requirements.txt).
 
 
 To install the necessary requirements, simply run (in the root directory):
 ```bash
+# python/python3 for systems with multiple versions
+
 python3 -m pip install -r requirements.txt
 ```
 
+Or to avoid conflicts with existing package versions, use the [venv](https://realpython.com/python-virtual-environments-a-primer/) module:
 
+```bash
+# create virtual env
+python3 -m venv <new-venv-name>
+
+# activate (on Linux/macOS)
+source <new-venv-name>/bin/activate
+
+# install requirements
+python3 -m pip install -r requirements.txt
+```
 ## Usage
 
 There are several possible CLI arguments which can be provided to [main.py](src/main.py) depending on the required execution:
@@ -88,12 +100,13 @@ Eg:
 <span style="color:cyan">store -> </span><span style="color:magenta">(player sword shed)</span></br>
 <span style="color:cyan">store -> </span><span style="color:magenta">(player hammer shed)</span></br></br>
 
+Solver responses from program executions are saved to [resources/responses/](resources/responses/). In case of failed requests, a cached version or each response is saved to [resources/local/](resources/local).
 
 *In the case of the `-s` arg not being passed, SolverResponse reads from the local file and generates the action output.*
 
 ### Parser
 
-The author has made the (questionable) decision to attempt to create a manual parser for PDDL domain and problem files which can be seen in [src/planner/parser](src/planner/parser).
+The author has made the (questionable) decision to attempt to create a manual parser for PDDL domain and problem files which can be seen in [src/planner/parser/](src/planner/parser/).
 
 The parser maps the actions, types and predicates contained in the specified domain-problem into useable complex object types, and implicitly allows for a simple validation by virtue of requiring certain types.
 
@@ -114,14 +127,17 @@ With this compositional nature, the domain and problem attributes can then be ac
 
 ```python
 # Format print selected child attributes
-for predicate in problem.init:
+problem = Problem(...parse problem file...)
+
+for condition in problem.init:
     print(
-        f"Preposition: {prodicate.preposition}"
-        f"Parameters: {', '.join[p.name for p in predicate.parameters]}"
+        f"Preposition: {condition.predicate.preposition}"
+        f"  -> takes Parameters:\n\t"
+        f"{(chr(10) + chr(9)).join([str(p) for p in condition.predicate.parameters])}\n"
     )
 
 # Serialize to JSON
-
+print(problem.to_json(indent=4))
 ```
 
 The serialized outputs for the domain and problem files are saved to [resources/objects/](resources/objects/) directory, with the filename determined be the parse step from the original PDDL file.
@@ -129,27 +145,56 @@ The serialized outputs for the domain and problem files are saved to [resources/
 Snippet of a serialized predicate:
 
 ```Json
-"predicates": [
+"init": [
     {
-        "preposition": "at",
-        "parameters": [
-            {
-                "name": "p",
-                "types": {
-                    "type": "player",
-                    "children": []
+        "predicate": {
+            "preposition": "at",
+            "parameters": [
+                {
+                    "name": "p",
+                    "types": {
+                        "type": "player",
+                        "children": []
+                    }
+                },
+                {
+                    "name": "l",
+                    "types": {
+                        "type": "location",
+                        "children": [
+                            {
+                                "type": "anvil",
+                                "children": []
+                            },
+                            {
+                                "type": "farm",
+                                "children": []
+                            },
+                            {
+                                "type": "forest",
+                                "children": []
+                            },
+                            {
+                                "type": "furnace",
+                                "children": []
+                            },
+                            {
+                                "type": "mine",
+                                "children": []
+                            },
+                            {
+                                "type": "storage",
+                                "children": []
+                            }
+                        ]
+                    }
                 }
-            },
-            {
-                "name": "l",
-                "types": {
-                    "type": "location",
-                    "children": []
-                }
-            }
-        ],
-        "negation": false
-    }
+            ]
+        }
+    }, 
+  
+    ...
+    
 ]
 ```
 
@@ -158,6 +203,7 @@ Snippet of a serialized predicate:
 
 - https://planning.wiki/ref/pddl
 - http://solver.planning.domains
+- https://realpython.com/python-virtual-environments-a-primer/
 
 
 ## Repository links

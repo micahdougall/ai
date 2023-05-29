@@ -3,10 +3,7 @@
 (define 
     (domain runescape)
 
-    ; (:requirements :strips ::negative-preconditions ::fluents)
-    ; (:requirements :strips :equality :typing :universal-preconditions :conditional-effects :fluents :negative-preconditions)
     (:requirements :strips :equality :typing :universal-preconditions :conditional-effects :negative-preconditions)
-    ; (:requirements :strips :typing :negative-preconditions)
 
     (:types
         player - object
@@ -211,38 +208,4 @@
             )
         )
     )
-
-    ; (:metric minimise (
-    ;     (travelled)
-    ; ))
-    
-    
-    ; (:axiom
-    ;     :vars (?s - site)
-    ;     :context (and
-    ;         (walls-built ?s)
-    ;         (windows-fitted ?s)
-    ;         (cables-installed ?s)
-    ;     )
-    ;     :implies (site-built ?s)
-    ; )
-    
-
-    ; (:event arrow-assembled
-    ;     :parameters (
-    ;         ?arrow - arrow
-    ;     )
-    ;     :precondition (and
-    ;         (exists (?shafts - shafts) 
-    ;             where (has ?arrow ?shafts)
-    ;         )
-    ;         (exists (?arrowhead - arrowhead) 
-    ;             where (has ?arrow ?arrowhead)
-    ;         )
-    ;     )
-    ;     :effect (and
-    ;         (exists (?arrow) )
-    ;     )
-    ; )
-    
 )

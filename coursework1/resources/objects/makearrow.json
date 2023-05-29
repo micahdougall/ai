@@ -1,0 +1,1836 @@
+{
+    "name": "makearrow",
+    "objects": [
+        {
+            "name": "Player",
+            "types": {
+                "type": "player",
+                "children": []
+            }
+        },
+        {
+            "name": "Shed",
+            "types": null
+        },
+        {
+            "name": "Anvil",
+            "types": null
+        },
+        {
+            "name": "Farm",
+            "types": null
+        },
+        {
+            "name": "Forest",
+            "types": null
+        },
+        {
+            "name": "Furnace",
+            "types": null
+        },
+        {
+            "name": "Mine",
+            "types": null
+        },
+        {
+            "name": "Axe",
+            "types": null
+        },
+        {
+            "name": "Hammer",
+            "types": null
+        },
+        {
+            "name": "Knife",
+            "types": null
+        },
+        {
+            "name": "Pickaxe",
+            "types": null
+        },
+        {
+            "name": "Bars",
+            "types": null
+        },
+        {
+            "name": "Chickens",
+            "types": null
+        },
+        {
+            "name": "Ore",
+            "types": null
+        },
+        {
+            "name": "Rock",
+            "types": null
+        },
+        {
+            "name": "Trees",
+            "types": null
+        },
+        {
+            "name": "Wood",
+            "types": null
+        },
+        {
+            "name": "Arrowhead",
+            "types": null
+        },
+        {
+            "name": "Feathers",
+            "types": null
+        },
+        {
+            "name": "Shafts",
+            "types": null
+        },
+        {
+            "name": "Arrow",
+            "types": null
+        }
+    ],
+    "init": [
+        {
+            "predicate": {
+                "preposition": "at",
+                "parameters": [
+                    {
+                        "name": "p",
+                        "types": {
+                            "type": "player",
+                            "children": []
+                        }
+                    },
+                    {
+                        "name": "l",
+                        "types": {
+                            "type": "location",
+                            "children": [
+                                {
+                                    "type": "anvil",
+                                    "children": []
+                                },
+                                {
+                                    "type": "farm",
+                                    "children": []
+                                },
+                                {
+                                    "type": "forest",
+                                    "children": []
+                                },
+                                {
+                                    "type": "furnace",
+                                    "children": []
+                                },
+                                {
+                                    "type": "mine",
+                                    "children": []
+                                },
+                                {
+                                    "type": "storage",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "Player",
+                    "types": {
+                        "type": "player",
+                        "children": []
+                    }
+                },
+                {
+                    "name": "Shed",
+                    "types": null
+                }
+            ],
+            "negation": false
+        },
+        {
+            "predicate": {
+                "preposition": "has",
+                "parameters": [
+                    {
+                        "name": "o",
+                        "types": [
+                            {
+                                "type": "player",
+                                "children": []
+                            },
+                            {
+                                "type": "location",
+                                "children": [
+                                    {
+                                        "type": "anvil",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "farm",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "forest",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "furnace",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "mine",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "storage",
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "r",
+                        "types": {
+                            "type": "resource",
+                            "children": [
+                                {
+                                    "type": "component",
+                                    "children": []
+                                },
+                                {
+                                    "type": "material",
+                                    "children": []
+                                },
+                                {
+                                    "type": "tool",
+                                    "children": []
+                                },
+                                {
+                                    "type": "weapon",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "Shed",
+                    "types": null
+                },
+                {
+                    "name": "Axe",
+                    "types": null
+                }
+            ],
+            "negation": false
+        },
+        {
+            "predicate": {
+                "preposition": "has",
+                "parameters": [
+                    {
+                        "name": "o",
+                        "types": [
+                            {
+                                "type": "player",
+                                "children": []
+                            },
+                            {
+                                "type": "location",
+                                "children": [
+                                    {
+                                        "type": "anvil",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "farm",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "forest",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "furnace",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "mine",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "storage",
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "r",
+                        "types": {
+                            "type": "resource",
+                            "children": [
+                                {
+                                    "type": "component",
+                                    "children": []
+                                },
+                                {
+                                    "type": "material",
+                                    "children": []
+                                },
+                                {
+                                    "type": "tool",
+                                    "children": []
+                                },
+                                {
+                                    "type": "weapon",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "Shed",
+                    "types": null
+                },
+                {
+                    "name": "Hammer",
+                    "types": null
+                }
+            ],
+            "negation": false
+        },
+        {
+            "predicate": {
+                "preposition": "has",
+                "parameters": [
+                    {
+                        "name": "o",
+                        "types": [
+                            {
+                                "type": "player",
+                                "children": []
+                            },
+                            {
+                                "type": "location",
+                                "children": [
+                                    {
+                                        "type": "anvil",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "farm",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "forest",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "furnace",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "mine",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "storage",
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "r",
+                        "types": {
+                            "type": "resource",
+                            "children": [
+                                {
+                                    "type": "component",
+                                    "children": []
+                                },
+                                {
+                                    "type": "material",
+                                    "children": []
+                                },
+                                {
+                                    "type": "tool",
+                                    "children": []
+                                },
+                                {
+                                    "type": "weapon",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "Shed",
+                    "types": null
+                },
+                {
+                    "name": "Knife",
+                    "types": null
+                }
+            ],
+            "negation": false
+        },
+        {
+            "predicate": {
+                "preposition": "has",
+                "parameters": [
+                    {
+                        "name": "o",
+                        "types": [
+                            {
+                                "type": "player",
+                                "children": []
+                            },
+                            {
+                                "type": "location",
+                                "children": [
+                                    {
+                                        "type": "anvil",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "farm",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "forest",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "furnace",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "mine",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "storage",
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "r",
+                        "types": {
+                            "type": "resource",
+                            "children": [
+                                {
+                                    "type": "component",
+                                    "children": []
+                                },
+                                {
+                                    "type": "material",
+                                    "children": []
+                                },
+                                {
+                                    "type": "tool",
+                                    "children": []
+                                },
+                                {
+                                    "type": "weapon",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "Shed",
+                    "types": null
+                },
+                {
+                    "name": "Pickaxe",
+                    "types": null
+                }
+            ],
+            "negation": false
+        },
+        {
+            "predicate": {
+                "preposition": "has",
+                "parameters": [
+                    {
+                        "name": "o",
+                        "types": [
+                            {
+                                "type": "player",
+                                "children": []
+                            },
+                            {
+                                "type": "location",
+                                "children": [
+                                    {
+                                        "type": "anvil",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "farm",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "forest",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "furnace",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "mine",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "storage",
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "r",
+                        "types": {
+                            "type": "resource",
+                            "children": [
+                                {
+                                    "type": "component",
+                                    "children": []
+                                },
+                                {
+                                    "type": "material",
+                                    "children": []
+                                },
+                                {
+                                    "type": "tool",
+                                    "children": []
+                                },
+                                {
+                                    "type": "weapon",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "Mine",
+                    "types": null
+                },
+                {
+                    "name": "Rock",
+                    "types": null
+                }
+            ],
+            "negation": false
+        },
+        {
+            "predicate": {
+                "preposition": "has",
+                "parameters": [
+                    {
+                        "name": "o",
+                        "types": [
+                            {
+                                "type": "player",
+                                "children": []
+                            },
+                            {
+                                "type": "location",
+                                "children": [
+                                    {
+                                        "type": "anvil",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "farm",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "forest",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "furnace",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "mine",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "storage",
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "r",
+                        "types": {
+                            "type": "resource",
+                            "children": [
+                                {
+                                    "type": "component",
+                                    "children": []
+                                },
+                                {
+                                    "type": "material",
+                                    "children": []
+                                },
+                                {
+                                    "type": "tool",
+                                    "children": []
+                                },
+                                {
+                                    "type": "weapon",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "Farm",
+                    "types": null
+                },
+                {
+                    "name": "Chickens",
+                    "types": null
+                }
+            ],
+            "negation": false
+        },
+        {
+            "predicate": {
+                "preposition": "has",
+                "parameters": [
+                    {
+                        "name": "o",
+                        "types": [
+                            {
+                                "type": "player",
+                                "children": []
+                            },
+                            {
+                                "type": "location",
+                                "children": [
+                                    {
+                                        "type": "anvil",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "farm",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "forest",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "furnace",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "mine",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "storage",
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "r",
+                        "types": {
+                            "type": "resource",
+                            "children": [
+                                {
+                                    "type": "component",
+                                    "children": []
+                                },
+                                {
+                                    "type": "material",
+                                    "children": []
+                                },
+                                {
+                                    "type": "tool",
+                                    "children": []
+                                },
+                                {
+                                    "type": "weapon",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "Forest",
+                    "types": null
+                },
+                {
+                    "name": "Trees",
+                    "types": null
+                }
+            ],
+            "negation": false
+        }
+    ],
+    "goal": [
+        {
+            "predicate": {
+                "preposition": "has",
+                "parameters": [
+                    {
+                        "name": "o",
+                        "types": [
+                            {
+                                "type": "player",
+                                "children": []
+                            },
+                            {
+                                "type": "location",
+                                "children": [
+                                    {
+                                        "type": "anvil",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "farm",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "forest",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "furnace",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "mine",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "storage",
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "r",
+                        "types": {
+                            "type": "resource",
+                            "children": [
+                                {
+                                    "type": "component",
+                                    "children": []
+                                },
+                                {
+                                    "type": "material",
+                                    "children": []
+                                },
+                                {
+                                    "type": "tool",
+                                    "children": []
+                                },
+                                {
+                                    "type": "weapon",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "Shed",
+                    "types": null
+                },
+                {
+                    "name": "Arrow",
+                    "types": null
+                }
+            ],
+            "negation": false
+        },
+        {
+            "predicate": {
+                "preposition": "has",
+                "parameters": [
+                    {
+                        "name": "o",
+                        "types": [
+                            {
+                                "type": "player",
+                                "children": []
+                            },
+                            {
+                                "type": "location",
+                                "children": [
+                                    {
+                                        "type": "anvil",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "farm",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "forest",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "furnace",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "mine",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "storage",
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "r",
+                        "types": {
+                            "type": "resource",
+                            "children": [
+                                {
+                                    "type": "component",
+                                    "children": []
+                                },
+                                {
+                                    "type": "material",
+                                    "children": []
+                                },
+                                {
+                                    "type": "tool",
+                                    "children": []
+                                },
+                                {
+                                    "type": "weapon",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "Player",
+                    "types": {
+                        "type": "player",
+                        "children": []
+                    }
+                },
+                null
+            ],
+            "negation": false
+        },
+        {
+            "predicate": {
+                "preposition": "has",
+                "parameters": [
+                    {
+                        "name": "o",
+                        "types": [
+                            {
+                                "type": "player",
+                                "children": []
+                            },
+                            {
+                                "type": "location",
+                                "children": [
+                                    {
+                                        "type": "anvil",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "farm",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "forest",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "furnace",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "mine",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "storage",
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "r",
+                        "types": {
+                            "type": "resource",
+                            "children": [
+                                {
+                                    "type": "component",
+                                    "children": []
+                                },
+                                {
+                                    "type": "material",
+                                    "children": []
+                                },
+                                {
+                                    "type": "tool",
+                                    "children": []
+                                },
+                                {
+                                    "type": "weapon",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "Player",
+                    "types": {
+                        "type": "player",
+                        "children": []
+                    }
+                },
+                null
+            ],
+            "negation": false
+        },
+        {
+            "predicate": {
+                "preposition": "has",
+                "parameters": [
+                    {
+                        "name": "o",
+                        "types": [
+                            {
+                                "type": "player",
+                                "children": []
+                            },
+                            {
+                                "type": "location",
+                                "children": [
+                                    {
+                                        "type": "anvil",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "farm",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "forest",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "furnace",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "mine",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "storage",
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "r",
+                        "types": {
+                            "type": "resource",
+                            "children": [
+                                {
+                                    "type": "component",
+                                    "children": []
+                                },
+                                {
+                                    "type": "material",
+                                    "children": []
+                                },
+                                {
+                                    "type": "tool",
+                                    "children": []
+                                },
+                                {
+                                    "type": "weapon",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "Player",
+                    "types": {
+                        "type": "player",
+                        "children": []
+                    }
+                },
+                null
+            ],
+            "negation": false
+        },
+        {
+            "predicate": {
+                "preposition": "has",
+                "parameters": [
+                    {
+                        "name": "o",
+                        "types": [
+                            {
+                                "type": "player",
+                                "children": []
+                            },
+                            {
+                                "type": "location",
+                                "children": [
+                                    {
+                                        "type": "anvil",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "farm",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "forest",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "furnace",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "mine",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "storage",
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "r",
+                        "types": {
+                            "type": "resource",
+                            "children": [
+                                {
+                                    "type": "component",
+                                    "children": []
+                                },
+                                {
+                                    "type": "material",
+                                    "children": []
+                                },
+                                {
+                                    "type": "tool",
+                                    "children": []
+                                },
+                                {
+                                    "type": "weapon",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "Player",
+                    "types": {
+                        "type": "player",
+                        "children": []
+                    }
+                },
+                null
+            ],
+            "negation": false
+        },
+        {
+            "predicate": {
+                "preposition": "has",
+                "parameters": [
+                    {
+                        "name": "o",
+                        "types": [
+                            {
+                                "type": "player",
+                                "children": []
+                            },
+                            {
+                                "type": "location",
+                                "children": [
+                                    {
+                                        "type": "anvil",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "farm",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "forest",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "furnace",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "mine",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "storage",
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "r",
+                        "types": {
+                            "type": "resource",
+                            "children": [
+                                {
+                                    "type": "component",
+                                    "children": []
+                                },
+                                {
+                                    "type": "material",
+                                    "children": []
+                                },
+                                {
+                                    "type": "tool",
+                                    "children": []
+                                },
+                                {
+                                    "type": "weapon",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "Player",
+                    "types": {
+                        "type": "player",
+                        "children": []
+                    }
+                },
+                null
+            ],
+            "negation": false
+        },
+        {
+            "predicate": {
+                "preposition": "has",
+                "parameters": [
+                    {
+                        "name": "o",
+                        "types": [
+                            {
+                                "type": "player",
+                                "children": []
+                            },
+                            {
+                                "type": "location",
+                                "children": [
+                                    {
+                                        "type": "anvil",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "farm",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "forest",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "furnace",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "mine",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "storage",
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "r",
+                        "types": {
+                            "type": "resource",
+                            "children": [
+                                {
+                                    "type": "component",
+                                    "children": []
+                                },
+                                {
+                                    "type": "material",
+                                    "children": []
+                                },
+                                {
+                                    "type": "tool",
+                                    "children": []
+                                },
+                                {
+                                    "type": "weapon",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "Player",
+                    "types": {
+                        "type": "player",
+                        "children": []
+                    }
+                },
+                null
+            ],
+            "negation": false
+        },
+        {
+            "predicate": {
+                "preposition": "has",
+                "parameters": [
+                    {
+                        "name": "o",
+                        "types": [
+                            {
+                                "type": "player",
+                                "children": []
+                            },
+                            {
+                                "type": "location",
+                                "children": [
+                                    {
+                                        "type": "anvil",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "farm",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "forest",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "furnace",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "mine",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "storage",
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "r",
+                        "types": {
+                            "type": "resource",
+                            "children": [
+                                {
+                                    "type": "component",
+                                    "children": []
+                                },
+                                {
+                                    "type": "material",
+                                    "children": []
+                                },
+                                {
+                                    "type": "tool",
+                                    "children": []
+                                },
+                                {
+                                    "type": "weapon",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "Player",
+                    "types": {
+                        "type": "player",
+                        "children": []
+                    }
+                },
+                null
+            ],
+            "negation": false
+        },
+        {
+            "predicate": {
+                "preposition": "has",
+                "parameters": [
+                    {
+                        "name": "o",
+                        "types": [
+                            {
+                                "type": "player",
+                                "children": []
+                            },
+                            {
+                                "type": "location",
+                                "children": [
+                                    {
+                                        "type": "anvil",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "farm",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "forest",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "furnace",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "mine",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "storage",
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "r",
+                        "types": {
+                            "type": "resource",
+                            "children": [
+                                {
+                                    "type": "component",
+                                    "children": []
+                                },
+                                {
+                                    "type": "material",
+                                    "children": []
+                                },
+                                {
+                                    "type": "tool",
+                                    "children": []
+                                },
+                                {
+                                    "type": "weapon",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "Player",
+                    "types": {
+                        "type": "player",
+                        "children": []
+                    }
+                },
+                null
+            ],
+            "negation": false
+        },
+        {
+            "predicate": {
+                "preposition": "has",
+                "parameters": [
+                    {
+                        "name": "o",
+                        "types": [
+                            {
+                                "type": "player",
+                                "children": []
+                            },
+                            {
+                                "type": "location",
+                                "children": [
+                                    {
+                                        "type": "anvil",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "farm",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "forest",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "furnace",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "mine",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "storage",
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "r",
+                        "types": {
+                            "type": "resource",
+                            "children": [
+                                {
+                                    "type": "component",
+                                    "children": []
+                                },
+                                {
+                                    "type": "material",
+                                    "children": []
+                                },
+                                {
+                                    "type": "tool",
+                                    "children": []
+                                },
+                                {
+                                    "type": "weapon",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "Player",
+                    "types": {
+                        "type": "player",
+                        "children": []
+                    }
+                },
+                null
+            ],
+            "negation": false
+        },
+        {
+            "predicate": {
+                "preposition": "has",
+                "parameters": [
+                    {
+                        "name": "o",
+                        "types": [
+                            {
+                                "type": "player",
+                                "children": []
+                            },
+                            {
+                                "type": "location",
+                                "children": [
+                                    {
+                                        "type": "anvil",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "farm",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "forest",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "furnace",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "mine",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "storage",
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "r",
+                        "types": {
+                            "type": "resource",
+                            "children": [
+                                {
+                                    "type": "component",
+                                    "children": []
+                                },
+                                {
+                                    "type": "material",
+                                    "children": []
+                                },
+                                {
+                                    "type": "tool",
+                                    "children": []
+                                },
+                                {
+                                    "type": "weapon",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "Player",
+                    "types": {
+                        "type": "player",
+                        "children": []
+                    }
+                },
+                null
+            ],
+            "negation": false
+        },
+        {
+            "predicate": {
+                "preposition": "has",
+                "parameters": [
+                    {
+                        "name": "o",
+                        "types": [
+                            {
+                                "type": "player",
+                                "children": []
+                            },
+                            {
+                                "type": "location",
+                                "children": [
+                                    {
+                                        "type": "anvil",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "farm",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "forest",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "furnace",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "mine",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "storage",
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "r",
+                        "types": {
+                            "type": "resource",
+                            "children": [
+                                {
+                                    "type": "component",
+                                    "children": []
+                                },
+                                {
+                                    "type": "material",
+                                    "children": []
+                                },
+                                {
+                                    "type": "tool",
+                                    "children": []
+                                },
+                                {
+                                    "type": "weapon",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "Player",
+                    "types": {
+                        "type": "player",
+                        "children": []
+                    }
+                },
+                null
+            ],
+            "negation": false
+        },
+        {
+            "predicate": {
+                "preposition": "has",
+                "parameters": [
+                    {
+                        "name": "o",
+                        "types": [
+                            {
+                                "type": "player",
+                                "children": []
+                            },
+                            {
+                                "type": "location",
+                                "children": [
+                                    {
+                                        "type": "anvil",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "farm",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "forest",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "furnace",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "mine",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "storage",
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "r",
+                        "types": {
+                            "type": "resource",
+                            "children": [
+                                {
+                                    "type": "component",
+                                    "children": []
+                                },
+                                {
+                                    "type": "material",
+                                    "children": []
+                                },
+                                {
+                                    "type": "tool",
+                                    "children": []
+                                },
+                                {
+                                    "type": "weapon",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "Player",
+                    "types": {
+                        "type": "player",
+                        "children": []
+                    }
+                },
+                null
+            ],
+            "negation": false
+        },
+        {
+            "predicate": {
+                "preposition": "has",
+                "parameters": [
+                    {
+                        "name": "o",
+                        "types": [
+                            {
+                                "type": "player",
+                                "children": []
+                            },
+                            {
+                                "type": "location",
+                                "children": [
+                                    {
+                                        "type": "anvil",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "farm",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "forest",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "furnace",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "mine",
+                                        "children": []
+                                    },
+                                    {
+                                        "type": "storage",
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "r",
+                        "types": {
+                            "type": "resource",
+                            "children": [
+                                {
+                                    "type": "component",
+                                    "children": []
+                                },
+                                {
+                                    "type": "material",
+                                    "children": []
+                                },
+                                {
+                                    "type": "tool",
+                                    "children": []
+                                },
+                                {
+                                    "type": "weapon",
+                                    "children": []
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "Player",
+                    "types": {
+                        "type": "player",
+                        "children": []
+                    }
+                },
+                null
+            ],
+            "negation": false
+        }
+    ]
+}
