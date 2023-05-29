@@ -14,6 +14,7 @@ This README outlines the required setup to run the program, and outlines the cho
 - [Integration](#integration)
   - [HTTP](#http)
   - [Parser](#parser)
+- [Directory Tree Wiki](#directory-tree-wiki)
 - [References](#references)
 
 
@@ -23,7 +24,7 @@ Various PDDL problem and domain files can be found in the [pddl/](pddl/) directo
 
 - *[api/](pddl/api/)* &rArr; *These are the files used to send to the solver at runtime as they conform to the [PDDL 1.2 specification](https://planning.wiki/ref/pddl).*
 - *[enhanced/](pddl/enhanced/)* &rArr; *A slightly more complex set of files (including `function` declarations) are included for interest. These canot be effected by the solver at [planning.domains](https://solver.planning.domains) as alater version of PDDL is required.*
-- *[parsed/](pddl/parsed/)* &rArr; *Owing to the ***Pre-Alpha*** nature of the custom parser (see [Parser](#parser)), some adjustments have been made to the original files in [api/](pddl/api/). Namely, the removal of `exists` and `forall` loops.
+- *[parsed/](pddl/parsed/)* &rArr; *Owing to the ***Pre-Alpha*** nature of the custom parser (see [Parser](#parser)), some adjustments have been made to the original files in [api/](pddl/api/). Namely, the removal of `exists` and `forall` loops.*
 
 **NB: For DRY reasons, comments have only been included in the [enhanced/](pddl/enhanced/) versions of the files.**
 
@@ -126,9 +127,9 @@ Each of the child objects contains all the necessary sub-instances to know the s
 With this compositional nature, the domain and problem attributes can then be access at runtime by, for example, calling the nested attributes on the domain. Eg:
 
 ```python
-# Format print selected child attributes
 problem = Problem(...parse problem file...)
 
+# Format print selected child attributes
 for condition in problem.init:
     print(
         f"Preposition: {condition.predicate.preposition}"
@@ -198,6 +199,56 @@ Snippet of a serialized predicate:
 ]
 ```
 
+## Directory Tree Wiki
+```
+.
+├── README.md
+├── config.json                       # config variables
+├── pddl                              # root for pddl files
+│   ├── api                           # pddl files for solver 
+│   │   ├── makearrow.pddl
+│   │   ├── makesword.pddl
+│   │   └── runescape.pddl
+│   ├── enhanced                      # enhanced files with comments 
+│   │   ├── makearrow.pddl
+│   │   ├── makesword.pddl
+│   │   └── runescape.pddl
+│   └── parsed                        # simplified pddl files for parser
+│       ├── makearrow.pddl
+│       ├── makesword.pddl
+│       └── runescape.pddl
+├── requirements.txt
+├── resources
+│   ├── character.png
+│   ├── local                         # backup solver repsonses
+│   │   ├── makearrow-response.json
+│   │   └── makesword-response.json
+│   ├── objects                       # serialized parsed domain/problems
+│   │   ├── makearrow.json
+│   │   ├── makesword.json
+│   │   └── runescape.json
+│   └── responses                     # runtime responses from solver
+│       ├── makearrow-response.json
+│       └── makesword-response.json
+└── src                               # application root
+    ├── __init__.py                   
+    ├── config.py                     # config variables
+    ├── main.py                       # entry point
+    ├── output.py                     # print helper
+    └── planner
+        ├── __init__.py
+        ├── http
+        │   ├── __init__.py
+        │   ├── request.py            # solver request handler
+        │   └── response.py           # solver response handler
+        └── parser
+            ├── __init__.py
+            ├── action.py             # parses actions
+            ├── domain.py             # parses domain
+            ├── predicate.py          # subclasses for object structure
+            ├── problem.py            # parses actions
+            └── util.py               # parse helper
+```
 
 ## References
 
