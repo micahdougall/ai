@@ -3,20 +3,19 @@ from dataclass_wizard import JSONWizard
 from os.path import join
 from re import search
 from typing import ClassVar, Self
-
 from typing_extensions import override
-
-# from typing_extensions import override
 
 
 @dataclass
 class SolverAction:
+    """Class to represent an action in a SolverResponse"""
     action: str
     name: str
     pddl_action: str = field(init=False)
     pddl_params: list[str] = field(init=False)
 
     def __post_init__(self) -> None:
+        """Splits action text into actions and params"""
         args = self.name.strip("()").split(" ")
         self.pddl_action = args[0]
         self.pddl_params = [
@@ -38,6 +37,7 @@ class SolverAction:
 
 @dataclass
 class SolverResult:
+    """Class to represent the result of a plan from the solver"""
     output: str
     parse_status: str
     error: str = None
@@ -62,6 +62,7 @@ class SolverResult:
 
 @dataclass
 class SolverResponse(JSONWizard):
+    """Class to represent a response from the solver"""
     status: str
     result: SolverResult
     valid: bool = field(init=False)
@@ -72,12 +73,14 @@ class SolverResponse(JSONWizard):
         self.valid = True if self.status == "ok" else False
 
     def write(self, problem) -> Self:
+        """Writes to a file"""
         with open(join(self.resources, f"{problem}{__class__.file_suffix}"), "w") as f:
             f.write(self.to_json())
         return self
 
     @classmethod
     def read(cls, problem) -> Self:
+        """Reads from a file"""
         with open(
             join(__class__.resources, f"{problem}{__class__.file_suffix}")
         ) as file:

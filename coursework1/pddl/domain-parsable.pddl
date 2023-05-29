@@ -22,11 +22,8 @@
         (at ?p - player ?l - location)
         (has ?o - (either player location) ?r - resource)
         (includes ?o - weapon ?c - component)
+        (= ?a - object ?b - object)
     )
-
-    ; (:functions
-    ;     (travelled)
-    ; )
 
     (:action move-to
         :parameters (

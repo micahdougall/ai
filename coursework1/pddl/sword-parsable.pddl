@@ -25,10 +25,12 @@
     (:goal
         (and
             (has Shed Sword)
-            (forall
-                (?item - resource)
-                (not (has Player ?item))
-            )
+            (not (has Player Pickaxe))
+            (not (has Player Hammer))
+            (not (has Player Rock))
+            (not (has Player Ore))
+            (not (has Player Bars))
+            (not (has Player Sword))
         )
     )
 )

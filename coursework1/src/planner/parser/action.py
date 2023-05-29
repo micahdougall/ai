@@ -1,37 +1,73 @@
-from .predicate import Parameter
+from .predicate import Condition, Predicate, Parameter
+from .util import predicate_args, split_string
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from dataclass_wizard import JSONWizard
-from typing import Self
-
-from coursework1.src.planner.parser.predicate import Predicate
-
-
-# @dataclass
-# class Precondition:
-#     preposition: str
-#     # preposition: str = field(init=False)
-#     params: list[str]
-#     # params: list[str] = field(init=False)
-#
-#     # def __init__(self, args) -> None:
-#     #     self.name = args[0]
-#     #     self.type = args[1]
-
-
-# @dataclass
-# class Effect:
-#     name: str = field(init=False)
-#     type: str = field(init=False)
-#
-#     def __init__(self, args) -> None:
-#         self.name = args[0].strip("?")
-#         self.type = args[1]
+from re import findall
 
 
 @dataclass
 class Action(JSONWizard):
+    """Class to represent an action in a domain"""
     name: str
     parameters: list[Parameter]
-    precondition: list[Predicate]
-    effect: list[Predicate]
+    precondition: list[Condition]
+    effect: list[Condition]
+
+
+def parse_actions(
+        domain_string: str,
+        predicates: list[Predicate]
+) -> list[Action]:
+    """Parses actions from a domain file string"""
+
+    word = "a-zA-Z0-9 -"
+    types = r"a-zA-Z0-9-\s"
+    pred_pattern = r"\(\)=?a-zA-Z0-9-\s"
+
+    action_regx_matches = findall(
+        rf":action ([{word}]+)\s*"
+        rf":parameters\s*\(\s*([{pred_pattern}]*)\s*\)\s*"
+        rf":precondition\s*\(and\s*([{pred_pattern}]*)\s*\)\s*"
+        rf":effect\s*\(and\s*([{pred_pattern}]*)\s\)\s*\)",
+        domain_string
+    )
+
+    actions: list[Action] = []
+    for match in action_regx_matches[:1]:
+        action_regx = match[0]
+        (param_regx, cond_regx, effect_regx) = [
+            split_string(each) for each in match[1:]
+        ]
+
+        parameters = [
+            Parameter.from_string(parameter)
+            for parameter in param_regx
+        ]
+
+        preconditions = [
+            Condition.build(
+                predicate_args(condition),
+                predicates,
+                parameters
+            )
+            for condition in cond_regx
+        ]
+
+        effects = [
+            Condition.build(
+                predicate_args(effect),
+                predicates,
+                parameters
+            )
+            for effect in effect_regx
+        ]
+
+        actions.append(
+            Action(
+                name=action_regx,
+                parameters=parameters,
+                precondition=preconditions,
+                effect=effects
+            )
+        )

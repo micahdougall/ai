@@ -1,26 +1,22 @@
-from .action import Action
+from .action import Action, parse_actions
 from .predicate import Predicate, Parameter, Type
 from .util import predicate_args, split_string
 
 from dataclasses import dataclass
 from dataclass_wizard import JSONWizard
-from re import findall, search
+from re import search
 
-
-# @dataclass
-# class TypeMap:
-#
 
 @dataclass
 class Domain(JSONWizard):
-    # types: list[Type]
-    # types: dict[str, str]
+    """Class to represent a planning Domain"""
     types: Type
     predicates: list[Predicate]
     actions: list[Action]
 
 
 def parse_domain(domain_file: str) -> Domain:
+    """Parses a planning domain from a file"""
     with open(domain_file) as domain:
         domain_string = domain.read()
 
@@ -34,18 +30,6 @@ def parse_domain(domain_file: str) -> Domain:
     )
     lines = split_string(type_regx_matches.group(1))
 
-    # types: list[Type] = []
-    # for line in lines:
-    #     (children, parent) = line.strip().split(" - ")
-    #     objs = children.split(" ")
-    #
-    #     if parent not in Type.type_names(types):
-    #         types.append(Type(parent))
-    #
-    #     types += [
-    #         Type(obj, parent) for obj in objs
-    #     ]
-
     root = Type("object")
     for line in lines:
         (children, parent) = line.strip().split(" - ")
@@ -55,14 +39,8 @@ def parse_domain(domain_file: str) -> Domain:
             parent_node = root
         else:
             if root.get_node(parent) is None:
-                # print(
-                #     f"""adding {parent} becuase get_node = {root.get_node(parent)}"""
-                # )
                 root.children.append(Type(parent))
-            # else:
-            # print(f"{parent} already exists in root")
             parent_node = root.get_node(parent)
-        # print(f"Parent is now {parent_node}")
 
         for obj in objs:
             parent_node.children.append(Type(obj))
@@ -78,49 +56,12 @@ def parse_domain(domain_file: str) -> Domain:
             preposition=predicate_args(predicate)[0],
             parameters=[
                 Parameter.from_string(p)
-                for p in predicate_args(pred_pattern)[1:]
+                for p in predicate_args(predicate)[1:]
             ]
         )
         for predicate in lines
     ]
 
-    action_regx_matches = findall(
-        rf":action ([{word}]+)\s*"
-        rf":parameters\s*\(\s*([{pred_pattern}]*)\s*\)\s*"
-        rf":precondition\s*\(and\s*([{pred_pattern}]*)\s*\)\s*"
-        rf":effect\s*\(and\s*([{pred_pattern}]*)\s\)\s*\)",
-        domain_string
-    )
-
-    actions: list[Action] = []
-    for match in action_regx_matches[:1]:
-        action_regx = match[0]
-        (param_regx, cond_regx, effect_regx) = [
-            split_string(each) for each in match[1:]
-        ]
-        parameters = [
-            Parameter.from_string(parameter)
-            for parameter in param_regx
-        ]
-        param_types = Parameter.types_dict(parameters)
-        preconditions = [
-            Predicate.from_precondition(
-                predicate_args(condition), param_types
-            )
-            for condition in cond_regx
-        ]
-        effects = [
-            Predicate.from_precondition(
-                predicate_args(effect), param_types
-            )
-            for effect in effect_regx
-        ]
-        action = Action(
-            name=action_regx,
-            parameters=parameters,
-            precondition=preconditions,
-            effect=effects
-        )
-        actions.append(action)
+    actions = parse_actions(domain_string, predicates)
 
     return Domain(root, predicates, actions)

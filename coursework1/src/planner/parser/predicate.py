@@ -1,18 +1,18 @@
-# from collections.abc import dict_items
 from dataclasses import dataclass, field
-from dataclass_wizard import JSONWizard, json_field
+from dataclass_wizard import JSONWizard
 from itertools import chain
-from pyre_extensions import override
 from re import match
 from typing import Self
 
 
 @dataclass
 class Type:
+    """Class to represent an object type in a domain"""
     type: str
     children: list[Self] = field(default_factory=list)
 
     def nodes(self) -> list[Self]:
+        """Returns all sub-nodes from this parent"""
         return list(
             chain.from_iterable(
                 [t.nodes for t in self.children]
@@ -20,134 +20,101 @@ class Type:
         )
 
     def get_node(self, search: str) -> Self | None:
-        # print(f"Getting node: {search} from {self.type}")
+        """Returns a specific Type node from descendents"""
         if self.children:
-            # optional = next(
+            # return next(
             #     filter(
-            #         lambda t: t.type == search,
+            #         lambda c: c.type == search,
             #         self.children
+            #     ), None
+            # ) or next(
+            #     iter(
+            #         [c.get_node(search) for c in self.children]
             #     )
-            # ) or next([
-            #     c.get_node(search) for c in self.children
-            # ])
+            # )
             for c in self.children:
-                # print(c.type)
                 if c.type == search:
-                    # print("found")
                     return c
+            else:
+                for c in self.children:
+                    opt = c.get_node(search)
+                    if opt:
+                        return opt
+        else:
             return None
-        # else:
-        #     print(f"{self.type} has no children")
-        # else:
-        #     optional = None
-        # print(optional)
-        # return optional
-
-# @dataclass
-# class Type:
-#     name: str
-#     parent: Self = None
-#
-#     def __post_init__(self):
-#         self.parent = (
-#             "object"
-#             if self.parent is None
-#                and self.name != "object"
-#             else self.parent
-#         )
-#
-#     @override
-#     def __str__(self) -> str:
-#         return self.name
-#
-#     # @override
-#     # def __repr__(self) -> str:
-#     #     return f"{self.name}: {self.parent}"
-#
-#     @classmethod
-#     def type_names(cls, types: list[Self]) -> list[str]:
-#         return [
-#             type.name for type in types
-#         ]
-
-
 
 
 @dataclass
 class Parameter(JSONWizard):
+    """Class to represent a parameter for a predicate"""
     name: str
-    # type_str: str = json_field("type_str", dump=False)
-    # type Type | list[Type] = field(init=False)
     types: Type | list[Type]
-
-    # def __post_init__(self) -> None:
-    #     self.name = self.name.strip("?")
-    #     types = match(r"^\(either ([ a-zA-Z0-9-]*)\)$", self.type_str)
-    #     self.type = [
-    #         Type(element) for element
-    #         in types.group(1).split(" ")
-    #     ] if types else Type(self.type_str)
 
     @classmethod
     def from_string(cls, param: str) -> Self:
+        """Builds a parameter object from a string"""
         objs = param.strip().split(" - ")
         types = match(r"^\(either ([ a-zA-Z0-9-]*)\)$", objs[1])
         return cls(
             name=objs[0].strip("?"),
+            # TODO: Change to lookup on class variable
             types=[
                 Type(element) for element
                 in types.group(1).split(" ")
             ] if types else Type(objs[1])
         )
 
-    @classmethod
-    def types_dict(cls, parameters: list[Self]) -> dict[str ,Type]:
-        return {
-            list(p.__dict__.values())[0]: list(p.__dict__.values())[1]
-            for p in parameters
-        }
+    @staticmethod
+    def get(name, parameters: list[Self]) -> Self:
+        """Looks for a parameter by name"""
+        return next(
+            filter(
+                lambda p: p.name == name,
+                parameters
+            ), None
+        )
 
 
 @dataclass
 class Predicate(JSONWizard):
+    """Class to represent a predicate in a planning domain"""
     preposition: str
     parameters: list[Parameter]
-    negation: bool = False
 
-    @classmethod
-    def from_precondition(cls, args: list[str], lookup: dict):
-        params = [
-            Parameter(p, lookup.get(p))
-            for p in args[1:]
-        ]
-        return cls(
-            args[0].removeprefix("not ("),
-            params,
-            args[0].startswith("not (")
+    @staticmethod
+    def get(preposition: str, predicates: list[Self]) -> Self:
+        """Looks for a predicate by preposition"""
+        return next(
+            filter(
+                lambda p: p.preposition == preposition,
+                predicates
+            )
         )
 
-    # def predicate_args(text: str) -> list[str]:
-    #     # args = text.strip(" ()").split(" ?")
-    #     # args[0] = args[0].removeprefix("not (")
-    #     # return args
-    #     return text.strip(" ()").split(" ?")
-    #
-    # def is_negated(text: str) -> bool:
-    #     return text.strip(" ()").startswith("not (")
 
-    # def types(self) -> Self:
-    #     return next(
-    #         filter(
-    #             lambda p: p.preposition == preposition,
-    #             predicates
-    #         )
-    #     )
+@dataclass
+class Condition:
+    """Class to represent a condition for a state"""
+    predicate: Predicate
+    parameters: list[Parameter]
+    negation: bool
 
-    # @classmethod
-    # def get(cls, predicates: list[Self], preposition: str) -> Self:
-    #     return next(
-    #         filter(
-    #             lambda p: p.preposition == preposition,
-    #             predicates
-    #         )
-    #     )
+    @classmethod
+    def build(
+            cls,
+            args: list[str],
+            predicates: list[Predicate],
+            parameters: list[Parameter]
+    ):
+        """Builder constructor using lookups on parameters/predicates"""
+        return cls(
+            predicate=Predicate.get(
+                args[0].removeprefix("not ("),
+                predicates
+            ),
+            parameters=[
+                Parameter.get(p, parameters)
+                for p in args[1:]
+            ],
+            negation=args[0].startswith("(not (")
+        )
