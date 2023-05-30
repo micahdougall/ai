@@ -1,7 +1,7 @@
 from config import Config
-from output import game_actions, print_plan, write_as_json
+from output import print_plan, write_as_json
 from planner.http.request import SolverRequest
-from planner.http.response import SolverResponse, SolverResult
+from planner.http.response import SolverResponse
 from planner.parser.domain import parse_domain
 from planner.parser.problem import parse_problem
 
@@ -65,4 +65,3 @@ if __name__ == "__main__":
         )
     else:
         print_plan(response.result, args.verbose)
-        game_actions(response.result)

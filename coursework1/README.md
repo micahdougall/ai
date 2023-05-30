@@ -14,6 +14,7 @@ This README outlines the required setup to run the program, and outlines the cho
 - [Integration](#integration)
   - [HTTP](#http)
   - [Parser](#parser)
+- [Directory Tree Wiki](#directory-tree-wiki)
 - [References](#references)
 
 
@@ -23,7 +24,7 @@ Various PDDL problem and domain files can be found in the [pddl/](pddl/) directo
 
 - *[api/](pddl/api/)* &rArr; *These are the files used to send to the solver at runtime as they conform to the [PDDL 1.2 specification](https://planning.wiki/ref/pddl).*
 - *[enhanced/](pddl/enhanced/)* &rArr; *A slightly more complex set of files (including `function` declarations) are included for interest. These canot be effected by the solver at [planning.domains](https://solver.planning.domains) as alater version of PDDL is required.*
-- *[parsed/](pddl/parsed/)* &rArr; *Owing to the ***Pre-Alpha*** nature of the custom parser (see [Parser](#parser)), some adjustments have been made to the original files in [api/](pddl/api/). Namely, the removal of `exists` and `forall` loops.
+- *[parsed/](pddl/parsed/)* &rArr; *Owing to the ***Pre-Alpha*** nature of the custom parser (see [Parser](#parser)), some adjustments have been made to the original files in [api/](pddl/api/). Namely, the removal of `exists` and `forall` loops.*
 
 **NB: For DRY reasons, comments have only been included in the [enhanced/](pddl/enhanced/) versions of the files.**
 
@@ -60,7 +61,7 @@ There are several possible CLI arguments which can be provided to [main.py](src/
 - `-s` &rArr; **solve**: *Will send the domain and problem file (in [pddl/api/](pddl/api/)) to the solver at [planning.domains](https://solver.planning.domains) and handle the response. Omit this argument to use locally saved results in [resources/responses/](resources/responses/).*
 - `-d` &rArr; **domain**: *Denotes the domain file (exclude pddl extension) to use for solver requests, default=[runescape](pddl/api/runescape.pddl).*
 - `-p` &rArr; **solve**: *Denotes the problem file to use for solver requests. This is a required argument when using `-s`. Must be a valid filename in [pddl/api/](pddl/api/) (exclude pddl extension)*
-- `-v` &rArr; **verbose**: *Will print response results in verbose mode. This is only recommended for debugging failed requests to the solver.*
+- `-v` &rArr; **verbose**: *This will print the results in verbose mode, which includes the detailed response from the solver and the entire tree struture for the domain and problem. Only recommended for debugging failed requests to the solver.*
 
 For example, to send a request to the solver for the [makesword](pddl/api/makesword.pddl) problem, run (from the root folder):
 
@@ -85,20 +86,22 @@ Eg:
 <!-- ```bash -->
 
 <p>14 actions needed:</p>
-<span style="color:cyan">equip -> </span><span style="color:magenta">(player pickaxe shed)</span></br>
-<span style="color:cyan">move-to -> </span><span style="color:magenta">(player shed anvil)</span></br>
-<span style="color:cyan">move-to -> </span><span style="color:magenta">(player anvil mine)</span></br>
-<span style="color:cyan">mine-rocks -> </span><span style="color:magenta">(player mine pickaxe rock ore)</span></br>
-<span style="color:cyan">move-to -> </span><span style="color:magenta">(player mine furnace)</span></br>
-<span style="color:cyan">smelt-ore -> </span><span style="color:magenta">(player furnace ore bars)</span></br>
-<span style="color:cyan">move-to -> </span><span style="color:magenta">(player furnace shed)</span></br>
-<span style="color:cyan">store -> </span><span style="color:magenta">(player pickaxe shed)</span></br>
-<span style="color:cyan">equip -> </span><span style="color:magenta">(player hammer shed)</span></br>
-<span style="color:cyan">move-to -> </span><span style="color:magenta">(player shed anvil)</span></br>
-<span style="color:cyan">smithe-bars -> </span><span style="color:magenta">(player anvil hammer bars sword)</span></br>
-<span style="color:cyan">move-to -> </span><span style="color:magenta">(player anvil shed)</span></br>
-<span style="color:cyan">store -> </span><span style="color:magenta">(player sword shed)</span></br>
-<span style="color:cyan">store -> </span><span style="color:magenta">(player hammer shed)</span></br></br>
+<span style="color:cyan">equip ⟹ </span><span style="color:mediumorchid">['player', 'pickaxe', 'shed']</span></br>
+<span style="color:cyan">move-to ⟹ </span><span style="color:mediumorchid">['player', 'shed', 'anvil']</span></br>
+<span style="color:cyan">move-to ⟹ </span><span style="color:mediumorchid">['player', 'anvil', 'mine']</span></br>
+<span style="color:cyan">mine-rocks ⟹ </span><span style="color:mediumorchid">['player', 'mine', 'pickaxe', 'rock', 'ore']</span></br>
+<span style="color:cyan">move-to ⟹ </span><span style="color:mediumorchid">['player', 'mine', 'furnace']</span></br>
+<span style="color:cyan">smelt-ore ⟹ </span><span style="color:mediumorchid">['player', 'furnace', 'ore', 'bars']</span></br>
+<span style="color:cyan">move-to ⟹ </span><span style="color:mediumorchid">['player', 'furnace', 'shed']</span></br>
+<span style="color:cyan">store ⟹ </span><span style="color:mediumorchid">['player', 'pickaxe', 'shed']</span></br>
+<span style="color:cyan">equip ⟹ </span><span style="color:mediumorchid">['player', 'hammer', 'shed']</span></br>
+<span style="color:cyan">move-to ⟹ </span><span style="color:mediumorchid">['player', 'shed', 'anvil']</span></br>
+<span style="color:cyan">smithe-bars ⟹ </span><span style="color:mediumorchid">['player', 'anvil', 'hammer', 'bars', 'sword']</span></br>
+<span style="color:cyan">move-to ⟹ </span><span style="color:mediumorchid">['player', 'anvil', 'shed']</span></br>
+<span style="color:cyan">store ⟹ </span><span style="color:mediumorchid">['player', 'sword', 'shed']</span></br>
+<span style="color:cyan">store ⟹ </span><span style="color:mediumorchid">['player', 'hammer', 'shed']</span></br></br>
+
+
 
 Solver responses from program executions are saved to [resources/responses/](resources/responses/). In case of failed requests, a cached version or each response is saved to [resources/local/](resources/local).
 
@@ -126,9 +129,9 @@ Each of the child objects contains all the necessary sub-instances to know the s
 With this compositional nature, the domain and problem attributes can then be access at runtime by, for example, calling the nested attributes on the domain. Eg:
 
 ```python
-# Format print selected child attributes
 problem = Problem(...parse problem file...)
 
+# Format print selected child attributes
 for condition in problem.init:
     print(
         f"Preposition: {condition.predicate.preposition}"
@@ -198,6 +201,58 @@ Snippet of a serialized predicate:
 ]
 ```
 
+## Directory Wiki
+
+For reference, the following tree outlines the purpose of each folder or file in the project directory:
+```
+.
+├── README.md
+├── config.json                       # config variables
+├── pddl                              # root for pddl files
+│   ├── api                           # pddl files for solver 
+│   │   ├── makearrow.pddl
+│   │   ├── makesword.pddl
+│   │   └── runescape.pddl
+│   ├── enhanced                      # enhanced files with comments 
+│   │   ├── makearrow.pddl
+│   │   ├── makesword.pddl
+│   │   └── runescape.pddl
+│   └── parsed                        # simplified pddl files for parser
+│       ├── makearrow.pddl
+│       ├── makesword.pddl
+│       └── runescape.pddl
+├── requirements.txt
+├── resources
+│   ├── character.png
+│   ├── local                         # backup solver repsonses
+│   │   ├── makearrow-response.json
+│   │   └── makesword-response.json
+│   ├── objects                       # serialized parsed domain/problems
+│   │   ├── makearrow.json
+│   │   ├── makesword.json
+│   │   └── runescape.json
+│   └── responses                     # runtime responses from solver
+│       ├── makearrow-response.json   # will only exist following -s
+│       └── makesword-response.json
+└── src                               # application root
+    ├── __init__.py                   
+    ├── config.py                     # config variables
+    ├── main.py                       # entry point
+    ├── output.py                     # print helper
+    └── planner
+        ├── __init__.py
+        ├── http
+        │   ├── __init__.py
+        │   ├── request.py            # solver request handler
+        │   └── response.py           # solver response handler
+        └── parser
+            ├── __init__.py
+            ├── action.py             # parses actions
+            ├── domain.py             # parses domain
+            ├── predicate.py          # subclasses for object structure
+            ├── problem.py            # parses actions
+            └── util.py               # parse helper
+```
 
 ## References
 
