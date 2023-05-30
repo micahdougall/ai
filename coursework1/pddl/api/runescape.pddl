@@ -21,10 +21,6 @@
         (includes ?o - weapon ?c - component)
     )
 
-    ; (:functions
-    ;     (travelled)
-    ; )
-
     (:action move-to
         :parameters (
             ?character - player

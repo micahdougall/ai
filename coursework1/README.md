@@ -5,7 +5,7 @@
 </p>
 
 
-This README outlines the required setup to run the program, and outlines the chosen implementation for the Python integration task (see [Integration](#integration)). It is recommended to view this document in preview mode in an IDE.
+This README outlines the required setup to run the program, and outlines the chosen implementation for the Python integration task (see [Integration](#integration)). It is recommended to view this document in preview mode in an IDE or on [GitHub](https://github.com/micahdougall/ai/tree/main/coursework1).
 
 ## Contents
 - [PDDL files](#pddl)
@@ -23,7 +23,7 @@ This README outlines the required setup to run the program, and outlines the cho
 Various PDDL problem and domain files can be found in the [pddl/](pddl/) directory with each subdirectory corresponding to a different use case:
 
 - *[api/](pddl/api/)* &rArr; *These are the files used to send to the solver at runtime as they conform to the [PDDL 1.2 specification](https://planning.wiki/ref/pddl).*
-- *[enhanced/](pddl/enhanced/)* &rArr; *A slightly more complex set of files (including `function` declarations) are included for interest. These canot be effected by the solver at [planning.domains](https://solver.planning.domains) as alater version of PDDL is required.*
+- *[enhanced/](pddl/enhanced/)* &rArr; *A slightly more complex set of files (including `function` declarations) are included for interest. These cannot be effected by the solver at [planning.domains](https://solver.planning.domains) as a later version of PDDL is required.*
 - *[parsed/](pddl/parsed/)* &rArr; *Owing to the ***Pre-Alpha*** nature of the custom parser (see [Parser](#parser)), some adjustments have been made to the original files in [api/](pddl/api/). Namely, the removal of `exists` and `forall` loops.*
 
 **NB: For DRY reasons, comments have only been included in the [enhanced/](pddl/enhanced/) versions of the files.**
@@ -32,10 +32,10 @@ Various PDDL problem and domain files can be found in the [pddl/](pddl/) directo
 ## Requirements
 
 - Python (version 3.11.3).
-- Packages in [requirements file](requirements.txt).
+- Packages in [requirements.txt](requirements.txt).
 
 
-To install the necessary requirements, simply run (in the root directory):
+To install the necessary `requirements`, simply run (in the root directory):
 ```bash
 # python/python3 for systems with multiple versions
 
@@ -58,9 +58,9 @@ python3 -m pip install -r requirements.txt
 
 There are several possible CLI arguments which can be provided to [main.py](src/main.py) depending on the required execution:
 
-- `-s` &rArr; **solve**: *Will send the domain and problem file (in [pddl/api/](pddl/api/)) to the solver at [planning.domains](https://solver.planning.domains) and handle the response. Omit this argument to use locally saved results in [resources/responses/](resources/responses/).*
+- `-s` &rArr; **solve**: *Will send the domain and problem file (in [pddl/api/](pddl/api)) to the solver at [planning.domains](https://solver.planning.domains) and handle the response. Omit this argument to use locally saved results in [resources/local/](resources/local) instead.*
 - `-d` &rArr; **domain**: *Denotes the domain file (exclude pddl extension) to use for solver requests, default=[runescape](pddl/api/runescape.pddl).*
-- `-p` &rArr; **solve**: *Denotes the problem file to use for solver requests. This is a required argument when using `-s`. Must be a valid filename in [pddl/api/](pddl/api/) (exclude pddl extension)*
+- `-p` &rArr; **problem**: *Specifies the problem file to use for solver requests. This is a required argument when using `-s`. Must be a valid filename in [pddl/api/](pddl/api) (exclude pddl extension)*
 - `-v` &rArr; **verbose**: *This will print the results in verbose mode, which includes the detailed response from the solver and the entire tree struture for the domain and problem. Only recommended for debugging failed requests to the solver.*
 
 For example, to send a request to the solver for the [makesword](pddl/api/makesword.pddl) problem, run (from the root folder):
@@ -262,5 +262,4 @@ For reference, the following tree outlines the purpose of each folder or file in
 
 
 ## Repository links
-- https://github.com/micahdougall/ai
-- https://gitfront.io/r/user-8542067/SE98YnTAwUMt/advanced-object-oriented/
+- https://github.com/micahdougall/ai/tree/main/coursework1

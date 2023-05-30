@@ -35,7 +35,6 @@
         (has Mine Rock)
         (has Farm Chickens)
         (has Forest Trees)
-        ; (= (travelled) 0)
     )
 
     (:goal (and
@@ -43,6 +42,5 @@
         (forall (?item - resource)
             (not (has Player ?item))
         )
-        ; (>= (travelled) 10)
     ))
 )
