@@ -18,7 +18,7 @@ if __name__ == '__main__':
     b_given_a = 0.97
     a = .005
     not_a_given_not_b = .95
-    for i in range(3):
+    for i in range(iterations):
         b = marginalize(b_given_a, a, not_a_given_not_b)
         a = bayesian_probability(b_given_a, a, b)
         print(f"Posterior: {a}")
