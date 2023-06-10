@@ -127,14 +127,24 @@ class CWorld:
         from coursework2.src.model.grid import Grid
         grid = Grid.grid(self.size)
 
-        if percept and len(grid.stack):
+        # current = grid.current
+
+        if 'Droning' in percept:
+            guess = random.choice(grid.current.unknowns)
+            if guess == self.filippos_pos:
+                self.is_game_over = True
+
+            # self.convert_to_python()
+
+        if percept and len(grid.stack) > 1:
         # if percept and GridModel.last_move and not GridModel.returned:
             print("There is a percept")
             # back = opposite(GridModel.last_move)
             # last_square = moves_coords_map(*self.student_pos, self.size).get(back)
 
             # if not is_explored(*last_square, self.size):
-            if not grid.stack[-1].is_explored():
+            previous = grid.get_square(*grid.stack[-1])
+            if not previous.is_explored() and not previous.percepts:
                 # More to discover from last position
                 print("Last square not fully discovered")
                 # GridModel.last_move = back
@@ -145,15 +155,16 @@ class CWorld:
         # TODO: Add step to compare percepts
 
         # for move, square in options.items():
-        for square in grid.current.options:
+        for coords in grid.current.options:
             # if square not in GridModel.map.keys():
-            if square not in grid.route:
+            if coords not in grid.route:
 
                 # New square to discover
                 print("New square found")
                 # GridModel.last_move = move
                 # GridModel.returned = False
                 # return move
+                square = grid.get_square(*coords)
                 return grid.move_to(square)
         # else:
 
@@ -166,21 +177,24 @@ class CWorld:
         # GridModel.last_move = move
         # GridModel.returned = False
         move = random.choice(grid.current.options)
-        return grid.move_to(move)
+        square = grid.get_square(*move)
+        return grid.move_to(square)
         # return move.di
         # return action.choose_action(self, percept)
 
 
 
-    def avoid_hazard(self):
-        # TODO: This function is for dealing with avoiding either Filippos or C books
-        # It is up to you to decide how you want to deal with the current precept sequence, but the result should be some level of movement
-        return random.choice(["up", "down", "left", "right"])
-
-    def convert_to_python(self):
-        # TODO: This function is for attempting to convert filippos to C
-        # Here you should be using the python book to convert Filippos, by checking where he is and using the relevant action
-        return random.choice(["up", "down", "left", "right"])
+    # def avoid_hazard(self):
+    #     # TODO: This function is for dealing with avoiding either Filippos or C books
+    #     # It is up to you to decide how you want to deal with the current precept sequence, but the result should be some level of movement
+    #     return random.choice(["up", "down", "left", "right"])
+    #
+    # def convert_to_python(self):
+    #
+    #
+    #     # TODO: This function is for attempting to convert filippos to C
+    #     # Here you should be using the python book to convert Filippos, by checking where he is and using the relevant action
+    #     return random.choice(["up", "down", "left", "right"])
 
 #
 # def is_explored(x: int, y: int, grid_size) -> bool:
