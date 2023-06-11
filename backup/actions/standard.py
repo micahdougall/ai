@@ -1,6 +1,6 @@
 import random
 
-from coursework2.src.lib.cworld import CWorld
+from backup.cworld import CWorld
 
 
 def choose_action(world: CWorld, percept):

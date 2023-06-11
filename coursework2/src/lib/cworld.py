@@ -1,3 +1,7 @@
+from src.model.grid import Grid
+from src.model.square import Percept
+from src.model.util import printc
+
 import random
 
 
@@ -44,24 +48,24 @@ class CWorld:
         x, y = self.student_pos
         if action == "up" and x > 0:
             self.student_pos = (x - 1, y)
-            print("Student moves up.")
+            printc("Student moves up.")
         elif action == "down" and x < self.size - 1:
             self.student_pos = (x + 1, y)
-            print("Student moves down.")
+            printc("Student moves down.")
         elif action == "left" and y > 0:
             self.student_pos = (x, y - 1)
-            print("Student moves left.")
+            printc("Student moves left.")
         elif action == "right" and y < self.size - 1:
             self.student_pos = (x, y + 1)
-            print("Student moves right.")
+            printc("Student moves right.")
 
         if self.student_pos == self.filippos_pos or self.student_pos in self.textbook_pos:
             self.is_game_over = True
-            print("Student is either affected by Filippos's Droning or has succumb to the Boring C textbooks!")
+            printc("Student is either affected by Filippos's Droning or has succumb to the Boring C textbooks!")
 
         if self.student_pos == self.degree_pos:
             self.is_game_over = True
-            print("Student found the first-class degree and wins!")
+            printc("Student found the first-class degree and wins!")
 
         self.update_student_map(action)
 
@@ -100,7 +104,7 @@ class CWorld:
             else:
                 initial_map_printed = True
             percept = self.get_percept()
-            print("Percept:", percept)
+            # print("Percept:", percept)
             action = self.choose_action(percept)
             self.move_student(action)
 
@@ -109,71 +113,114 @@ class CWorld:
         return 0 <= x < self.size and 0 <= y < self.size
 
     def choose_action(self, percept):
-        # TODO: This function needs to take in the precept, and decide what action to do
-        print(f"Percept -> {percept}")
-        print(f"Percept History -> {self.percept_history}")
-        GridModel.map[self.student_pos] = percept
-        print(f"GridModel Map -> {GridModel.map}")
+        """Selects an action based on the current Grid state and percepts"""
 
-        all_moves = moves_coords_map(*self.student_pos, self.size)
-        print(f"All Moves: {all_moves}")
+        grid = Grid.grid(self.size)
 
-        options = {k: v for (k, v) in all_moves.items() if v}
-        print(f"Options: {options}")
+        # Update states
+        if not percept:
+            for s in grid.current.options:
+                grid.safe.add(s)
+        else:
+            grid.update_percepts(percept)
+        grid.risks.difference_update(grid.safe)
+        print(grid)
 
-        # Think about things in terms of a tree with A* search
+        # Handle percepts
+        if grid.current.percepts:
+            avoidance = self.avoid_hazard()
+            if avoidance:
+                return avoidance
+        else:
+            printc("Nothing to see here.")
 
-        # TODO: If percept is Filippos, add Python step
-        if percept and GridModel.last_move and not GridModel.returned:
-            print("There is a percept")
-            back = opposite(GridModel.last_move)
-            last_square = moves_coords_map(*self.student_pos, self.size).get(back)
+        # Check for unexplored squares in valid adjacent coordinates
+        if grid.current.unexplored:
+            printc(f"Unexplored new option from current square.")
+            take_a_punt = random.choice(list(grid.current.unexplored))
+            return grid.move_to(grid.get_square(*take_a_punt))
+        else:
+            # Else pick a random safe adjacent square
+            printc("Picking a random, safe square from available options.")
+            if not grid.current.options:
+                printc(
+                    "No option possible"
+                    f"Route taken: {grid.route}"
+                    f"Stack: {grid.stack}"
+                    f"Endpoint: {grid.current.coords}"
+                )
+                exit(-1)
+            else:
+                move = random.choice(list(grid.current.options))
+                square = grid.get_square(*move)
+                return grid.move_to(square)
 
-            if not is_explored(*last_square, self.size):
+    def avoid_hazard(self) -> str | None:
+        """Handles hazards presented by percepts"""
+
+        grid = Grid.grid(self.size)
+
+        if Percept.DRONING in grid.current.percepts:
+            self.convert_to_python()
+        else:
+            printc("Yawn...C books detected in the vicinity.")
+
+        # Look for a guaranteed safe option
+        safe_options = grid.safe & set(grid.current.unexplored)
+        if safe_options:
+            printc(f"Safe unexplored options exist at: {safe_options}.")
+            random_safe = random.choice(list(safe_options))
+            return grid.move_to(grid.get_square(*random_safe))
+        # Consider going back a step
+        elif len(grid.stack) > 1:
+            if not grid.is_path_explored():
                 # More to discover from last position
-                print("Last square not fully discovered")
-                GridModel.last_move = back
-                GridModel.returned = True
-                return back
+                printc("Stack not fully explored, moving back.")
+                return grid.back()
+            elif grid.safe_path():
+                printc("Stack has a viable route.")
+                return grid.back()
+            else:
+                print(
+                    f"Options: {grid.current.options}"
+                    f"Unknowns: {grid.current.unexplored}"
+                )
+                printc("Going back presents no viable route.")
+        else:
+            # Compare percepts with previous squares to guesstimate common risks
+            printc(f"No safe options, cross-referencing percepts.")
+            possibly_safe = grid.safe_options(Percept.BORING)
 
-        # TODO: Add step to compare percepts
+            if possibly_safe:
+                printc(f"Common percepts found, selecting a possible safe option.")
+                random_chance = random.choice(list(possibly_safe))
+                return grid.move_to(grid.get_square(*random_chance))
+            else:
+                printc(f"No common percepts found.")
+                return None
 
-        for move, square in options.items():
-            if square not in GridModel.map.keys():
-                # New square to discover
-                print("New square found")
-                GridModel.last_move = move
-                GridModel.returned = False
-                return move
+    def convert_to_python(self) -> tuple[int, int]:
+        """Attempts to convert a C stalwart to Python"""
 
-        # else:/
+        from src.model.grid import Grid
+        grid = Grid.grid(self.size)
 
-        # If it sees filippos, it should try to attack with Python, else avoid him
-        # If it sees a C book, it should try and avoid it
-        # If it pecieves nothing, it should move, ideally rationally
-        # You generally want to be returning the other relevant functions here, either avoid_hazard & convert_to_python
-
-        move = random.choice(["up", "down", "left", "right"])
-        GridModel.last_move = move
-        GridModel.returned = False
-        return move
-        # return action.choose_action(self, percept)
-
-
-
-    def avoid_hazard(self):
-        # TODO: This function is for dealing with avoiding either Filippos or C books
-        # It is up to you to decide how you want to deal with the current precept sequence, but the result should be some level of movement
-        return random.choice(["up", "down", "left", "right"])
-
-    def convert_to_python(self):
-        # TODO: This function is for attempting to convert filippos to C
-        # Here you should be using the python book to convert Filippos, by checking where he is and using the relevant action
-        return random.choice(["up", "down", "left", "right"])
-
-
-if __name__ == "__main__":
-    game = CWorld()
-    # game.print_state()
-    game.play()
-    # game.print_state()
+        print(f"\033[93mCompiler noise detected, attempting to convert Filippos...", end="")
+        if grid.python_books:
+            # Guesstimate based on set of possible locations (could be singular!)
+            guess = random.choice(list(grid.filippos))
+            print(f"aiming at {guess}...", end="")
+            if guess == self.filippos_pos:
+                print(f"\033[92mSuccessfully converted Filippos to a functional programming language!\033[0m\n")
+                self.is_game_over = True
+                # Force exit as this isn't otherwise effected
+                exit()
+            else:
+                print(f"\033[91mPointer error! Failed to convert Filippos.\033[0m\n")
+                grid.filippos.remove(guess)
+                # If no book percepts, update failed guess to a safe square
+                if len(grid.current.percepts) == 1:
+                    grid.safe.add(guess)
+            grid.python_books -= 1
+        else:
+            print(f"\033[91mNo Python book in armoury.\033[0m\n")

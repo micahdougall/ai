@@ -1,24 +1,29 @@
-from coursework2.src.model.square import Square, Percept
-from dataclasses import dataclass, field
+from src.model.square import Square, Percept
 
+from dataclasses import dataclass, field
+from pyre_extensions import override
 from typing import ClassVar, Self
 
 
 @dataclass
 class Grid:
+    """Class to store the state of a Grid problem"""
+
     grid_size: int
     squares: list[Square] = field(init=False)
     current: Square = field(init=False)
-    stack: list[Square] = field(default_factory=list)
-    route: list[Square] = field(default_factory=list)
-    safe: set[Square] = field(default_factory=set)
-    risks: set[Square] = field(default_factory=set)
-    books: set[Square] = field(default_factory=set)
-    filippos: set[Square] = field(default_factory=set)
-    python_books: int = 1
-    _grid_: ClassVar[Self] = None
+    stack: list[tuple[int, int]] = field(default_factory=list)
+    route: list[tuple[int, int]] = field(default_factory=list)
+    safe: set[tuple[int, int]] = field(default_factory=set)
+    risks: set[tuple[int, int]] = field(default_factory=set)
+    hazards: set[tuple[int, int]] = field(default_factory=set)
+    filippos: set[tuple[int, int]] = field(default_factory=set)
+    python_books: int = 1  # Can only use Python book once
+    _grid_: ClassVar[Self] = None  # Used for 'singleton'
 
     def __post_init__(self):
+        """Setup grid and initial state"""
+
         self.squares = [
             Square(x, y, self.grid_size)
             for x in range(self.grid_size)
@@ -27,89 +32,83 @@ class Grid:
         self.current = self.get_square(0, 0)
         self.stack.append(self.current.coords)
         self.route.append(self.current.coords)
+        self.safe.add(self.current.coords)
 
-    def move_to(self, to: Square):
+    def move_to(self, to: Square) -> str:
+        """Moves to a new square"""
+
         from_coords = self.current.coords
-        print(f"Moving from {self.current.coords} to {to.coords}")
-        # print(f"Stack before move: {self.stack}")
-        # print(f"Unknown before move: {self.current.unknowns}")
-        self.current.unknowns.remove(to.coords)
-        # print(f"Unknown coords at current will be: {self.current.unknowns}")
-        self.current = to
-        self.current.unknowns.remove(from_coords)
-        # print(f"Unknown coords at to will be: {to.unknowns}")
+        to_coords = to.coords
+        print(f"Moving from {from_coords} to {to_coords}")
 
-        self.stack.append(to.coords)
-        # print(f"Stack after append: {self.stack}")
-        self.route.append(to.coords)
-        self.safe.add(to.coords)
-        print(f"Safe added {to.coords} to {self.safe}")
-        return to.relative_to(self.stack[-2])
+        # Update state
+        self.current.unexplored.discard(to_coords)
+        self.stack.append(to_coords)
+        self.route.append(to_coords)
+        self.safe.add(to_coords)
+
+        self.current = to
+        self.current.unexplored.discard(from_coords)
+        return to.relative_to(from_coords)
 
     def back(self) -> str:
-        current = self.stack.pop()
-        previous = self.stack[-1]
-        print(f"Moving from {self.current.coords} to {previous}")
+        """Moves back to previous square"""
 
-        self.route.append(previous)
-        self.current = self.get_square(*previous)
+        from_coords = self.stack.pop()
+        to_coords = self.stack[-1]
+        print(f"Moving from {from_coords} to {to_coords}")
 
-        # TODO: Confusing
-        return self.current.relative_to(current)
-
-    # TODO: Refactor to single method?
-    # def update_stack(self) -> None:
-    #     current = self.stack.pop()
-    #     previous = self.stack[-1]
-    #     print(f"Moving from {self.current.coords} to {previous}")
-    #
-    #     self.route.append(to.coords)
-    #     self.route.append(previous)
-    #
-    #     self.current = self.get_square(*previous)
+        self.route.append(to_coords)
+        self.current = self.get_square(*to_coords)
+        return self.current.relative_to(from_coords)
 
     def is_path_explored(self) -> bool:
         """Determines whether there is an unexplored branch from a previous square"""
-        # print(f"Stack is {self.stack}")
+
         for xy in reversed(self.stack[:-1]):
-            # square = self.get_square(*xy)
-            # if square.unknowns.remove(self.books):
-            if self.get_square(*xy).unknowns:
-                print(f"Square at {xy} not explored.")
+            if self.get_square(*xy).unexplored:
+                print(f"Square at {xy} not fully explored.")
                 return False
         return True
-
 
     def safe_path(self) -> bool:
-        """Determines whether there is an unexplored branch from a previous square"""
-        # print(f"Stack is {self.stack}")
-        for xy in reversed(self.stack[:-1]):
-            unknowns = self.get_square(*xy).unknowns
-            if any(u in self.safe for u in unknowns):
-                print(f"Square at {xy} not explored.")
-                return False
-        return True
+        """Determines whether there is a safe route from a previous square in the stack"""
 
-    # def shared_neighbour(self) -> :
-    def update_risks(self) -> None:
+        for xy in reversed(self.stack[:-1]):
+            options = self.get_square(*xy).options
+            if any(o in self.safe for o in options):
+                print(f"Square at {xy} has possible route.")
+                return True
+        return False
+
+    def _update_risks(self) -> None:
+        """Updates the potential risks"""
+
         for square in self.squares:
-            if len(square.percepts) == len(square.unknowns):
+            if len(square.percepts):
                 self.risks.update(
-                    [s for s in square.unknowns if s not in self.safe]
+                    [s for s in square.unexplored if s not in self.safe]
                 )
-                # TODO: Not risks or Books?
-        print(f"Risks: {self.risks}")
+        self.risks.difference_update(self.safe)
+
+    def _update_hazards(self) -> None:
+        """Updates the known hazards"""
+
+        for square in self.squares:
+            if len(square.percepts) == len(square.unexplored):
+                self.hazards.update(square.unexplored)
 
     def update_percepts(self, percept: str) -> None:
+        """Updates state of the grid according to the new percepts"""
 
         percepts = [Percept[p.upper()] for p in percept]
-        # print(f"Percepts: {percepts}")
         self.current.percepts = percepts
 
-        self.update_risks()
+        self.safe.add(self.current.coords)
+        self._update_risks()
+        self._update_hazards()
 
         if Percept.DRONING in percepts:
-            # print(f"\033[93mCompiler noise detected, attempting to convert Filippos...", end="")
             unsafe = [r for r in self.current.options if r not in self.safe]
             # If there have already been Filippos percepts...
             if len(self.filippos):
@@ -117,72 +116,55 @@ class Grid:
                 self.filippos = self.filippos & set(unsafe)
             else:
                 self.filippos = set(unsafe)
-            print(f"Filippos: {self.filippos}")
 
         if Percept.BORING in percepts:
-            printc("Yawn...C books detected in the vicinity.")
-            self.risks.update(self.current.options)
-                # [r for r in self.current.options if r not in self.safe]
-            # )
-            print(f"Risks after percept: {self.risks}")
-        print(f"Safe options: {self.safe}")
+            self.risks.update(
+                [r for r in self.current.options if r not in self.safe]
+            )
+
+        # Remove known hazards as potential moves
+        for square in self.squares:
+            square.options.difference_update(self.hazards)
 
     def get_square(self, x: int, y: int) -> Square | None:
-        # print(f"Fetching square for x: {x} and y: {y}")
-        # print(self.squares)
+        """Gets a square from the grid using supplied coordinates"""
+
         return next(
             filter(lambda s: s.x == x and s.y == y, self.squares),
             None
         )
 
-    def safe_options(self, percept) -> tuple[int, int]:
-        safe_options = set()
-        # print(f"Route s far: {self.route[:-1]}")
-        # for xy in self.route[:-1]:
-        for xy in [s for s in self.route if s != self.current.coords]:
+    def safe_options(self, percept: Percept) -> set[tuple[int, int]]:
+        """Finds potentially safe squares by comparing previous percepts"""
 
+        safe_options = set()
+        for xy in [s for s in self.route if s != self.current.coords]:
             risks = self.current.shared_percepts(self.get_square(*xy), percept)
-            # print(f"Shared risk squares with {xy} = {risks}")
             if risks:
                 potential = [s for s in risks if s not in self.route]
-                # print(f"Potential = {potential}")
-                # if potential:
-                #     print("potential exists")
-                # if len(potential):
-                #     print("potential has length")
-                #     print(f"Detected a book at one of: {potential}.")
                 for s in potential:
-                    # print(f"s: {s}")
-                    # print(f"type s: {type(s)}")
-                    # square = self.get_square(*s)
-                    # print(f"square: {square}")
-                    # if "Boring" in grid.get_square(*s).percepts:
-                    print(f"Book might be at {s}.")
-                    # TODO: Convert this to safe list
-                    # self.current.unknowns.remove(s)
-                    # print(f"Self unknowns: {self.current.unknowns}")
-                    # safe_option = [o for o in self.current.unknowns if not o == s]
-                    safe_options.update([o for o in self.current.unknowns if not o == s])
-                # TODO: Don't like this but gets rid of risk
-                # return True
+                    print(f"Book might be at {s}. ", end="")
+                    safe_options.update([o for o in self.current.unexplored if not o == s])
                 print(f"Potentially safe options are: {safe_options}")
         return safe_options
+
+    @override
+    def __str__(self):
+        """Returns Grid state"""
+
+        return (
+            f"Hazards: {self.hazards or None}\n"
+            f"Risks: {self.risks or None}\n"
+            f"Filippos: {self.filippos or None}\n"
+            f"Safe: {self.safe or None}\n"
+            f"Unknown: {self.current.unexplored or None}\n"
+            f"Options: {self.current.options or None}\n"
+        )
 
     @classmethod
     def grid(cls, size: int):
         """Pseudo-singleton class method for Grid"""
+
         if not cls._grid_:
             cls._grid_ = cls(size)
         return cls._grid_
-
-
-def moves_coords_map(x: int, y: int, grid_size) -> dict:
-    return {
-        "up": (x - 1, y) if x > 0 else None,
-        "down": (x + 1, y) if x < grid_size - 1 else None,
-        "left": (x, y - 1) if y > 0 else None,
-        "right": (x, y + 1) if y < grid_size - 1 else None,
-    }
-
-def printc(text: str):
-    print(f"\033[93m{text}\033[0m\n")
