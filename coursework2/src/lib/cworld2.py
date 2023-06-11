@@ -44,24 +44,24 @@ class CWorld:
         x, y = self.student_pos
         if action == "up" and x > 0:
             self.student_pos = (x - 1, y)
-            print("Student moves up.")
+            printc("Student moves up.")
         elif action == "down" and x < self.size - 1:
             self.student_pos = (x + 1, y)
-            print("Student moves down.")
+            printc("Student moves down.")
         elif action == "left" and y > 0:
             self.student_pos = (x, y - 1)
-            print("Student moves left.")
+            printc("Student moves left.")
         elif action == "right" and y < self.size - 1:
             self.student_pos = (x, y + 1)
-            print("Student moves right.")
+            printc("Student moves right.")
 
         if self.student_pos == self.filippos_pos or self.student_pos in self.textbook_pos:
             self.is_game_over = True
-            print("Student is either affected by Filippos's Droning or has succumb to the Boring C textbooks!")
+            printc("Student is either affected by Filippos's Droning or has succumb to the Boring C textbooks!")
 
         if self.student_pos == self.degree_pos:
             self.is_game_over = True
-            print("Student found the first-class degree and wins!")
+            printc("Student found the first-class degree and wins!")
 
         self.update_student_map(action)
 
@@ -109,128 +109,65 @@ class CWorld:
         return 0 <= x < self.size and 0 <= y < self.size
 
     def choose_action(self, percept):
-        # TODO: This function needs to take in the precept, and decide what action to do
-        print(f"Percept -> {percept}")
-        # print(f"Percept History -> {self.percept_history}")
-        # GridModel.map[self.student_pos] = percept
-        # print(f"GridModel Map -> {GridModel.map}")
-
-        # all_moves = moves_coords_map(*self.student_pos, self.size)
-        # print(f"All Moves: {all_moves}")
-
-        # options = {k: v for (k, v) in all_moves.items() if v}
-        # print(f"Options: {options}")
-
-        # Think about things in terms of a tree with A* search
-
-        # TODO: If percept is Filippos, add Python step
-        from coursework2.src.model.grid import Grid
-        grid = Grid.grid(self.size)
-
-        # current = grid.current
-
-        if 'Droning' in percept:
-            guess = random.choice(grid.current.unknowns)
-            if guess == self.filippos_pos:
-                self.is_game_over = True
-
-            # self.convert_to_python()
-
-        if percept and len(grid.stack) > 1:
-        # if percept and GridModel.last_move and not GridModel.returned:
-            print("There is a percept")
-            # back = opposite(GridModel.last_move)
-            # last_square = moves_coords_map(*self.student_pos, self.size).get(back)
-
-            # if not is_explored(*last_square, self.size):
-            previous = grid.get_square(*grid.stack[-1])
-            if not previous.is_explored() and not previous.percepts:
-                # More to discover from last position
-                print("Last square not fully discovered")
-                # GridModel.last_move = back
-                # GridModel.returned = True
-                return grid.back()
-                # return back
-
-        # TODO: Add step to compare percepts
-
-        # for move, square in options.items():
-        for coords in grid.current.options:
-            # if square not in GridModel.map.keys():
-            if coords not in grid.route:
-
-                # New square to discover
-                print("New square found")
-                # GridModel.last_move = move
-                # GridModel.returned = False
-                # return move
-                square = grid.get_square(*coords)
-                return grid.move_to(square)
-        # else:
-
         # If it sees filippos, it should try to attack with Python, else avoid him
         # If it sees a C book, it should try and avoid it
         # If it pecieves nothing, it should move, ideally rationally
         # You generally want to be returning the other relevant functions here, either avoid_hazard & convert_to_python
 
-        # move = random.choice(["up", "down", "left", "right"])
-        # GridModel.last_move = move
-        # GridModel.returned = False
+        from coursework2.src.model.grid import Grid
+        grid = Grid.grid(self.size)
+
+        if percept:
+            grid.current.percepts = percept
+            # print(f"Current: {grid.current}")
+
+            if 'Droning' in percept:
+                self.convert_to_python()
+
+            if len(grid.stack) > 1:
+                previous = grid.get_square(*grid.stack[-2])
+                print(f"Previous: {previous}")
+                # TODO: Explored needs to accnt for tree, not square
+                if not previous.is_explored() and not previous.percepts:
+                    # More to discover from last position
+                    printc("Last square not fully discovered, moving back.")
+                    return grid.back()
+                else:
+                    printc("Previous square is high risk.")
+
+        # TODO: Add step to compare percepts
+
+        # Check for unexplored squares in valid adjacent coordinates
+        for coords in grid.current.unknowns:
+            if coords not in grid.route:
+                # New square to discover
+                square = grid.get_square(*coords)
+                return grid.move_to(square)
+
+        # Else pick a random valid adjacent square
+        # TODO: Sometimes this is empty!
         move = random.choice(grid.current.options)
         square = grid.get_square(*move)
         return grid.move_to(square)
-        # return move.di
-        # return action.choose_action(self, percept)
+
+    def convert_to_python(self):
+        from coursework2.src.model.grid import Grid
+
+        print(f"\033[93mCompiler noise detected, attempting to convert Filippos...", end="")
+        guess = random.choice(Grid.grid(size=self.size).current.unknowns)
+        if guess == self.filippos_pos:
+            print(f"\033[92mSuccessfully converted Filippos to a functional programming language!\033[0m\n")
+            self.is_game_over = True
+            exit()
+        else:
+            print(f"\033[91mPointer error! Failed to convert Filippos.\033[0m\n")
+            # else f"\033[96m{action.pddl_action} \u27F9 \033[95m{action.pddl_params}\033[49m"
 
 
+def printc(text: str):
+    print(f"\033[93m{text}\033[0m\n")
 
-    # def avoid_hazard(self):
-    #     # TODO: This function is for dealing with avoiding either Filippos or C books
-    #     # It is up to you to decide how you want to deal with the current precept sequence, but the result should be some level of movement
-    #     return random.choice(["up", "down", "left", "right"])
-    #
-    # def convert_to_python(self):
-    #
-    #
-    #     # TODO: This function is for attempting to convert filippos to C
-    #     # Here you should be using the python book to convert Filippos, by checking where he is and using the relevant action
-    #     return random.choice(["up", "down", "left", "right"])
-
-#
-# def is_explored(x: int, y: int, grid_size) -> bool:
-#     moves = moves_coords_map(x, y, grid_size)
-#     possible = {k: v for (k, v) in moves.items() if v}
-#
-#     unexplored = {k: v for (k, v) in possible.items() if v not in GridModel.map.keys()}
-#     print(f"Unexplored coords: {unexplored}")
-#     return False if len(unexplored) else True
-#
-#
-# def moves_coords_map(x: int, y: int, grid_size) -> dict:
-#     return {
-#         "up": (x - 1, y) if x > 0 else None,
-#         "down": (x + 1, y) if x < grid_size - 1 else None,
-#         "left": (x, y - 1) if y > 0 else None,
-#         "right": (x, y + 1) if y < grid_size - 1 else None,
-#     }
-#
-#
-# def opposite(move: str) -> str:
-#     return {
-#         "up": "down",
-#         "down": "up",
-#         "left": "right",
-#         "right": "left",
-#     }.get(move)
-#
-#
-# class GridModel:
-#     returned: bool = False
-#     last_move: str = None
-#     map: dict[tuple, str] = {}
 
 if __name__ == "__main__":
     game = CWorld()
-    # game.print_state()
     game.play()
-    # game.print_state()

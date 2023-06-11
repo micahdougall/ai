@@ -172,38 +172,6 @@ class CWorld:
         return random.choice(["up", "down", "left", "right"])
 
 
-def is_explored(x: int, y: int, grid_size) -> bool:
-    moves = moves_coords_map(x, y, grid_size)
-    possible = {k: v for (k, v) in moves.items() if v}
-
-    unexplored = {k: v for (k, v) in possible.items() if v not in GridModel.map.keys()}
-    print(f"Unexplored coords: {unexplored}")
-    return False if len(unexplored) else True
-
-
-def moves_coords_map(x: int, y: int, grid_size) -> dict:
-    return {
-        "up": (x - 1, y) if x > 0 else None,
-        "down": (x + 1, y) if x < grid_size - 1 else None,
-        "left": (x, y - 1) if y > 0 else None,
-        "right": (x, y + 1) if y < grid_size - 1 else None,
-    }
-
-
-def opposite(move: str) -> str:
-    return {
-        "up": "down",
-        "down": "up",
-        "left": "right",
-        "right": "left",
-    }.get(move)
-
-
-class GridModel:
-    returned: bool = False
-    last_move: str = None
-    map: dict[tuple, str] = {}
-
 if __name__ == "__main__":
     game = CWorld()
     # game.print_state()
