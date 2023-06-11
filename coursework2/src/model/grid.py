@@ -49,6 +49,27 @@ class Grid:
         # TODO: Confusing
         return self.current.dir_from(current)
 
+    # TODO: Refactor to single method?
+    # def update_stack(self) -> None:
+    #     current = self.stack.pop()
+    #     previous = self.stack[-1]
+    #     print(f"Moving from {self.current.coords} to {previous}")
+    #
+    #     self.route.append(to.coords)
+    #     self.route.append(previous)
+    #
+    #     self.current = self.get_square(*previous)
+
+    def is_path_explored(self) -> bool:
+        """Determines whether there is an unexplored branch from a previous square"""
+        print(f"Stack is {self.stack}")
+        for xy in reversed(self.stack[:-1]):
+            if self.get_square(*xy).unknowns:
+                print(f"Square at {xy} not explored.")
+                return False
+        return True
+
+
     def get_square(self, x: int, y: int) -> Square | None:
         return next(
             filter(lambda s: s.x == x and s.y == y, self.squares),

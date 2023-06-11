@@ -33,6 +33,7 @@ class Square:
         )
 
     def is_explored(self) -> bool:
+        print(f"Is explored? Options at {self.coords} = {self.unknowns}")
         return len(self.unknowns) == 0
 
     def dir_from(self, other: tuple[int, int]) -> str:

@@ -123,19 +123,30 @@ class CWorld:
 
             if 'Droning' in percept:
                 self.convert_to_python()
+            else:
+                printc("Yawn...C books detected in the vicinity.")
 
             if len(grid.stack) > 1:
                 previous = grid.get_square(*grid.stack[-2])
                 print(f"Previous: {previous}")
+
                 # TODO: Explored needs to accnt for tree, not square
-                if not previous.is_explored() and not previous.percepts:
+                if not grid.is_path_explored():
                     # More to discover from last position
-                    printc("Last square not fully discovered, moving back.")
+                    printc("Stack not fully explored, moving back.")
                     return grid.back()
+                # elif:
+                #     if not previous.is_explored() and not previous.percepts:
+                #     printc("Last square not fully discovered, moving back.")
                 else:
-                    printc("Previous square is high risk.")
+                    printc("Going back leads to a risky square.")
 
         # TODO: Add step to compare percepts
+
+        # No options except in stack
+        if not grid.current.unknowns:
+            printc("No other options from here, moving back.")
+            return grid.back()
 
         # Check for unexplored squares in valid adjacent coordinates
         for coords in grid.current.unknowns:
@@ -145,7 +156,8 @@ class CWorld:
                 return grid.move_to(square)
 
         # Else pick a random valid adjacent square
-        # TODO: Sometimes this is empty!
+        # TODO: Sometimes this is empty! - maybe not anymore
+        printc("Picking a random option from available options.")
         move = random.choice(grid.current.options)
         square = grid.get_square(*move)
         return grid.move_to(square)
