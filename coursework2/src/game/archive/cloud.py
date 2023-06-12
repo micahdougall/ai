@@ -22,7 +22,7 @@ SCREEN_HEIGHT = 600
 class Cloud(pygame.sprite.Sprite):
     def __init__(self):
         super(Cloud, self).__init__()
-        self.surface = pygame.image.load("images/small/cloud.png").convert()
+        self.surface = pygame.image.load("../images/small/cloud.png").convert()
         self.surface.set_colorkey((0, 0, 0), RLEACCEL)
         # The starting position is randomly generated
         self.rect = self.surface.get_rect(

@@ -20,7 +20,7 @@ SCREEN_HEIGHT = 600
 class Enemy(pygame.sprite.Sprite):
     def __init__(self):
         super(Enemy, self).__init__()
-        self.surface = pygame.image.load("images/small/goblin.png").convert_alpha()
+        self.surface = pygame.image.load("../images/small/goblin.png").convert_alpha()
         self.surface.set_colorkey((255, 255, 255), RLEACCEL)
         # self.surface = pygame.Surface((20, 10))
         # self.surface.fill((255, 255, 255))

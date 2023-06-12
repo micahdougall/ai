@@ -1,4 +1,4 @@
-import game.min as game
+import game.game as game
 from lib.cworld import CWorld
 
 from args import args, GlobalArgs
@@ -22,9 +22,6 @@ if __name__ == "__main__":
     #             # TODO: Still buggy empty sequence and recursuve run
     else:
         world = CWorld()
-
-        # f = world.filippos_pos
-        # items_map =
 
         items_map = {
             world.student_pos: "pikachu_win.png",

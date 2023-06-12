@@ -14,12 +14,15 @@ from pygame.locals import (
 )
 
 
+@dataclass
 class Item(sprite.Sprite):
+    image: str
+    surface: Surface = field(init=False)
 
-    def __init__(self, file) -> None:
+    def __post_init__(self) -> None:
         super().__init__()
         self.surface = image.load(
-            f"game/images/small/{file}"
+            f"game/images/small/{self.image}"
         ).convert_alpha()
         self.surface.set_colorkey((255, 255, 255), RLEACCEL)
         self.rect = self.surface.get_rect()
