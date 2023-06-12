@@ -44,7 +44,7 @@ screen = pygame.display.set_mode([SCREEN_WIDTH, SCREEN_HEIGHT])
 # pygame.time.set_timer(ADDCLOUD, 1000)
 
 
-# player = Player()
+player = Player()
 # enemies = pygame.sprite.Group()
 # clouds = pygame.sprite.Group()
 # all_sprites = pygame.sprite.Group()
@@ -71,7 +71,8 @@ while running:
         #     clouds.add(new_cloud)
         #     all_sprites.add(new_cloud)
 
-    pressed_keys = pygame.key.get_pressed()
+
+    # pressed_keys = pygame.key.get_pressed()
     # player.update(pressed_keys)
     # enemies.update()
     # clouds.update()
@@ -88,6 +89,7 @@ while running:
         # player.kill()
         # running = False
 
+    # # Static player
     # surface = pygame.Surface((50, 50))
     # surface.fill((0, 0, 0))
     # rectangle = surface.get_rect()
@@ -103,14 +105,21 @@ while running:
         img = font.render(text, True, BLACK)
         screen.blit(img, pos)
 
-    def bordered_square(x: int, y: int, size: int, fill: tuple, border: tuple):
+    def bordered_square(x: int, y: int, size: int, fill: tuple, border: tuple, player: Player):
         inner = pygame.Rect(x, y, size, size)
         pygame.draw.rect(screen, fill, inner)
         pygame.draw.rect(screen, border, pygame.Rect(x, y, size, size), 2)
-        draw_text("Player", inner.center)
+        # draw_text("Player", inner.center)
+        if player:
+            player.render(screen, x + size/2, y + size/2)
+            # screen.blit(
+            #     player.surface,
+            #     (x + size/2 - player.surface.get_width()/2, y + size/2 - player.surface.get_height()/2)
+                # player.rect
+            # )
 
 
-    def draw_grid(grid_size: int, square_size: int, left_margin: int, top_margin: int):
+    def draw_grid(grid_size: int, square_size: int, left_margin: int, top_margin: int, player: Player = None, player_coords: tuple[int, int] = None):
         for i in range(grid_size):
             for j in range(grid_size):
                 bordered_square(
@@ -118,9 +127,13 @@ while running:
                     top_margin + (j * square_size),
                     square_size,
                     gray,
-                    black
+                    black,
+                    player if (i, j) == player_coords else None
                 )
-    draw_grid(4, 70, 80, 150)
+    # char = screen.blit(player.surface, (400 - surface.get_width()/2, 300 - surface.get_height()/2))
+    # print(type(player))
+    # exit()
+    draw_grid(4, 70, 80, 150, player, (2, 2))
     draw_grid(4, 70, 450, 150)
 
     pygame.display.flip()

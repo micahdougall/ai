@@ -19,12 +19,18 @@ class Player(pygame.sprite.Sprite):
     def __init__(self) -> None:
         super().__init__()
         self.surface = pygame.image.load(
-            "images/small/character-one.png"
+            "src/game/images/small/character-one.png"
         ).convert_alpha()
         self.surface.set_colorkey((255, 255, 255), RLEACCEL)
         # self.surface = pygame.Surface((75, 75))
         # self.surface.fill((255, 255, 255))
         self.rect = self.surface.get_rect()
+
+    def render(self, screen: pygame.display, x: int, y: int):
+        screen.blit(
+            self.surface,
+            (x - self.surface.get_width() / 2, y - self.surface.get_height() / 2)
+        )
 
     def update(self, pressed_keys):
         if pressed_keys[K_UP]:
