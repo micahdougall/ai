@@ -1,7 +1,9 @@
+import game.min as game
+from lib.cworld import CWorld
+
 from args import args, GlobalArgs
 from contextlib import redirect_stdout
 import io
-from lib.cworld import CWorld
 
 
 if __name__ == "__main__":
@@ -13,11 +15,23 @@ if __name__ == "__main__":
             for _ in range(int(options.args.test_runs)):
                 game = CWorld()
                 game.play()
-                # TODO: Capture result
+    #             # TODO: Capture result
                 output = buf.getvalue()
                 print("Out")
                 print(output)
-                # TODO: Still buggy empty sequence and recursuve run
+    #             # TODO: Still buggy empty sequence and recursuve run
     else:
-        game = CWorld()
-        game.play()
+        world = CWorld()
+
+        # f = world.filippos_pos
+        # items_map =
+
+        items_map = {
+            world.student_pos: "pikachu_win.png",
+            **{c: "C.jpeg" for c in world.textbook_pos},
+            world.filippos_pos: "steve.png",
+            world.degree_pos: "degree.jpeg"
+        }
+        game.play(items_map)
+
+        world.play()
