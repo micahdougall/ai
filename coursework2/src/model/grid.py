@@ -1,4 +1,4 @@
-from src.model.square import Square, Percept
+from model.square import Square, Percept
 
 from dataclasses import dataclass, field
 from pyre_extensions import override
@@ -21,7 +21,7 @@ class Grid:
     python_books: int = 1  # Can only use Python book once
     _grid_: ClassVar[Self] = None  # Used for 'singleton'
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Setup grid and initial state"""
 
         self.squares = [
@@ -62,21 +62,21 @@ class Grid:
         self.current = self.get_square(*to_coords)
         return self.current.relative_to(from_coords)
 
-    def is_path_explored(self) -> bool:
-        """Determines whether there is an unexplored branch from a previous square"""
-
-        for xy in reversed(self.stack[:-1]):
-            if self.get_square(*xy).unexplored:
-                print(f"Square at {xy} not fully explored.")
-                return False
-        return True
+    # def is_path_explored(self) -> bool:
+    #     """Determines whether there is an unexplored branch from a previous square"""
+    #
+    #     for xy in reversed(self.stack[:-1]):
+    #         if self.get_square(*xy).unexplored:
+    #             print(f"Square at {xy} not fully explored.")
+    #             return False
+    #     return True
 
     def safe_path(self) -> bool:
         """Determines whether there is a safe route from a previous square in the stack"""
 
         for xy in reversed(self.stack[:-1]):
-            options = self.get_square(*xy).options
-            if any(o in self.safe for o in options):
+            unexplored = self.get_square(*xy).unexplored
+            if any(s in self.safe for s in unexplored):
                 print(f"Square at {xy} has possible route.")
                 return True
         return False
@@ -159,6 +159,8 @@ class Grid:
             f"Safe: {self.safe or None}\n"
             f"Unknown: {self.current.unexplored or None}\n"
             f"Options: {self.current.options or None}\n"
+            f"Stack: {self.stack}\n"
+            f"Route: {self.route}\n"
         )
 
     @classmethod

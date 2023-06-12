@@ -22,7 +22,7 @@ class Square:
     unexplored: set[tuple[int, int]] = field(default_factory=set)
     percepts: list[Percept] = field(default_factory=list)
 
-    def __post_init__(self, grid_size):
+    def __post_init__(self, grid_size) -> None:
         """Setup relative coordinates and initial state"""
 
         self.coords = self.x, self.y
@@ -32,7 +32,6 @@ class Square:
         self.right = (self.x, self.y + 1) if self.y < grid_size - 1 else None
         self.options = set(filter(None, {self.up, self.down, self.left, self.right}))
         self.unexplored = self.options.copy()
-        # TODO: Make calculated fields as properties via getters
 
     def relative_to(self, other: tuple[int, int]) -> str:
         """Gets the relative direction of another square as a string"""
@@ -45,7 +44,7 @@ class Square:
             (0, 1): "right"
         }.get((self.x - x, self.y - y))
 
-    def shared_percepts(self, other: Self, percept: Percept) -> set[tuple[int, int]]:
+    def shared_percepts(self, other: Self, percept: Percept) -> set[tuple[int, int]] | None:
         """Returns the adjacent squares which are common to both squares if a percept exists"""
 
         return set(self.options) & set(other.options) if percept in other.percepts else None
