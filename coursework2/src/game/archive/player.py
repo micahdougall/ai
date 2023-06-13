@@ -26,6 +26,7 @@ class Player(pygame.sprite.Sprite):
         # self.surface.fill((255, 255, 255))
         self.rect = self.surface.get_rect()
 
+
     def render(self, screen: pygame.display, x: int, y: int):
         screen.blit(
             self.surface,

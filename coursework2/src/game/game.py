@@ -1,5 +1,7 @@
+import sys
+
 from game.grid import Grid
-from game.objects import Item
+from game.objects import Actor
 from game.util import is_quit
 import pygame
 
@@ -24,37 +26,45 @@ def play(items_map: dict[tuple[int, int], str]):
     screen = pygame.display.set_mode([SCREEN_WIDTH, SCREEN_HEIGHT])
     # screen = pygame.display.set_mode([SCREEN_WIDTH, SCREEN_HEIGHT], pygame.RESIZABLE | pygame.DOUBLEBUF)
 
-    items = {k: Item(v) for (k, v) in items_map.items()}
+    # items = {k: Item(v, screen) for (k, v) in items_map.items()}
+    items = {k: Actor(v, screen) for (k, v) in items_map.items()}
 
     grid_left: Grid = Grid(screen, 4, 70, 80, 150, WHITE, BLACK, items)
     grid_right = Grid(screen, 4, 70, 450, 150, WHITE, BLACK)
 
-    player = grid_left.objects.get((0, 0))
-    all_sprites = pygame.sprite.Group()
-    all_sprites.add(player)
+    # player = grid_left.objects.get((0, 0))
+    # all_sprites = pygame.sprite.Group()
+    # all_sprites.add(player)
 
-    running = True
-    while running:
+    screen.fill(SKY)
+
+    grid_left.draw()
+    grid_right.draw()
+
+    while True:
         for event in pygame.event.get():
             if is_quit(event):
-                running = False
+                sys.exit()
             # elif event.type == pygame.KEYDOWN:
             #     player.move(screen, 50, 50)
 
-        pressed_keys = pygame.key.get_pressed()
-        player.update(screen, pressed_keys)
+        # pressed_keys = pygame.key.get_pressed()
+        # player.update(screen, pressed_keys)
         # pygame.display.update()
         # clock.tick(60)
 
-        screen.fill(SKY)
 
-        grid_left.draw()
-        grid_right.draw()
+        pressed_keys = pygame.key.get_pressed()
+        grid_left.update(pressed_keys)
+        # player.update(screen, pressed_keys)
+        # grid_left.update(screen, pressed_keys)
 
-        for obj in all_sprites:
-            screen.blit(obj.surface, obj.rect)
+        #
+        # for obj in all_sprites:
+        #     screen.blit(obj.surface, obj.rect)
 
         pygame.display.flip()
+        # pygame.display.update()
         clock.tick(30)
 
     pygame.quit()
