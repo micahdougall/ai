@@ -1,7 +1,7 @@
 import sys
 
 from args import GlobalArgs
-import game.game as game
+import game.run as game
 from lib.cworld import CWorld
 from model.grid import Grid
 from model.square import Percept
@@ -12,12 +12,6 @@ import random
 
 
 def get_game_state(world: CWorld):
-    # g = game.GridGame(2)
-    # g = game.GridGame.get(world)
-    # print(f"Game test is {g.items}")
-    # g = game.GridGame.get(world)
-    # print(f"Game test is {g.items}")
-    # sys.exit()
     return game.GridGame.get(world)
 
 
@@ -28,6 +22,8 @@ def choose_action(world: CWorld, percept):
     options = GlobalArgs.args(None)
 
     game = get_game_state(world)
+    # game.play()
+
 
     # Setup pygame display
     # items_map = {
@@ -37,6 +33,7 @@ def choose_action(world: CWorld, percept):
     #     world.degree_pos: "degree.jpeg"
     # }
     # game.play(items_map)
+    print("Moving on")
     for i in range(5):
         game.move()
 

@@ -1,4 +1,4 @@
-import game.game as game
+import game.run as game
 from lib.cworld import CWorld
 
 from args import args, GlobalArgs
@@ -15,20 +15,22 @@ if __name__ == "__main__":
             for _ in range(int(options.args.test_runs)):
                 game = CWorld()
                 game.play()
-    #             # TODO: Capture result
+                # TODO: Capture result
                 output = buf.getvalue()
                 print("Out")
                 print(output)
-    #             # TODO: Still buggy empty sequence and recursuve run
+                # TODO: Still buggy empty sequence and recursuve run
     else:
         world = CWorld()
 
+        # This all works fine from here! - moved to standard
         # items_map = {
         #     world.student_pos: "pikachu_win.png",
         #     **{c: "C.jpeg" for c in world.textbook_pos},
         #     world.filippos_pos: "steve.png",
         #     world.degree_pos: "degree.jpeg"
         # }
-        # game.play(items_map)
+        # game = game.GridGame.get(world)
+        # game.play()
 
         world.play()
