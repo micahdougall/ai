@@ -43,37 +43,11 @@ class Grid:
         draw.rect(self.screen, self.fill_color, rect)
         draw.rect(self.screen, self.border_color, rect, 1)
         if item:
-            # item.rect = item.rect.move(10, 10)
-            # item.render(
-            # item.position(
-                # 1, 1
-                # x + (self.square_size / 2) - (item.surface.get_width() / 2),
-                # y + (self.square_size / 2) - (item.surface.get_height() / 2)
-            # )
-
-            # item.x = x + self.square_size / 2 - item.surface.get_width() / 2
-            # item.y = y + self.square_size / 2 - item.surface.get_height() / 2
-            # (x - self.surface.get_width() / 2, y - self.surface.get_height() / 2)
-            # item.render(x + self.square_size/2, y + self.square_size/2)
-            # item.render()
-            # self.screen.blit(item.surface, item.rect)
-            # self.player = item
             self.add_obj(
                 item,
-                # 100,
-                # 100
                 x + (self.square_size / 2) - (item.surface.get_width() / 2),
                 y + (self.square_size / 2) - (item.surface.get_height() / 2)
             )
-
-    # def update(self, screen: Surface, pressed_keys):
-        # print(pressed_keys)
-        # if pressed_keys[K_UP]:
-        #     print("Yup")
-        #     self.player.move(screen, 10, 10)
-
-        # for obj in self.sprites:
-        #     screen.blit(obj.surface, obj.rect)
 
     def update(self, pressed_keys):
         # print(pressed_keys)
@@ -89,11 +63,7 @@ class Grid:
         print("Moved")
         self.player.move(self.square_size, 0)
         self.square(*self.current_square)
-        # self.current_square += (self.square_size, self.square_size)
-        # self.current_square = tuple(
-        #     a + self.square_size for a in self.current_square
-        # )
         self.current_square[0] += self.square_size
-        print(self.current_square)
+        # print(self.current_square)
         # self.screen.blit(self.player.surface, self.player.rect)
 

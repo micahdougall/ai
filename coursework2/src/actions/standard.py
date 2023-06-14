@@ -1,4 +1,7 @@
+import sys
+
 from args import GlobalArgs
+import game.game as game
 from lib.cworld import CWorld
 from model.grid import Grid
 from model.square import Percept
@@ -8,11 +11,34 @@ from argparse import Namespace
 import random
 
 
+def get_game_state(world: CWorld):
+    # g = game.GridGame(2)
+    # g = game.GridGame.get(world)
+    # print(f"Game test is {g.items}")
+    # g = game.GridGame.get(world)
+    # print(f"Game test is {g.items}")
+    # sys.exit()
+    return game.GridGame.get(world)
+
+
 def choose_action(world: CWorld, percept):
     """Selects an action based on the current Grid state and percepts"""
 
     grid = Grid.grid(world.size)
     options = GlobalArgs.args(None)
+
+    game = get_game_state(world)
+
+    # Setup pygame display
+    # items_map = {
+    #     world.student_pos: "pikachu_win.png",
+    #     **{c: "C.jpeg" for c in world.textbook_pos},
+    #     world.filippos_pos: "steve.png",
+    #     world.degree_pos: "degree.jpeg"
+    # }
+    # game.play(items_map)
+    for i in range(5):
+        game.move()
 
     # Update status if on new square
     if grid.route.count(grid.current.coords):

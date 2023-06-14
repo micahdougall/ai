@@ -23,12 +23,12 @@ if __name__ == "__main__":
     else:
         world = CWorld()
 
-        items_map = {
-            world.student_pos: "pikachu_win.png",
-            **{c: "C.jpeg" for c in world.textbook_pos},
-            world.filippos_pos: "steve.png",
-            world.degree_pos: "degree.jpeg"
-        }
-        game.play(items_map)
+        # items_map = {
+        #     world.student_pos: "pikachu_win.png",
+        #     **{c: "C.jpeg" for c in world.textbook_pos},
+        #     world.filippos_pos: "steve.png",
+        #     world.degree_pos: "degree.jpeg"
+        # }
+        # game.play(items_map)
 
         world.play()
