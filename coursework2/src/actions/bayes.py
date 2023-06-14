@@ -1,4 +1,4 @@
-from src.lib.cworld import CWorld
+from src.controller.cworld import CWorld
 from src.model.grid import Grid
 from src.model.square import Percept
 from src.model.util import printc

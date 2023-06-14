@@ -1,9 +1,9 @@
 import time
 
-from game.grid import Grid
-from game.objects import Actor
-from game.util import is_quit
-from lib.cworld import CWorld
+from view.grid import Grid
+from view.objects import Actor
+from view.util import is_quit
+# from controller.cworld import CWorld
 import pygame
 
 import sys
@@ -41,10 +41,14 @@ def is_quit(event: pygame.event.Event):
     )
 
 
-class GridGame:
-    _game_: ClassVar[Self] = None  # Used for 'singleton'
+class CGame:
+    # _game_: ClassVar[Self] = None  # Used for 'singleton'
 
+    # def __init__(self, items_map, world: CWorld):
     def __init__(self, items_map):
+
+        # self.world = CWorld
+
         pygame.init()
         self.clock = pygame.time.Clock()
         self.screen = pygame.display.set_mode([SCREEN_WIDTH, SCREEN_HEIGHT])
@@ -60,13 +64,18 @@ class GridGame:
         )
         self.screen.fill(SKY)
         self.grid_left.draw()
-        self.grid_right.draw()
+        # self.grid_right.draw()
+        # while True:
+        #     for event in pygame.event.get():
+        #         if is_quit(event):
+        #             sys.exit()
+        # pygame.display.flip()
         # pygame.display.flip()
         # self.clock.tick(30)
         # time.sleep(10)
 
-    def play(self, world: CWorld):
-
+    def play(self):
+        # self.world.play()
 
         while True:
             for event in pygame.event.get():
@@ -85,21 +94,23 @@ class GridGame:
         # pass
         self.grid_left.move_player()
 
-        # pygame.display.flip()
-        # self.clock.tick(30)
+        pygame.display.flip()
+        self.clock.tick(30)
+        time.sleep(1)
 
-    @classmethod
-    def get(cls, world: CWorld):
-        """Pseudo-singleton class method for Grid"""
-
-        if not cls._game_:
-            items_map = {
-                world.student_pos: "pikachu_win.png",
-                **{c: "C.jpeg" for c in world.textbook_pos},
-                world.filippos_pos: "steve.png",
-                world.degree_pos: "degree.jpeg"
-            }
-            cls._game_ = cls(items_map)
-            # time.sleep(3)
-        return cls._game_
+    # @classmethod
+    # # def get(cls, world: CWorld):
+    # def get(cls, items_map: dict):
+    #     """Pseudo-singleton class method for Grid"""
+    #
+    #     if not cls._game_:
+    #         # items_map = {
+    #         #     world.student_pos: "pikachu_win.png",
+    #         #     **{c: "C.jpeg" for c in world.textbook_pos},
+    #         #     world.filippos_pos: "steve.png",
+    #         #     world.degree_pos: "degree.jpeg"
+    #         # }
+    #         cls._game_ = cls(items_map)
+    #         # time.sleep(3)
+    #     return cls._game_
 

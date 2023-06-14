@@ -1,4 +1,6 @@
+from controller.grid_controller import GameController
 from model.util import printc
+
 
 import random
 
@@ -15,6 +17,9 @@ class CWorld:
         self.student_map = [['?' for _ in range(size)] for _ in range(size)]
         self.textbook_available = True
         self.percept_history = []
+        self.controller = GameController(
+            self.student_pos, self.filippos_pos, self.degree_pos, self.textbook_pos, size
+        )
 
     def generate_random_position(self, exclude_positions=[]):
         while True:
@@ -111,11 +116,13 @@ class CWorld:
         return 0 <= x < self.size and 0 <= y < self.size
 
     def choose_action(self, percept):
-        from args import GlobalArgs
-        import actions.standard as standard
+        self.controller.choose_action(percept)
 
-        options = GlobalArgs.args(None)
-        if options.args.algorithm == "standard":
-            return standard.choose_action(self, percept)
-        else:
-            print("Awaiting Bayesian implementation.")
+        # from args import GlobalArgs
+        # import actions.standard as standard
+        #
+        # options = GlobalArgs.args(None)
+        # if options.args.algorithm == "standard":
+        #     return standard.choose_action(self, percept)
+        # else:
+        #     print("Awaiting Bayesian implementation.")

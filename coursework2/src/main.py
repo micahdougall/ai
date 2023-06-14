@@ -1,5 +1,5 @@
-import game.run as game
-from lib.cworld import CWorld
+# import game.run as game
+from controller.cworld import CWorld
 
 from args import args, GlobalArgs
 from contextlib import redirect_stdout
@@ -19,9 +19,11 @@ if __name__ == "__main__":
                 output = buf.getvalue()
                 print("Out")
                 print(output)
-                # TODO: Still buggy empty sequence and recursuve run
+                # TODO: Still buggy empty sequence and recursive run
     else:
         world = CWorld()
+        # game = game.CGame.get(world)
+
 
         # This all works fine from here! - moved to standard
         # items_map = {

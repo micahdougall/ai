@@ -19,7 +19,7 @@ class Actor(sprite.Sprite):
     def __init__(self, file, screen) -> None:
         super().__init__()
         self.surface = image.load(
-            f"game/images/small/{file}"
+            f"view/images/small/{file}"
         ).convert_alpha()
         self.surface.set_colorkey((255, 255, 255), RLEACCEL)
         # self.rect = self.surface.get_rect().move(100, 10)

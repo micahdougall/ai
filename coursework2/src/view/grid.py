@@ -1,4 +1,4 @@
-from game.objects import Actor
+from view.objects import Actor
 
 from dataclasses import dataclass, field
 from pygame import draw, Rect, sprite, Surface

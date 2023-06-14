@@ -12,7 +12,7 @@ import random
 
 
 def get_game_state(world: CWorld):
-    return game.GridGame.get(world)
+    return game.CGame.get(world)
 
 
 def choose_action(world: CWorld, percept):
