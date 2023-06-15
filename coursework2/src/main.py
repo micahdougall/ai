@@ -1,9 +1,7 @@
+from args import args, GlobalArgs
 from controller.cworld import CWorld
 from controller.grid_controller import GameController
 
-from args import args, GlobalArgs
-from contextlib import redirect_stdout
-import io
 
 
 def cworld_with_states() -> GameController:
@@ -20,16 +18,17 @@ def cworld_with_states() -> GameController:
 if __name__ == "__main__":
     options = GlobalArgs.args(args())
 
-    # TODO: Refactor
     if options.args.test_runs:
-        with io.StringIO() as buf, redirect_stdout(buf):
-            print('redirected')
-            for _ in range(int(options.args.test_runs)):
-                controller = cworld_with_states()
-                pass
-
+        wins = 0
+        n = int(options.args.test_runs)
+        for _ in range(n):
+            controller = cworld_with_states()
+            print(controller.win)
+            if controller.win:
+                wins += 1
+        print(
+            f"Win rate from {n} runs => {round(wins / n * 100, 2)}%"
+        )
     else:
-        controller = cworld_with_states()
-
         # Output game results to pygame
-        controller.pygame()
+        cworld_with_states().pygame()

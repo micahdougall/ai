@@ -75,6 +75,7 @@ class CWorld:
 
         if self.student_pos == self.degree_pos:
             self.is_game_over = True
+            self.controller.win = True
             print("Student found the first-class degree and wins!")
 
         self.update_student_map(action)
@@ -112,7 +113,7 @@ class CWorld:
             if initial_map_printed:
                 self.print_state()
             else:
-                initial_map_printed = True
+                initial_map_printed = False
             percept = self.get_percept()
             print("Percept:", percept)
             action = self.choose_action(percept)

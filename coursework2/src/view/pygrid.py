@@ -1,11 +1,11 @@
-from view.objects import Actor
+from view.player import Player
 
 from dataclasses import dataclass, field
 from pygame import draw, Rect, Surface
 
 
 @dataclass
-class Grid:
+class PyGrid:
     screen: Surface
     grid_size: int
     square_size: int
@@ -13,8 +13,8 @@ class Grid:
     top_margin: int
     fill_color: tuple[int, int, int]
     border_color: tuple[int, int, int]
-    objects: dict[tuple[int, int], Actor] = field(default_factory=dict)
-    player: Actor = field(init=False)
+    objects: dict[tuple[int, int], Player] = field(default_factory=dict)
+    player: Player = field(init=False)
     current_square: list[int, int] = field(init=False)
 
     def __post_init__(self):
@@ -30,7 +30,7 @@ class Grid:
                     self.objects.get((j, i))
                 )
 
-    def square(self, x: int, y: int, item: Actor = None) -> None:
+    def square(self, x: int, y: int, item: Player = None) -> None:
         rect = Rect(x, y, self.square_size, self.square_size)
         draw.rect(self.screen, self.fill_color, rect)
         draw.rect(self.screen, self.border_color, rect, 1)
@@ -41,7 +41,7 @@ class Grid:
                 y + (self.square_size / 2) - (item.surface.get_height() / 2)
             )
 
-    def add_obj(self, item: Actor, x: float, y: float):
+    def add_obj(self, item: Player, x: float, y: float):
         item.rect = item.rect.move(x, y)
         self.screen.blit(item.surface, item.rect)
 

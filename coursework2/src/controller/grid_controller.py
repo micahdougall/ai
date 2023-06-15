@@ -1,7 +1,6 @@
 from args import GlobalArgs
 from model.grid import Grid
 from model.square import Percept
-from model.util import printc
 from view.run import CGame
 
 import random
@@ -23,8 +22,9 @@ class GameController:
         self.textbook_pos = textbook_pos
         self.grid_size = grid_size
         self.is_game_over = False
-        self.grid: Grid = Grid(self.grid_size)
+        self.grid = Grid(self.grid_size)
         self.options = GlobalArgs.args(None).args
+        self.win = False
 
     def choose_action(self, percept) -> str:
         """Selects an action based on the current Grid state and percepts"""
@@ -78,6 +78,7 @@ class GameController:
         if Percept.DRONING in self.grid.current.percepts:
             self.convert_to_python()
             if self.is_game_over:
+                self.win = True
                 return "C is dead!"
         else:
             if self.options.debug:
@@ -154,3 +155,6 @@ class GameController:
         }
         CGame(items_map).play(self.grid.route)
 
+
+def printc(text: str):
+    print(f"\033[93m{text}\033[0m")

@@ -2,7 +2,7 @@ from pygame import image, sprite, Surface
 from pygame.locals import RLEACCEL
 
 
-class Actor(sprite.Sprite):
+class Player(sprite.Sprite):
 
     def __init__(self, file, screen) -> None:
         super().__init__()

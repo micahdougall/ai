@@ -1,5 +1,5 @@
-from view.grid import Grid
-from view.objects import Actor
+from view.pygrid import PyGrid
+from view.player import Player
 
 import pygame
 from pygame.locals import K_ESCAPE
@@ -30,12 +30,12 @@ class CGame:
         self.screen = pygame.display.set_mode([SCREEN_WIDTH, SCREEN_HEIGHT])
 
         items = {
-            k: Actor(v, self.screen) for (k, v) in items_map.items()
+            k: Player(v, self.screen) for (k, v) in items_map.items()
         }
-        self.grid_left: Grid = Grid(
+        self.grid_left: PyGrid = PyGrid(
             self.screen, 4, 70, 80, 150, WHITE, BLACK, items
         )
-        self.grid_right = Grid(
+        self.grid_right = PyGrid(
             self.screen, 4, 70, 450, 150, WHITE, BLACK
         )
         self.screen.fill(SKY)
