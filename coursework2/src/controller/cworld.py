@@ -1,11 +1,15 @@
 from controller.grid_controller import GameController
-from model.util import printc
-
 
 import random
 
 
 class CWorld:
+    """
+    Amendments to CWorld class include the addition of the game
+    controller in the CWorld constructor, which is then delegated
+    to for choose_action.
+
+    """
     def __init__(self, controller: GameController, size=4):
         self.size = size
         self.grid = [[None for _ in range(size)] for _ in range(size)]
@@ -17,15 +21,12 @@ class CWorld:
         self.student_map = [['?' for _ in range(size)] for _ in range(size)]
         self.textbook_available = True
         self.percept_history = []
-        # self.controller = GameController(
-        #     self.student_pos, self.filippos_pos, self.degree_pos, self.textbook_pos, size
-        # )
-        self.controller = controller
+
         # Instantiate controller
+        self.controller = controller
         self.controller.__init__(
             self.student_pos, self.filippos_pos, self.degree_pos, self.textbook_pos, size
         )
-
 
     def generate_random_position(self, exclude_positions=[]):
         while True:
@@ -57,24 +58,24 @@ class CWorld:
         x, y = self.student_pos
         if action == "up" and x > 0:
             self.student_pos = (x - 1, y)
-            printc("Student moves up.")
+            print("Student moves up.")
         elif action == "down" and x < self.size - 1:
             self.student_pos = (x + 1, y)
-            printc("Student moves down.")
+            print("Student moves down.")
         elif action == "left" and y > 0:
             self.student_pos = (x, y - 1)
-            printc("Student moves left.")
+            print("Student moves left.")
         elif action == "right" and y < self.size - 1:
             self.student_pos = (x, y + 1)
-            printc("Student moves right.")
+            print("Student moves right.")
 
         if self.student_pos == self.filippos_pos or self.student_pos in self.textbook_pos:
             self.is_game_over = True
-            printc("Student is either affected by Filippos's Droning or has succumb to the Boring C textbooks!")
+            print("Student is either affected by Filippos's Droning or has succumb to the Boring C textbooks!")
 
         if self.student_pos == self.degree_pos:
             self.is_game_over = True
-            printc("Student found the first-class degree and wins!")
+            print("Student found the first-class degree and wins!")
 
         self.update_student_map(action)
 
@@ -122,16 +123,9 @@ class CWorld:
         return 0 <= x < self.size and 0 <= y < self.size
 
     def choose_action(self, percept):
+        """Delegating implementation to controller"""
+
         move = self.controller.choose_action(percept)
         if move == "C is dead!":
             self.is_game_over = True
         return move
-
-        # from args import GlobalArgs
-        # import actions.standard as standard
-        #
-        # options = GlobalArgs.args(None)
-        # if options.args.algorithm == "standard":
-        #     return standard.choose_action(self, percept)
-        # else:
-        #     print("Awaiting Bayesian implementation.")

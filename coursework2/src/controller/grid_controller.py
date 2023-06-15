@@ -1,50 +1,33 @@
-# from controller.cworld import CWorld
-from view.run import CGame
-
-
-import sys
-
 from args import GlobalArgs
-# import view.run as game
-# from lib.cworld import CWorld
 from model.grid import Grid
 from model.square import Percept
 from model.util import printc
+from view.run import CGame
 
-from argparse import Namespace
 import random
 
 
 class GameController:
 
-    def __init__(self, student_pos, filippos_pos, degree_pos, textbook_pos, grid_size):
-        print("test")
+    def __init__(
+            self,
+            student_pos,
+            filippos_pos,
+            degree_pos,
+            textbook_pos,
+            grid_size
+    ):
         self.student_pos = student_pos
         self.filippos_pos = filippos_pos
         self.degree_pos = degree_pos
         self.textbook_pos = textbook_pos
         self.grid_size = grid_size
-
         self.is_game_over = False
-
-        # items_map = {
-        #     self.student_pos: "pikachu_win.png",
-        #     **{c: "C.jpeg" for c in self.textbook_pos},
-        #     self.filippos_pos: "steve.png",
-        #     self.degree_pos: "degree.jpeg"
-        # }
-        # self.game = CGame(items_map).play()
-        self.grid = Grid(self.grid_size)
+        self.grid: Grid = Grid(self.grid_size)
         self.options = GlobalArgs.args(None).args
 
-    def choose_action(self, percept):
+    def choose_action(self, percept) -> str:
         """Selects an action based on the current Grid state and percepts"""
-
-        # options = GlobalArgs.args(None)
-
-        # for i in range(5):
-        #     self.game.move()
-        # exit()
 
         # Update status if on new square
         if self.grid.route.count(self.grid.current.coords):
@@ -89,7 +72,6 @@ class GameController:
                 square = self.grid.get_square(*move)
                 return self.grid.move_to(square)
 
-
     def avoid_hazard(self) -> str | None:
         """Handles hazards presented by percepts"""
 
@@ -125,7 +107,7 @@ class GameController:
             else:
                 if self.options.debug:
                     printc("Going back presents no viable route.")
-        # else:
+
         # Compare percepts with previous squares to guesstimate common risks
         if self.options.debug:
             printc(f"No safe options, cross-referencing percepts.")
@@ -141,7 +123,6 @@ class GameController:
                 printc(f"No common percepts found.")
             return None
 
-
     def convert_to_python(self) -> tuple[int, int]:
         """Attempts to convert a C stalwart to Python"""
 
@@ -152,14 +133,11 @@ class GameController:
             print(f"aiming at {guess}...", end="")
             if guess == self.filippos_pos:
                 print(f"\033[92mSuccessfully converted Filippos to a functional programming language!\033[0m\n")
-                # return None
                 self.is_game_over = True
-                # world.is_game_over = True
-                # Force exit as this isn't otherwise effected
-                # exit()
             else:
                 print(f"\033[91mPointer error! Failed to convert Filippos.\033[0m\n")
                 self.grid.filippos.remove(guess)
+
                 # If no book percepts, update failed guess to a safe square
                 if len(self.grid.current.percepts) == 1:
                     self.grid.safe.add(guess)
@@ -167,12 +145,12 @@ class GameController:
         else:
             print(f"\033[91mNo Python book in armoury.\033[0m\n")
 
-    def pygame(self):
+    def pygame(self) -> None:
         items_map = {
             self.student_pos: "pikachu_win.png",
             **{c: "C.jpeg" for c in self.textbook_pos},
             self.filippos_pos: "steve.png",
             self.degree_pos: "degree.jpeg"
         }
-        game = CGame(items_map).play(self.grid.route)
+        CGame(items_map).play(self.grid.route)
 
