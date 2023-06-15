@@ -38,7 +38,7 @@ class Grid:
         #     self.sprites.add(self.player)
 
     def square(self, x: int, y: int, item: Actor = None) -> None:
-        print(f"Draw: {x} - {y}")
+        # print(f"Draw: {x} - {y}")
         rect = Rect(x, y, self.square_size, self.square_size)
         draw.rect(self.screen, self.fill_color, rect)
         draw.rect(self.screen, self.border_color, rect, 1)
@@ -59,11 +59,14 @@ class Grid:
         self.screen.blit(item.surface, item.rect)
         # self.screen.blit(item.surface, item.rect)
 
-    def move_player(self):
+    def move_player(self, move: tuple[float, float]):
         print("Moved")
-        self.player.move(self.square_size, 0)
+        move_coords = tuple(x * self.square_size for x in move)
+        print(move_coords)
+        self.player.move(*move_coords)
         self.square(*self.current_square)
-        self.current_square[0] += self.square_size
+        self.current_square[0] += move_coords[0]
+        self.current_square[1] += move_coords[1]
         # print(self.current_square)
         # self.screen.blit(self.player.surface, self.player.rect)
 

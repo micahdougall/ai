@@ -1,5 +1,6 @@
 # import game.run as game
 from controller.cworld import CWorld
+from controller.grid_controller import GameController
 
 from args import args, GlobalArgs
 from contextlib import redirect_stdout
@@ -21,7 +22,10 @@ if __name__ == "__main__":
                 print(output)
                 # TODO: Still buggy empty sequence and recursive run
     else:
-        world = CWorld()
+        # Declare new instance but postpone instantiation
+        controller = object.__new__(GameController)
+
+        world = CWorld(controller)
         # game = game.CGame.get(world)
 
 
@@ -36,3 +40,4 @@ if __name__ == "__main__":
         # game.play()
 
         world.play()
+        controller.pygame()

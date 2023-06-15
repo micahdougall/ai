@@ -74,20 +74,72 @@ class CGame:
         # self.clock.tick(30)
         # time.sleep(10)
 
-    def play(self):
+    def play(self, route: list[tuple[int, int]]):
         # self.world.play()
+        print(f"Route: {route}")
+        pygame.time.set_timer(MOVE, 1000)
 
-        while True:
+        # import itertools
+
+        iterator = iter(route)
+        # print(iterator)
+
+
+        last = (0, 0)
+        route_has_next = True
+        while route_has_next:
+            # if new:
+            #     print(f"Next: {new}")
+            #     move = (new[0] - last[0], new[1] - last[1])
+            #     print(f"Move: {move}")
+            #     last = new
+            #     # self.grid_left.move_player(move)
+            #     # time.sleep(1)
+            # else:
+            #     route_has_next = None
+            #     print("Making next none")
+            # if move:
+            #     self.grid_left.move_player(move)
+            # else:
+            #     route_has_next = None
+
             for event in pygame.event.get():
+
                 if is_quit(event):
                     sys.exit()
-                elif event.type == pygame.KEYDOWN:
-                    self.grid_left.move_player()
+                # elif event.type == pygame.KEYDOWN:
+            #         self.grid_left.move_player()
                 elif event.type == MOVE:
-                    self.grid_left.move_player()
+                    new = next(iterator, None)
+                    if new:
+                        print(f"Next: {new}")
+                        move = (new[0] - last[0], new[1] - last[1])
+                        print(f"Move: {move}")
+                        last = new
+                        self.grid_left.move_player(move)
+                        # time.sleep(1)
+                    else:
+                        route_has_next = None
+                        print("Making next none")
+                    # move = next(iterator, None)
+                    # print(f"Move: {move}")
+                    # if move:
+                    # self.grid_left.move_player(move)
+                    # else:
+                    #     route_has_next = None
+            # # pygame.display.flip()
+            # self.clock.tick(30)
+        # pygame.quit()
+        #     for each in route:
+        #         print(each)
+        #         self.grid_left.move_player()
+        #         time.sleep(1)
             pygame.display.flip()
             self.clock.tick(30)
+        print("No more moves")
         # pygame.quit()
+
+
 
 
     def move(self):

@@ -18,19 +18,22 @@ import random
 class GameController:
 
     def __init__(self, student_pos, filippos_pos, degree_pos, textbook_pos, grid_size):
+        print("test")
         self.student_pos = student_pos
         self.filippos_pos = filippos_pos
         self.degree_pos = degree_pos
         self.textbook_pos = textbook_pos
         self.grid_size = grid_size
 
-        items_map = {
-            self.student_pos: "pikachu_win.png",
-            **{c: "C.jpeg" for c in self.textbook_pos},
-            self.filippos_pos: "steve.png",
-            self.degree_pos: "degree.jpeg"
-        }
-        self.game = CGame(items_map).play()
+        self.is_game_over = False
+
+        # items_map = {
+        #     self.student_pos: "pikachu_win.png",
+        #     **{c: "C.jpeg" for c in self.textbook_pos},
+        #     self.filippos_pos: "steve.png",
+        #     self.degree_pos: "degree.jpeg"
+        # }
+        # self.game = CGame(items_map).play()
         self.grid = Grid(self.grid_size)
         self.options = GlobalArgs.args(None).args
 
@@ -39,9 +42,9 @@ class GameController:
 
         # options = GlobalArgs.args(None)
 
-        for i in range(5):
-            self.game.move()
-        exit()
+        # for i in range(5):
+        #     self.game.move()
+        # exit()
 
         # Update status if on new square
         if self.grid.route.count(self.grid.current.coords):
@@ -92,6 +95,8 @@ class GameController:
 
         if Percept.DRONING in self.grid.current.percepts:
             self.convert_to_python()
+            if self.is_game_over:
+                return "C is dead!"
         else:
             if self.options.debug:
                 printc("Yawn...C books detected in the vicinity.")
@@ -147,9 +152,11 @@ class GameController:
             print(f"aiming at {guess}...", end="")
             if guess == self.filippos_pos:
                 print(f"\033[92mSuccessfully converted Filippos to a functional programming language!\033[0m\n")
+                # return None
+                self.is_game_over = True
                 # world.is_game_over = True
                 # Force exit as this isn't otherwise effected
-                exit()
+                # exit()
             else:
                 print(f"\033[91mPointer error! Failed to convert Filippos.\033[0m\n")
                 self.grid.filippos.remove(guess)
@@ -159,3 +166,13 @@ class GameController:
             self.grid.python_books -= 1
         else:
             print(f"\033[91mNo Python book in armoury.\033[0m\n")
+
+    def pygame(self):
+        items_map = {
+            self.student_pos: "pikachu_win.png",
+            **{c: "C.jpeg" for c in self.textbook_pos},
+            self.filippos_pos: "steve.png",
+            self.degree_pos: "degree.jpeg"
+        }
+        game = CGame(items_map).play(self.grid.route)
+

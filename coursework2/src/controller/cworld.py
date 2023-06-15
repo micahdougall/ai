@@ -6,7 +6,7 @@ import random
 
 
 class CWorld:
-    def __init__(self, size=4):
+    def __init__(self, controller: GameController, size=4):
         self.size = size
         self.grid = [[None for _ in range(size)] for _ in range(size)]
         self.student_pos = (0, 0)
@@ -17,9 +17,15 @@ class CWorld:
         self.student_map = [['?' for _ in range(size)] for _ in range(size)]
         self.textbook_available = True
         self.percept_history = []
-        self.controller = GameController(
+        # self.controller = GameController(
+        #     self.student_pos, self.filippos_pos, self.degree_pos, self.textbook_pos, size
+        # )
+        self.controller = controller
+        # Instantiate controller
+        self.controller.__init__(
             self.student_pos, self.filippos_pos, self.degree_pos, self.textbook_pos, size
         )
+
 
     def generate_random_position(self, exclude_positions=[]):
         while True:
@@ -116,7 +122,10 @@ class CWorld:
         return 0 <= x < self.size and 0 <= y < self.size
 
     def choose_action(self, percept):
-        self.controller.choose_action(percept)
+        move = self.controller.choose_action(percept)
+        if move == "C is dead!":
+            self.is_game_over = True
+        return move
 
         # from args import GlobalArgs
         # import actions.standard as standard
