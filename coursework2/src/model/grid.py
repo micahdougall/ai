@@ -1,8 +1,12 @@
-from model.square import Square, Percept
-
 from dataclasses import dataclass, field
-from pyre_extensions import override
+from functools import reduce
+from operator import mul
+from sre_parse import State
 from typing import ClassVar, Self
+
+from model.bayes import bayes_probability
+from model.square import Percept, Square
+from pyre_extensions import override
 
 
 @dataclass
@@ -10,11 +14,12 @@ class Grid:
     """Class to store the state of a Grid problem"""
 
     grid_size: int
+    book_count: int = 4
     squares: list[Square] = field(init=False)
     current: Square = field(init=False)
     stack: list[tuple[int, int]] = field(default_factory=list)
     route: list[tuple[int, int]] = field(default_factory=list)
-    safe: set[tuple[int, int]] = field(default_factory=set)
+    # safe: set[tuple[int, int]] = field(default_factory=set)
     risks: set[tuple[int, int]] = field(default_factory=set)
     hazards: set[tuple[int, int]] = field(default_factory=set)
     filippos: set[tuple[int, int]] = field(default_factory=set)
@@ -25,38 +30,47 @@ class Grid:
         """Setup grid and initial state"""
 
         self.squares = [
-            Square(x, y, self.grid_size)
+            Square(x, y, self.grid_size, self.book_count)
             for x in range(self.grid_size)
             for y in range(self.grid_size)
         ]
         self.current = self.get_square(0, 0)
         self.stack.append(self.current.coords)
         self.route.append(self.current.coords)
-        self.safe.add(self.current.coords)
+        # self.safe.add(self.current.coords)
 
-    def move_to(self, to: Square) -> str:
+    @property
+    def safe(self) -> set[tuple[int, int]]:
+        return {
+            s.coords for s in self.squares if s.state == State.SAFE
+        }
+    
+    # @property
+    # TODO: Risks as prop, simplify, 
+
+    def move_to(self, to_coords: tuple[int, int]) -> str:
         """Moves to a new square"""
 
         from_coords = self.current.coords
-        to_coords = to.coords
-        print(f"Moving from {from_coords} to {to_coords}")
+        # print(f"Moving from {from_coords} to {to_coords}")
 
         # Update state
         self.current.unexplored.discard(to_coords)
         self.stack.append(to_coords)
         self.route.append(to_coords)
-        self.safe.add(to_coords)
+        # self.safe.add(to_coords)
+        # print(f"About to move, safe are: {self.safe}")
 
-        self.current = to
+        self.current = self.get_square(*to_coords)
         self.current.unexplored.discard(from_coords)
-        return to.relative_to(from_coords)
+        return self.current.relative_to(from_coords)
 
     def back(self) -> str:
         """Moves back to previous square"""
 
         from_coords = self.stack.pop()
         to_coords = self.stack[-1]
-        print(f"Moving from {from_coords} to {to_coords}")
+        # print(f"Moving from {from_coords} to {to_coords}")
 
         self.route.append(to_coords)
         self.current = self.get_square(*to_coords)
@@ -104,7 +118,10 @@ class Grid:
         percepts = [Percept[p.upper()] for p in percept]
         self.current.percepts = percepts
 
-        self.safe.add(self.current.coords)
+        # self.safe.add(self.current.coords)
+        # self.current.book_prob = 0
+        # self.current.filippos_prob = 0
+        self.current.state = State.SAFE
         self._update_risks()
         self._update_hazards()
 
@@ -126,6 +143,15 @@ class Grid:
         for square in self.squares:
             square.options.difference_update(self.hazards)
 
+    def update_probabilities(self) -> None:
+        if Percept.DRONING in self.current.percepts:
+            for square in self.squares:
+                prob = self.square_probability(square)
+                print(f"Updated {square.book_prob} probability to {prob}")
+                square.book_prob = prob
+                # square.book_probability = self.square_probability(square)
+
+
     def get_square(self, x: int, y: int) -> Square | None:
         """Gets a square from the grid using supplied coordinates"""
 
@@ -134,19 +160,37 @@ class Grid:
             None
         )
 
-    def safe_options(self, percept: Percept) -> set[tuple[int, int]]:
+    def safest_options(self, percept: Percept) -> set[tuple[int, int]]:
         """Finds potentially safe squares by comparing previous percepts"""
 
-        safe_options = set()
+        options = set()
         for xy in [s for s in self.route if s != self.current.coords]:
             risks = self.current.shared_percepts(self.get_square(*xy), percept)
             if risks:
                 potential = [s for s in risks if s not in self.route]
                 for s in potential:
                     print(f"Book might be at {s}. ", end="")
-                    safe_options.update([o for o in self.current.unexplored if not o == s])
-                print(f"Potentially safe options are: {safe_options}")
-        return safe_options
+                    options.update([o for o in self.current.unexplored if not o == s])
+                print(f"Potentially safe options are: {options}")
+        return options
+    
+    # def square_probability(self, square: Square, prior: float = None) -> float:
+    def square_probability(self, square: Square) -> float:
+        
+        # Allows for prior=0 as named arg
+        # prior = square.book_probability if prior is None else prior
+
+        # Specificity equates to the cominbed likelihood of all other
+        # adjacent squares being safe, so that a negative result
+        # would be given (ie. no percept). 
+        square_probabilities = [
+            (1 - self.get_square(*s).book_prob) for s in square.options
+        ]
+        specificity = reduce(mul, square_probabilities)
+
+        # Uses square's prior probability
+        return bayes_probability(square.book_prob, specificity)
+
 
     @override
     def __str__(self):
@@ -161,6 +205,7 @@ class Grid:
             f"Options: {self.current.options or None}\n"
             f"Stack: {self.stack}\n"
             f"Route: {self.route}\n"
+            f"Probabilities: {[{s.coords: s.book_prob} for s in self.squares]}\n"
         )
 
     @classmethod

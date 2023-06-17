@@ -40,14 +40,23 @@ class CGame:
         )
         self.screen.fill(SKY)
         self.grid_left.draw()
+        pygame.display.flip()
+        self.clock.tick(30)
 
-    def play(self, route: list[tuple[int, int]]):
+    def play(self, route: list[tuple[int, int]], states: list[dict]):
         print(f"Route: {route}")
         pygame.time.set_timer(MOVE, 1000)
 
-        iterator = iter(route)
+        # iterator = iter(route)
+        iterator = iter(states)
+        print(f"States: {states}")
 
-        last = next(iterator, None)
+        first = next(iterator, None)
+        if first:
+            last = first.get("coords")
+            risks = first.get("risks")
+            safe = first.get("safe")
+            self.grid_left.update_squares(risks, safe)
         route_has_next = True
         while route_has_next:
             for event in pygame.event.get():
@@ -57,13 +66,21 @@ class CGame:
                 ):
                     sys.exit()
                 elif event.type == MOVE:
+                    pygame.time.wait(1000)
                     new = next(iterator, None)
+                    print(f"New: {new}")
                     if new:
-                        move = (new[1] - last[1], new[0] - last[0])
-                        last = new
+                        coords = new.get("coords")
+                        move = (coords[1] - last[1], coords[0] - last[0])
+                        last = coords
                         self.grid_left.move_player(move)
-                    else:
-                        route_has_next = None
+
+                        risks = new.get("risks")
+                        safe = new.get("safe")
+                        print(f"Updating grid with safe: {safe}...")
+                        self.grid_left.update_squares(risks, safe)
+                    # else:
+                    #     route_has_next = None
             pygame.display.flip()
             self.clock.tick(30)
         print("No more moves")
@@ -72,6 +89,7 @@ class CGame:
 
     def move(self):
         self.grid_left.move_player()
+        # self.update_squares()
 
         pygame.display.flip()
         self.clock.tick(30)

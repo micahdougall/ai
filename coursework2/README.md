@@ -1,32 +1,47 @@
-# CSF307 Artificial Intelligence - Coursework 1
+# CSF307 Artificial Intelligence - Coursework 2
 <p align="center">
-  <img src="resources/character.png" alt="drawing" width="100"/><br><br>
+  <img src="src/view/images/large/pikachu_win.png" alt="drawing" width="100"/><br><br>
   <img src="https://img.shields.io/github/followers/micahdougall?style=social" alt="drawing" width="100"/>
 </p>
 
 
-This README outlines the required setup to run the program, and outlines the chosen implementation for the Python integration task (see [Integration](#integration)). It is recommended to view this document in preview mode in an IDE or on [GitHub](https://github.com/micahdougall/ai/tree/main/coursework1).
+This README is a brief overview of the program structure with the aim of simplifying its execution. As usual, this document is best viewed in an IDE or on [GitHub](https://github.com/micahdougall/ai/tree/main/coursework2).
+
+There are essentially three components to the code:
+- [model](src/model) &rArr; manages the state of the grid as the game progresses.
+- [view](src/view) &rArr; provides a way to visualise the game results using the [pygame](https://www.pygame.org/news) library.
+- [controller](src/controller) &rArr; controls the program flow by integrating with `CWorld`.
+
 
 ## Contents
-- [PDDL files](#pddl)
 - [Requirements](#requirements)
-- [Usage](#usage)
-- [Integration](#integration)
-  - [HTTP](#http)
-  - [Parser](#parser)
+- [Directory Overview](#directory-overview)
+    - [Model](#model)
+    - [View](#view)
+    - [Controller](#controller)
+- [AI Implementation](#ai-implementation)
+  - [Standard](#standard)
+  - [Bayes](#bayes)
 - [Directory Tree Wiki](#directory-tree-wiki)
 - [References](#references)
 
 
-## PDDL
+# TODO!
 
-Various PDDL problem and domain files can be found in the [pddl/](pddl/) directory with each subdirectory corresponding to a different use case:
 
-- *[api/](pddl/api/)* &rArr; *These are the files used to send to the solver at runtime as they conform to the [PDDL 1.2 specification](https://planning.wiki/ref/pddl).*
-- *[enhanced/](pddl/enhanced/)* &rArr; *A slightly more complex set of files (including `function` declarations) are included for interest. These cannot be effected by the solver at [planning.domains](https://solver.planning.domains) as a later version of PDDL is required.*
-- *[parsed/](pddl/parsed/)* &rArr; *Owing to the ***Pre-Alpha*** nature of the custom parser (see [Parser](#parser)), some adjustments have been made to the original files in [api/](pddl/api/). Namely, the removal of `exists` and `forall` loops.*
-
-**NB: For DRY reasons, comments have only been included in the [enhanced/](pddl/enhanced/) versions of the files.**
+- Deal with 2 boring percepts
+- Check for looping logic
+- 
+- Tidy up basics of visuals - rubber duck
+- Degree hat background
+- Shoot python book
+- Second grid for minesweeper
+- Text display for pygame etc
+- Readme
+- Code comments
+- Submit and do Java
+- Requirements
+- Testing
 
 
 ## Requirements
@@ -54,205 +69,91 @@ source <new-venv-name>/bin/activate
 # install requirements
 python3 -m pip install -r requirements.txt
 ```
+
 ## Usage
 
-There are several possible CLI arguments which can be provided to [main.py](src/main.py) depending on the required execution:
+The program can either be run as a game output (using pygame) or as several iterations to test the performance (pygme output excluded). In either case, an `algorithm` *must* be selected:
 
-- `-s` &rArr; **solve**: *Will send the domain and problem file (in [pddl/api/](pddl/api)) to the solver at [planning.domains](https://solver.planning.domains) and handle the response. Omit this argument to use locally saved results in [resources/local/](resources/local) instead.*
-- `-d` &rArr; **domain**: *Denotes the domain file (exclude pddl extension) to use for solver requests, default=[runescape](pddl/api/runescape.pddl).*
-- `-p` &rArr; **problem**: *Specifies the problem file to use for solver requests. This is a required argument when using `-s`. Must be a valid filename in [pddl/api/](pddl/api) (exclude pddl extension)*
-- `-v` &rArr; **verbose**: *This will print the results in verbose mode, which includes the detailed response from the solver and the entire tree struture for the domain and problem. Only recommended for debugging failed requests to the solver.*
+- `-a | --algorithm [standard | bayes]` &rArr; **algorithm**: *Selects which algorithm to use for solving the puzzle. Following argument must either be `standard` or `bayes`, **required***.
+- `-t [n]` &rArr; **test**: *Used for testing; the program will execute the game `n` times and print the overall win percentage to the console.*
+- `-d` &rArr; **debug**: *This will print the results in debug mode, which includes details for the state of the grid at each move.*
 
-For example, to send a request to the solver for the [makesword](pddl/api/makesword.pddl) problem, run (from the root folder):
-
-```bash
-python3 src/bayse.py -s -p makesword
-```
-
-Or to print the locally stored response for the [makearrow](pddl/api/makearrow.pddl) problem:
+For example, to enjoy the game in its full glory:
 
 ```bash
-python3 src/bayse.py -p makearrow
+# Standard algorithm
+python3 src/main.py -a standard
+
+# Bayes algorithm
+python3 src/main.py -a bayes
 ```
 
-## Integration
+To test the performance of the algorithms by running the game 10 times:
 
-### HTTP
+```bash
+# Standard algorithm
+python3 src/main.py -a standard -t 10
 
-The integration with the solver API can be seen in [src/planner/http](src/planner/http). The [SolverRequest](src/planner/http/request.py) builds a simple HTTP request from the specified domain and problem files, and generates a [SolverResponse](src/planner/http/response.py) with the action details parsed from the solver response. The `__str__` method shows how each action is returned as a string to the console.
+# Bayes algorithm
+python3 src/main.py -a bayes -t 10
+```
 
-Eg:
+## AI Implementation
 
-<!-- ```bash -->
+### Standard
 
-<p>14 actions needed:</p>
-<span style="color:cyan">equip ⟹ </span><span style="color:mediumorchid">['player', 'pickaxe', 'shed']</span></br>
-<span style="color:cyan">move-to ⟹ </span><span style="color:mediumorchid">['player', 'shed', 'anvil']</span></br>
-<span style="color:cyan">move-to ⟹ </span><span style="color:mediumorchid">['player', 'anvil', 'mine']</span></br>
-<span style="color:cyan">mine-rocks ⟹ </span><span style="color:mediumorchid">['player', 'mine', 'pickaxe', 'rock', 'ore']</span></br>
-<span style="color:cyan">move-to ⟹ </span><span style="color:mediumorchid">['player', 'mine', 'furnace']</span></br>
-<span style="color:cyan">smelt-ore ⟹ </span><span style="color:mediumorchid">['player', 'furnace', 'ore', 'bars']</span></br>
-<span style="color:cyan">move-to ⟹ </span><span style="color:mediumorchid">['player', 'furnace', 'shed']</span></br>
-<span style="color:cyan">store ⟹ </span><span style="color:mediumorchid">['player', 'pickaxe', 'shed']</span></br>
-<span style="color:cyan">equip ⟹ </span><span style="color:mediumorchid">['player', 'hammer', 'shed']</span></br>
-<span style="color:cyan">move-to ⟹ </span><span style="color:mediumorchid">['player', 'shed', 'anvil']</span></br>
-<span style="color:cyan">smithe-bars ⟹ </span><span style="color:mediumorchid">['player', 'anvil', 'hammer', 'bars', 'sword']</span></br>
-<span style="color:cyan">move-to ⟹ </span><span style="color:mediumorchid">['player', 'anvil', 'shed']</span></br>
-<span style="color:cyan">store ⟹ </span><span style="color:mediumorchid">['player', 'sword', 'shed']</span></br>
-<span style="color:cyan">store ⟹ </span><span style="color:mediumorchid">['player', 'hammer', 'shed']</span></br></br>
+The standard implemetation uses a combination of saved states, process by elimination, and an element of randomness to navigate around the grid.
 
+The implementation can be seen in [game_controller.py](src/controller/game_controller.py) where each of the main functions mirror the suggested functions originally provided in `CWorld` (`choose_action`, `avoid_hazard`, `convert_to_python`).
 
+From a high level, the order of precendence is:
+- If **DRONING** is perceived, attempt to convert Filippos by randomly selecting an adjacent square *which has not already been eliminated as a possible Filipppos square*.
+- If **BORING** is detected:
+    - look first for a guarenteed *safe* adjacent square.
+    - else search the history of states for an unexplored safe route.
+    - else cross-reference the percept with previous percepts to see if there is a shared coordinate which *could* be a risk, then just avoid it.
+- If **no percepts**, select an adjacent square which hasn't yet been explored.
+- If none of the above, pick a random adjacent square.
 
-Solver responses from program executions are saved to [resources/responses/](resources/responses/). In case of failed requests, a cached version or each response is saved to [resources/local/](resources/local).
-
-*In the case of the `-s` arg not being passed, SolverResponse reads from the local file and generates the action output.*
-
-### Parser
-
-The author has made the (questionable) decision to attempt to create a manual parser for PDDL domain and problem files which can be seen in [src/planner/parser/](src/planner/parser/).
-
-The parser maps the actions, types and predicates contained in the specified domain-problem into useable complex object types, and implicitly allows for a simple validation by virtue of requiring certain types.
-
-- **Domain** &rArr; maps to a [Domain](src/planner/parser/domain.py) object containing the following sub-objects as attributes:
-    * **type** &rArr; a root object [Type](src/planner/parser/predicate.py) containing a hierarchy of subtypes.
-    * **predicate** &rArr; a list of [Predicate](src/planner/parser/predicate.py) objects for the domain.
-    * **action** &rArr; a list of [Action](src/planner/parser/action.py) objects for the domain.
-
-
-- **Problem** &rArr; maps to a [Domain](src/planner/parser/domain.py) object containing the following sub-objects as attributes:
-    * **objects** &rArr; a list of [Condition](src/planner/parser/predicate.py) types .
-    * **init** &rArr; a list of [Condition](src/planner/parser/predicate.py) objects for the problem.
-    * **goal** &rArr; a list of [Action](src/planner/parser/action.py) objects for the problem.
-
-Each of the child objects contains all the necessary sub-instances to know the state of a problem at any given stage (as may be useful, for example, in a custom solver implementation). So a `Condition` type includes as its children a `Predicate`, a list of `Parameters` and a `Negation` (true/false).
-
-With this compositional nature, the domain and problem attributes can then be access at runtime by, for example, calling the nested attributes on the domain. Eg:
+For example, the third sub-option when BORING is perceived uses the state in [grid.py](src/model/grid.py) to determine the possible safe options:
 
 ```python
-problem = Problem(...parse problem file...)
+  def safest_options(self, percept: Percept) -> set[tuple[int, int]]:
+      """Finds potentially safe squares by comparing previous percepts"""
 
-# Format print selected child attributes
-for condition in problem.init:
-    print(
-        f"Preposition: {condition.predicate.preposition}"
-        f"  -> takes Parameters:\n\t"
-        f"{(chr(10) + chr(9)).join([str(p) for p in condition.predicate.parameters])}\n"
-    )
-
-# Serialize to JSON
-print(problem.to_json(indent=4))
+      options = set()
+      for xy in [s for s in self.route if s != self.current.coords]:
+          risks = self.current.shared_percepts(self.get_square(*xy), percept)
+          if risks:
+              potential = [s for s in risks if s not in self.route]
+              for s in potential:
+                  print(f"Book might be at {s}. ", end="")
+                  options.update([o for o in self.current.unexplored if not o == s])
+              print(f"Potentially safe options are: {options}")
+      return options
 ```
 
-The serialized outputs for the domain and problem files are saved to [resources/objects/](resources/objects/) directory, with the filename determined be the parse step from the original PDDL file.
+### Bayes
 
-Snippet of a serialized predicate:
 
-```Json
-"init": [
-    {
-        "predicate": {
-            "preposition": "at",
-            "parameters": [
-                {
-                    "name": "p",
-                    "types": {
-                        "type": "player",
-                        "children": []
-                    }
-                },
-                {
-                    "name": "l",
-                    "types": {
-                        "type": "location",
-                        "children": [
-                            {
-                                "type": "anvil",
-                                "children": []
-                            },
-                            {
-                                "type": "farm",
-                                "children": []
-                            },
-                            {
-                                "type": "forest",
-                                "children": []
-                            },
-                            {
-                                "type": "furnace",
-                                "children": []
-                            },
-                            {
-                                "type": "mine",
-                                "children": []
-                            },
-                            {
-                                "type": "storage",
-                                "children": []
-                            }
-                        ]
-                    }
-                }
-            ]
-        }
-    }, 
-  
-    ...
-    
-]
-```
+
+
+
+## Directory Overview
+
+### Model
+
+
+
+### View
+
+
+### Controller
 
 ## Directory Wiki
 
 For reference, the following tree outlines the purpose of each folder or file in the project directory:
-```
-.
-├── README.md
-├── config.json                       # config variables
-├── pddl                              # root for pddl files
-│   ├── api                           # pddl files for solver 
-│   │   ├── makearrow.pddl
-│   │   ├── makesword.pddl
-│   │   └── runescape.pddl
-│   ├── enhanced                      # enhanced files with comments 
-│   │   ├── makearrow.pddl
-│   │   ├── makesword.pddl
-│   │   └── runescape.pddl
-│   └── parsed                        # simplified pddl files for parser
-│       ├── makearrow.pddl
-│       ├── makesword.pddl
-│       └── runescape.pddl
-├── requirements.txt
-├── resources
-│   ├── character.png
-│   ├── local                         # backup solver repsonses
-│   │   ├── makearrow-response.json
-│   │   └── makesword-response.json
-│   ├── objects                       # serialized parsed domain/problems
-│   │   ├── makearrow.json
-│   │   ├── makesword.json
-│   │   └── runescape.json
-│   └── responses                     # runtime responses from solver
-│       ├── makearrow-response.json   # will only exist following -s
-│       └── makesword-response.json
-└── src                               # application root
-    ├── __init__.py                   
-    ├── config.py                     # config variables
-    ├── main.py                       # entry point
-    ├── output.py                     # print helper
-    └── planner
-        ├── __init__.py
-        ├── http
-        │   ├── __init__.py
-        │   ├── request.py            # solver request handler
-        │   └── response.py           # solver response handler
-        └── parser
-            ├── __init__.py
-            ├── action.py             # parses actions
-            ├── domain.py             # parses domain
-            ├── predicate.py          # subclasses for object structure
-            ├── problem.py            # parses actions
-            └── util.py               # parse helper
-```
+
 
 ## References
 

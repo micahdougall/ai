@@ -1,26 +1,41 @@
-from args import args, GlobalArgs
+# from args import GlobalArgs, args
+from argparse import ArgumentParser, Namespace
 from controller.cworld import CWorld
-from controller.grid_controller import GameController
+from controller.game_controller import Algorithm, GameController
 
 
+def args() -> Namespace:
+    parser = ArgumentParser()
+    parser.add_argument(
+        "-a", "--algorithm", 
+        action="store", 
+        default="standard", 
+        choices=["standard", "bayes"]
+    )
+    parser.add_argument("-t", "--test-runs", action="store")
+    parser.add_argument("-d", "--debug", action="store_true")
+    return parser.parse_args()
 
-def cworld_with_states() -> GameController:
+
+def cworld_with_states(args) -> GameController:
     # Declare new instance but postpone instantiation
     controller = object.__new__(GameController)
 
     # Save states of CWorld in controller
     world = CWorld(controller)
+    controller.debug = True if args.debug else False
+    controller.algorithm = Algorithm[args.algorithm.upper()]
     world.play()
 
     return controller
 
 
 if __name__ == "__main__":
-    options = GlobalArgs.args(args())
-
-    if options.args.test_runs:
+    # options = GlobalArgs.args(args())
+    args = args()
+    if args.test_runs:
         wins = 0
-        n = int(options.args.test_runs)
+        n = int(args.test_runs)
         for _ in range(n):
             controller = cworld_with_states()
             print(controller.win)
@@ -31,4 +46,5 @@ if __name__ == "__main__":
         )
     else:
         # Output game results to pygame
-        cworld_with_states().pygame()
+        cworld_with_states(args)
+        # cworld_with_states().pygame()

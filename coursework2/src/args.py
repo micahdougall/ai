@@ -19,7 +19,7 @@ class GlobalArgs:
     _args_: ClassVar[Self] = None  # Used for 'singleton'
 
     @classmethod
-    def args(cls, arguments: Namespace | None) -> Namespace:
+    def args(cls, arguments: Namespace | None) -> Self:
         """Pseudo-singleton class method for Args"""
 
         if not cls._args_:

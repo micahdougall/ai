@@ -1,6 +1,6 @@
-from controller.grid_controller import GameController
-
 import random
+
+from controller.game_controller import GameController
 
 
 class CWorld:
