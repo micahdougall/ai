@@ -2,9 +2,11 @@ from dataclasses import InitVar, dataclass, field
 from enum import Enum
 from typing import Self
 
+from pyre_extensions import override
+
 Percept = Enum('Percept', 'BORING DRONING SUCCESS')
 Risk = Enum('Risk', 'BOOK FILIPPOS')
-State = Enum('State', 'UNKNOWN SAFE VISITED BOOK FLIPPOS')
+State = Enum('State', 'UNKNOWN SAFE VISITED BOOK FILIPPOS HAZARD')
 
 
 @dataclass
@@ -15,13 +17,18 @@ class Square:
     y: int
     grid_size: InitVar[int]
     book_count: InitVar[int]
+    # coords = x, y
     coords: tuple[int, int] = field(init=False)
     up: tuple[int, int] = field(init=False)
     down: tuple[int, int] = field(init=False)
     left: tuple[int, int] = field(init=False)
     right: tuple[int, int] = field(init=False)
-    options: set[tuple[int, int]] = field(default_factory=set)
-    unexplored: set[tuple[int, int]] = field(default_factory=set)
+    # up = (x - 1, y) if x > 0 else None
+    # down = (x + 1, y) if x < grid_size - 1 else None
+    # left = (x, y - 1) if y > 0 else None
+    # right = (x, y + 1) if y < grid_size - 1 else None
+    # options: set[tuple[int, int]] = field(default_factory=set)
+    # unexplored: set[tuple[int, int]] = field(default_factory=set)
     percepts: list[Percept] = field(default_factory=list)
     book_prob: float = field(init=False)
     filippos_prob: float = field(init=False)
@@ -35,12 +42,25 @@ class Square:
         self.down = (self.x + 1, self.y) if self.x < grid_size - 1 else None
         self.left = (self.x, self.y - 1) if self.y > 0 else None
         self.right = (self.x, self.y + 1) if self.y < grid_size - 1 else None
-        self.options = set(
-            filter(None, {self.up, self.down, self.left, self.right})
-        )
-        self.unexplored = self.options.copy()
+        # self.options = set(
+        #     filter(None, {self.up, self.down, self.left, self.right})
+        # )
+        # self.unexplored = self.options.copy()
         # self.safe = False
         self.book_prob = book_count / pow(grid_size, 2)
+        self.filippos_prob = 1 / pow(grid_size, 2)
+
+    @property
+    def options(self) -> set[tuple[int, int]]:
+        return set(
+            filter(None, {self.up, self.down, self.left, self.right})
+        )
+
+    # @property
+    # def options(self) -> set[tuple[int, int]]:
+    #     return set(
+    #         filter(None, {self.up, self.down, self.left, self.right})
+    #     )
 
     @property
     def state(self) -> State:
@@ -51,10 +71,10 @@ class Square:
 
     @state.setter
     def state(self, state: State) -> None:
-        if state == State.SAFE:
+        if state in [State.SAFE, State.VISITED]:
             self.book_prob = 0
             self.filippos_prob = 0
-        self._state = State.SAFE
+        self._state = state
 
     # @safe.setter
     # def safe(self, is_safe: bool, risk_type: Percept = None) -> None:
@@ -87,5 +107,6 @@ class Square:
             else None
         )
     
+    @override
     def __str__(self) -> str:
         return f"{self.coords} -> ({self.state.name}) -> {self.book_prob}"

@@ -1,16 +1,13 @@
-from enum import Enum
+import random
+# from enum import Enum
 from typing import Any
-from coursework2.src.model.square import State
 
 # from args import GlobalArgs
+from model.enums import Algorithm
 from model.grid import Grid
-from model.square import Percept
+from model.square import Percept, State
 from view.run import CGame
 
-import random
-
-
-Algorithm = Enum('Algorithm', 'STANDARD BAYES')
 
 
 class GameController:
@@ -27,31 +24,37 @@ class GameController:
         self.filippos_pos = filippos_pos
         self.degree_pos = degree_pos
         self.textbook_pos = textbook_pos
-        self.is_game_over = False
+        # self.is_game_over = False
         self.grid = Grid(grid_size, 4)
         self.debug = False
         self.algorithm = Algorithm.STANDARD
         self.win = False
         self.states = []
 
-    def choose_action(self, percept) -> str:
+    def choose_action(self, percept: str) -> str:
         """Selects an action based on the current Grid state and percepts"""
 
         self.log("\nChoose action...", warn=True, force=True)
 
+        self.grid.update_states(percept)
         # Update status if on new square
-        if self.grid.route.count(self.grid.current.coords):
-            if not percept:
-                print(f"No percept, adding to safe: {self.grid.current.options}")
-                for s in self.grid.current.options:
-                    # self.grid.safe.add(s)
-                    self.grid.get_square(*s).state = State.SAFE
-            else:
-                self.grid.update_percepts(percept)
-                if self.algorithm == Algorithm.BAYES:
-                    self.log("Updating probabilities", warn=True, force=True)
-                    self.grid.update_probabilities()
-            self.grid.risks.difference_update(self.grid.safe)
+        # if self.grid.route.count(self.grid.current.coords):
+        # current = self.grid.current
+
+        # if not current.state == State.VISITED:
+        #     current.state = State.VISITED
+        #     if not percept:
+        #         print(f"No percept, updating adjacents as safe")
+        #         for s in current.options:
+        #             # self.grid.safe.add(s)
+        #             self.grid.get_square(*s).state = State.SAFE
+        #     else:
+        #         self.grid.update_percepts(percept)
+        #         # TODO: Move this down
+        if self.algorithm == Algorithm.BAYES:
+            self.log("Updating probabilities", warn=True, force=True)
+            self.grid.update_probabilities()
+            # self.grid.risks.difference_update(self.grid.safe)
 
         # Print grid after update if in debug mode
         self.log(self.grid)
@@ -59,7 +62,9 @@ class GameController:
             self.log(s)
 
         # Strategy for percepts
-        if self.grid.current.percepts:
+        current = self.grid.current
+
+        if current.percepts:
             avoidance = self.avoid_hazard()
             if avoidance:
                 return avoidance
@@ -67,26 +72,37 @@ class GameController:
             self.log("Nothing to see here.")
 
         # Check for unexplored squares in valid adjacent coordinates
-        if self.grid.current.unexplored:
+        unexplored = self.grid.unknown.intersection(
+            current.options
+        )
+        if unexplored:
             self.log(f"Unexplored new option from current square.", warn=True)
-            take_a_punt = random.choice(
-                list(self.grid.current.unexplored)
+            # take_a_punt = random.choice(
+            #     list(current.unexplored)
+            # )
+            return self.move_to(
+                random.choice(list(unexplored))
             )
-            return self.move_to(take_a_punt)
         else:
             # Else pick a random safe adjacent square
             self.log("Picking a random, safe square from available options.", warn=True)
-            if self.grid.current.options:
-                move = random.choice(
-                    list(self.grid.current.options)
+            safe = self.grid.safe.intersection(
+                current.options
+            )
+            if safe:
+                # move = random.choice(
+                #     list(current.options)
+                # )
+                # return self.move_to(move)
+                return self.move_to(
+                    random.choice(list(safe))
                 )
-                return self.move_to(move)
             else:
                 self.log(
                     "No option possible"
-                    f"Route taken: {self.grid.route}"
+                    # f"Route taken: {self.grid.route}"
                     f"Stack: {self.grid.stack}"
-                    f"Endpoint: {self.grid.current.coords}",
+                    f"Endpoint: {current.coords}",
                     warn=True
                 )
                 exit(-1)
@@ -96,8 +112,8 @@ class GameController:
 
         if Percept.DRONING in self.grid.current.percepts:
             self.convert_to_python()
-            if self.is_game_over:
-                self.win = True
+            if self.win:
+                # self.win = True
                 return "C is dead!"
         else:
             self.log("Yawn...C books detected in the vicinity.", warn=True)
@@ -105,25 +121,30 @@ class GameController:
         # TODO: Handle when 2 boring percepts exist
 
         # Look for a guaranteed safe option
-        safe_unexplored = self.grid.safe & set(self.grid.current.unexplored)
+        # safe_unexplored = self.grid.safe & set(self.grid.current.unexplored)
+        safe_unexplored = self.grid.safe.intersection(
+            self.grid.current.options
+        )
         # print(f"From {self.grid.current.coords}, safe are {self.grid.safe}")
         # print(f"From {self.grid.current.coords}, unexplored are {self.grid.current.unexplored}")
         if safe_unexplored:
-            self.log(f"Safe unexplored options exist at: {safe_unexplored}.", warn=True, force=True)
-            random_safe = random.choice(list(safe_unexplored))
-            return self.move_to(random_safe)
+            self.log(
+                f"Safe unexplored options exist at: {safe_unexplored}.", 
+                warn=True, force=True
+            )
+            # random_safe = random.choice(list(safe_unexplored))
+            return self.move_to(
+                random.choice(list(safe_unexplored))
+            )
 
         # If nothing is safe, consider going back a step
-        elif len(self.grid.stack) > 1 and self.grid.safe_path():
-            self.log("Stack has a viable route.", warn=True)
-            self.states.append({
-                "coords": self.grid.current.coords,
-                "risks": self.grid.risks,
-                "safe": self.grid.safe
-            })
-            return self.grid.back()
-        else:
-            self.log("Going back presents no viable route.", warn=True)
+        elif len(self.grid.stack) > 1:
+            if self.grid.safe_unexplored_path():
+                self.log("Stack has a viable route.", warn=True)
+                self.add_states()
+                return self.grid.back()
+            else:
+                self.log("Going back presents no viable route.", warn=True)
             # if not grid.is_path_explored():
             #     # More to discover from last position
             #     self.log("Stack not fully explored, moving back.", warn=True)
@@ -136,17 +157,21 @@ class GameController:
             # else:
             #     self.log("Going back presents no viable route.", warn=True)
 
-        # Compare percepts with previous squares to guesstimate common risks
-        self.log(f"No safe options, cross-referencing percepts.", warn=True)
-        possibly_safe = self.grid.safest_options(Percept.BORING)
+            # Compare percepts with previous squares to guesstimate common risks
+            self.log(f"No safe options, cross-referencing percepts.", warn=True)
+            possibly_safe = self.grid.safest_options(Percept.BORING)
 
-        if possibly_safe:
-            self.log(f"Common percepts found, selecting a possible safe option.", warn=True)
-            chance_it = random.choice(list(possibly_safe))
-            return self.move_to(chance_it)
-        else:
-            self.log(f"No common percepts found.", warn=True)
-            return None
+            if possibly_safe:
+                self.log(
+                    f"Common percepts found, selecting a possible safe option.", warn=True
+                )
+                # chance_it = random.choice(list(possibly_safe))
+                return self.move_to(
+                    random.choice(list(possibly_safe))
+                )
+            else:
+                self.log(f"No common percepts found.", warn=True)
+        return None
 
     def convert_to_python(self) -> tuple[int, int]:
         """Attempts to convert a C stalwart to Python"""
@@ -160,7 +185,7 @@ class GameController:
             print(f"aiming at {guess}...", end="")
             if guess == self.filippos_pos:
                 print(f"\033[92mSuccessfully converted Filippos to a functional programming language!\033[0m\n")
-                self.is_game_over = True
+                self.win = True
             else:
                 print(f"\033[91mPointer error! Failed to convert Filippos.\033[0m\n")
                 self.grid.filippos.remove(guess)
@@ -176,13 +201,16 @@ class GameController:
     def move_to(self, to_coords: tuple[int, int]) -> str:
         """Updates state before moving to a new square"""
 
+        # self.log(f"Updated controller state: {self.states}")
+        self.add_states()
+        return self.grid.move_to(to_coords)
+
+    def add_states(self) -> None:
         self.states.append({
             "coords": self.grid.current.coords,
-            "risks": self.grid.risks.copy(),
+            # "risks": self.grid.risks.copy(),
             "safe": self.grid.safe.copy()
         })
-        self.log(f"Updated controller state: {self.states}")
-        return self.grid.move_to(to_coords)
 
     def pygame(self) -> None:
         items_map = {
