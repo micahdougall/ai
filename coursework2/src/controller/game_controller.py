@@ -58,8 +58,8 @@ class GameController:
 
         # Print grid after update if in debug mode
         self.log(self.grid)
-        for s in self.grid.squares:
-            self.log(s)
+        # for s in self.grid.squares:
+        #     self.log(s)
 
         # Strategy for percepts
         current = self.grid.current
@@ -86,23 +86,26 @@ class GameController:
         else:
             # Else pick a random safe adjacent square
             self.log("Picking a random, safe square from available options.", warn=True)
-            safe = self.grid.safe.intersection(
-                current.options
+            # safe = self.grid.safe.intersection(
+            #     current.options
+            # )
+            viable = current.options.intersection(
+                self.grid.viable
             )
-            if safe:
+            if viable:
                 # move = random.choice(
                 #     list(current.options)
                 # )
                 # return self.move_to(move)
                 return self.move_to(
-                    random.choice(list(safe))
+                    random.choice(list(viable))
                 )
             else:
                 self.log(
-                    "No option possible"
+                    "No option possible\n"
                     # f"Route taken: {self.grid.route}"
-                    f"Stack: {self.grid.stack}"
-                    f"Endpoint: {current.coords}",
+                    f"Stack: {self.grid.stack}\n"
+                    f"Endpoint: {current.coords}\n",
                     warn=True
                 )
                 exit(-1)

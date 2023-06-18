@@ -61,6 +61,14 @@ class Grid:
         return {
             s.coords for s in self.squares if s.state == State.UNKNOWN
         }
+    
+    @property
+    def viable(self) -> set[tuple[int, int]]:
+        return {
+            s.coords for s in self.squares if s.state in [
+                State.UNKNOWN, State.SAFE, State.VISITED
+            ]
+        }
 
     @property
     def hazards(self) -> set[tuple[int, int]]:
@@ -215,7 +223,7 @@ class Grid:
         # self._update_risks()
         # self._update_hazards()
 
-        print("Updating percepts...")
+        # print("Updating percepts...")
 
         if Percept.DRONING in percepts:
             potentials = [
@@ -240,7 +248,7 @@ class Grid:
             #     [r for r in self.current.options if r not in self.safe]
             # )
             books = [p for p in percepts if p == Percept.BORING]
-            print(f"Books: {books}")
+            # print(f"Books: {books}")
             books_and_unknown = self.current.options.intersection(
                 self.unknown.union(self.books, self.hazards)
             )
@@ -248,7 +256,7 @@ class Grid:
             #     self.unknown.union(self.books)
             # ):
             if len(books) == len(books_and_unknown):
-                print("Lengths are the same")
+                # print("Lengths are the same")
                 for s in self.current.options:
                     square = self.get_square(*s)
                     if square.state == State.UNKNOWN:
@@ -258,7 +266,7 @@ class Grid:
                     self.unknown.union(self.books, self.hazards, self.filippos)
                 )
                 if len(percepts) == len(hazards_and_unknown):
-                    print("Lengths are the same")
+                    # print("Lengths are the same")
                     for s in self.current.options:
                         square = self.get_square(*s)
                         if square.state == State.UNKNOWN:
@@ -299,19 +307,20 @@ class Grid:
     def __str__(self):
         """Returns Grid state"""
 
-        return (
-            # f"Hazards: {self.hazards or None}\n"
-            # f"Risks: {self.risks or None}\n"
-            f"Filippos: {self.filippos or None}\n"
-            f"Visited: {self.visited or None}\n"
-            f"Safe: {self.safe or None}\n"
-            f"Unknown: {self.unknown or None}\n"
-            f"Hazards: {self.hazards or None}\n"
-            f"Books: {self.books or None}\n"
-            f"Stack: {self.stack}\n"
-            # f"Route: {self.route}\n"
-            f"Probabilities: {[{s.coords: s.book_prob} for s in self.squares]}\n"
-        )
+        # return (
+        #     # f"Hazards: {self.hazards or None}\n"
+        #     # f"Risks: {self.risks or None}\n"
+        #     f"Filippos: {self.filippos or None}\n"
+        #     f"Visited: {self.visited or None}\n"
+        #     f"Safe: {self.safe or None}\n"
+        #     f"Unknown: {self.unknown or None}\n"
+        #     f"Hazards: {self.hazards or None}\n"
+        #     f"Books: {self.books or None}\n"
+        #     f"Stack: {self.stack}\n"
+        #     # f"Route: {self.route}\n"
+        #     f"Probabilities: {[{s.coords: s.book_prob} for s in self.squares]}\n"
+        # )
+        return ("\t" + "\n\t".join([str(s) for s in self.squares]))
 
     # @classmethod
     # def grid(cls, size: int):
