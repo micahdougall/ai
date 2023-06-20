@@ -1,7 +1,9 @@
 # from args import GlobalArgs, args
 from argparse import ArgumentParser, Namespace
 from controller.cworld import CWorld
-from controller.game_controller import Algorithm, GameController
+from controller.game_controller import GameController
+from logger import Logger
+from model.enums import Algorithm
 
 
 def args() -> Namespace:
@@ -23,7 +25,6 @@ def cworld_with_states(args) -> GameController:
 
     # Save states of CWorld in controller
     world = CWorld(controller)
-    controller.debug = True if args.debug else False
     controller.algorithm = Algorithm[args.algorithm.upper()]
     world.play()
 
@@ -31,8 +32,9 @@ def cworld_with_states(args) -> GameController:
 
 
 if __name__ == "__main__":
-    # options = GlobalArgs.args(args())
     args = args()
+    Logger.logger(debug=args.debug)
+
     if args.test_runs:
         wins = 0
         n = int(args.test_runs)

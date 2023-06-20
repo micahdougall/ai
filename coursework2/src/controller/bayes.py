@@ -7,6 +7,7 @@ from functools import reduce
 @dataclass
 class Square:
     book_probability: float
+    ame: str = "Hello"
 
 
 
@@ -48,5 +49,11 @@ def square_probability(other_squares: list[Square], prior: float = None) -> floa
 
 
 
-squares = [Square(.4) for _ in range(3)]
-print(f"Squares: {square_probability(squares, prior=0.001)}")
+squares = [Square(_) for _ in range(3)]
+# new = square_probability(squares, prior=0.001)
+# print(f"Squares: {new}")
+
+
+
+a = sorted(squares, key=lambda x: x.book_probability)
+print(f"a: {a}")

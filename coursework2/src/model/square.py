@@ -1,12 +1,8 @@
+from model.enums import Percept, State
+
 from dataclasses import InitVar, dataclass, field
-from enum import Enum
-from typing import Self
-
 from pyre_extensions import override
-
-Percept = Enum('Percept', 'BORING DRONING SUCCESS')
-Risk = Enum('Risk', 'BOOK FILIPPOS')
-State = Enum('State', 'UNKNOWN SAFE VISITED BOOK FILIPPOS HAZARD')
+from typing import Self
 
 
 @dataclass
@@ -17,18 +13,11 @@ class Square:
     y: int
     grid_size: InitVar[int]
     book_count: InitVar[int]
-    # coords = x, y
     coords: tuple[int, int] = field(init=False)
     up: tuple[int, int] = field(init=False)
     down: tuple[int, int] = field(init=False)
     left: tuple[int, int] = field(init=False)
     right: tuple[int, int] = field(init=False)
-    # up = (x - 1, y) if x > 0 else None
-    # down = (x + 1, y) if x < grid_size - 1 else None
-    # left = (x, y - 1) if y > 0 else None
-    # right = (x, y + 1) if y < grid_size - 1 else None
-    # options: set[tuple[int, int]] = field(default_factory=set)
-    # unexplored: set[tuple[int, int]] = field(default_factory=set)
     percepts: list[Percept] = field(default_factory=list)
     book_prob: float = field(init=False)
     filippos_prob: float = field(init=False)
@@ -42,11 +31,6 @@ class Square:
         self.down = (self.x + 1, self.y) if self.x < grid_size - 1 else None
         self.left = (self.x, self.y - 1) if self.y > 0 else None
         self.right = (self.x, self.y + 1) if self.y < grid_size - 1 else None
-        # self.options = set(
-        #     filter(None, {self.up, self.down, self.left, self.right})
-        # )
-        # self.unexplored = self.options.copy()
-        # self.safe = False
         self.book_prob = book_count / pow(grid_size, 2)
         self.filippos_prob = 1 / pow(grid_size, 2)
 
@@ -55,38 +39,37 @@ class Square:
         return set(
             filter(None, {self.up, self.down, self.left, self.right})
         )
-
-    # @property
-    # def options(self) -> set[tuple[int, int]]:
-    #     return set(
-    #         filter(None, {self.up, self.down, self.left, self.right})
-    #     )
+    
+    @property
+    def risk(self) -> float:
+        return self.book_prob + self.filippos_prob
 
     @property
     def state(self) -> State:
         return self._state
-        # return (
-        #     self.book_prob == 0 and self.filippos_prob == 0
-        # )
 
     @state.setter
     def state(self, state: State) -> None:
         if state in [State.SAFE, State.VISITED]:
             self.book_prob = 0
             self.filippos_prob = 0
+        elif state == State.BOOK:
+            self.filippos_prob = 0
+            self.book_prob = 1
+        elif state == State.FILIPPOS:
+            self.filippos_prob = 1
+            self.book_prob = 0
         self._state = state
 
-    # @safe.setter
-    # def safe(self, is_safe: bool, risk_type: Percept = None) -> None:
-    #     if not is_safe:
-    #         if risk_type is None:
-    #             raise ValueError(
-    #                 "Missing 'risk_type' for setter 'safe' when 'is_safe=False'"
-    #             )
-    #         elif risk_type == Risk.FILIPPOS:
-
     def relative_to(self, other: tuple[int, int]) -> str:
-        """Gets the relative direction of another square as a string"""
+        """Gets the relative direction of another square as a string
+
+        Args:
+            other: the other coordinates to determine the move to.
+
+        Returns:
+            a string representation of the direction required to move.
+        """
 
         x, y = other
         return {
@@ -99,14 +82,22 @@ class Square:
     def shared_percepts(
             self, other: Self, percept: Percept
     ) -> set[tuple[int, int]] | None:
-        """Returns the adjacent squares which are common to both squares if a percept exists"""
+        """Returns the adjacent squares which are common to both squares if a percept exists
+
+        Args:
+            other: the other Square to compare percepts with.
+            percept: the percept to compare.
+
+        Returns:
+            a set of coordinates which are shared between the two squares.
+        """
 
         return (
             set(self.options) & set(other.options) 
             if percept in other.percepts 
             else None
         )
-    
+
     @override
     def __str__(self) -> str:
         return f"{self.coords} -> ({self.state.name}) -> {self.book_prob}"

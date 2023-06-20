@@ -42,6 +42,7 @@ There are essentially three components to the code:
 - Submit and do Java
 - Requirements
 - Testing
+- Rmove book if bayes
 
 
 ## Requirements
