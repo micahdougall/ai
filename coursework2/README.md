@@ -1,6 +1,6 @@
 # CSF307 Artificial Intelligence - Coursework 2
 <p align="center">
-  <img src="src/view/images/large/pikachu_win.png" alt="drawing" width="100"/><br><br>
+  <img src="../large/pikachu_win.png" alt="drawing" width="100"/><br><br>
   <img src="https://img.shields.io/github/followers/micahdougall?style=social" alt="drawing" width="100"/>
 </p>
 
@@ -27,22 +27,9 @@ There are essentially three components to the code:
 
 
 # TODO!
-
-
-- Deal with 2 boring percepts
-- Check for looping logic
-- 
-- Tidy up basics of visuals - rubber duck
-- Degree hat background
-- Shoot python book
-- Second grid for minesweeper
-- Text display for pygame etc
 - Readme
-- Code comments
-- Submit and do Java
 - Requirements
-- Testing
-- Rmove book if bayes
+- Probabilities for standard
 
 
 ## Requirements

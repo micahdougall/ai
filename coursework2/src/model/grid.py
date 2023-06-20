@@ -167,17 +167,8 @@ class Grid:
             )
             if shared:
                 likely = shared.difference(self.all_safe)
-                # likely = {
-                #     s for s in shared if self.get_square(*s).state in [
-                #         State.UNKNOWN, State.BOOK, State.FILIPPOS, State.HAZARD
-                #     ]
-                # }
-                # for s in possible:
                 self.logger.log(f"Book might be at one of {likely}. ")
                 options.difference_update(likely)
-                # options.update(
-                    # [o for o in self.current.options if not o == s]
-                # )
         self.logger.log(f"Potentially safe options are: {options}")
         return options
     
@@ -215,13 +206,6 @@ class Grid:
             potentials = self.current.options.difference(
                 self.all_safe.union(self.books)
             )
-            # potentials = [
-            #     r for r in self.current.options
-            #     if self.get_square(*r).state not in [
-            #             State.VISITED, State.SAFE, State.BOOK,
-            #         ]
-            # ]
-            # If there have already been Filippos percepts...
             if len(self.filippos):
                 # Reduce possible locations to common squares
                 self.filippos = self.filippos & set(potentials)

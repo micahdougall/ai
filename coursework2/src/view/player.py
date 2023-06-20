@@ -6,9 +6,7 @@ class Player(sprite.Sprite):
 
     def __init__(self, file, screen) -> None:
         super().__init__()
-        self.surface = image.load(
-            f"view/images/small/{file}"
-        ).convert_alpha()
+        self.surface = image.load(file).convert_alpha()
         self.surface.set_colorkey((255, 255, 255), RLEACCEL)
         self.rect = self.surface.get_rect()
         self.screen: Surface = screen

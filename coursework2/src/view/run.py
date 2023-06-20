@@ -43,20 +43,16 @@ class CGame:
         pygame.display.flip()
         self.clock.tick(30)
 
-    def play(self, route: list[tuple[int, int]], states: list[dict]):
-        print(f"Route: {route}")
+    def play(self, states: list[dict]):
         pygame.time.set_timer(MOVE, 1000)
 
-        # iterator = iter(route)
         iterator = iter(states)
-        print(f"States: {states}")
+        state = next(iterator, None)
 
-        first = next(iterator, None)
-        if first:
-            last = first.get("coords")
-            risks = first.get("risks")
-            safe = first.get("safe")
-            self.grid_left.update_squares(risks, safe)
+        print(f"State: {state}")
+
+        if state:
+            self.grid_left.update_squares(state)
         route_has_next = True
         while route_has_next:
             for event in pygame.event.get():
@@ -68,29 +64,27 @@ class CGame:
                 elif event.type == MOVE:
                     pygame.time.wait(1000)
                     new = next(iterator, None)
-                    print(f"New: {new}")
+                    print(f"State: {new}")
                     if new:
                         coords = new.get("coords")
-                        move = (coords[1] - last[1], coords[0] - last[0])
-                        last = coords
+                        move = (
+                            coords[1] - state.get("coords")[1],
+                            coords[0] - state.get("coords")[0]
+                        )
+                        state = new
+                        self.grid_left.update_squares(new)
                         self.grid_left.move_player(move)
-
-                        risks = new.get("risks")
-                        safe = new.get("safe")
-                        print(f"Updating grid with safe: {safe}...")
-                        self.grid_left.update_squares(risks, safe)
-                    # else:
-                    #     route_has_next = None
+                    else:
+                        route_has_next = False
             pygame.display.flip()
-            self.clock.tick(30)
+            self.clock.tick(5)
         print("No more moves")
         time.sleep(5)
         # pygame.quit()
 
     def move(self):
         self.grid_left.move_player()
-        # self.update_squares()
 
         pygame.display.flip()
-        self.clock.tick(30)
-        time.sleep(1)
+        # self.clock.tick(30)
+        # time.sleep(1)

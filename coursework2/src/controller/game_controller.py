@@ -22,7 +22,7 @@ class GameController:
         self.filippos_pos = filippos_pos
         self.degree_pos = degree_pos
         self.textbook_pos = textbook_pos
-        self.grid = Grid(grid_size, 4, )
+        self.grid = Grid(grid_size, 4)
         self.debug = False
         self.algorithm = Algorithm.STANDARD
         self.win = False
@@ -41,6 +41,11 @@ class GameController:
 
         self.logger.log("\nChoosing action...", warn=True, force=True)
 
+        # Check route length in case impossible grid with blocked in F and D
+        # leads to an endless search. Counts as a loss in the GameController state.
+        if len(self.states) >= 50:
+            return "C is dead!"
+
         # Update states prior to action decision
         self.grid.update_states(percepts)
         if self.algorithm == Algorithm.BAYES:
@@ -55,6 +60,7 @@ class GameController:
         if current.percepts:
             avoidance = self.avoid_hazard()
             if avoidance:
+                self._add_states()
                 return avoidance
 
         # First look for safe, unvisited options in adjacent squares
@@ -87,8 +93,10 @@ class GameController:
                 self.set_choice(risks)
             )
         else:
-            self.logger.log("No option possible, must be blocked in.\n" + str(self.grid), warn=True)
-            exit(-1)
+            self.logger.log("No option possible, must be blocked in...about to self-combust!", warn=True)
+            return self.move_to(
+                self.set_choice(current.options)
+            )
 
     def avoid_hazard(self) -> str | None:
         """Handles hazards presented by percepts from the agent.
@@ -207,16 +215,26 @@ class GameController:
 
         self.states.append({
             "coords": self.grid.current.coords,
-            "safe": self.grid.safe.copy()
+            "visited": self.grid.visited.copy(),
+            "safe": self.grid.safe.copy(),
+            "risks": self.grid.risks.copy(),
+            "books": self.grid.books.copy()
         })
 
-    def pygame(self) -> None:
-        """Starts a PyGame representation of the game played"""
+    def pygame(self, resources: str) -> None:
+        """Starts a PyGame representation of the game played
 
-        items_map = {
-            self.student_pos: "pikachu_win.png",
-            **{c: "C.jpeg" for c in self.textbook_pos},
-            self.filippos_pos: "steve.png",
-            self.degree_pos: "degree.jpeg"
-        }
-        CGame(items_map).play(self.grid.route, self.states)
+        Args:
+            resources: full filepath for resources folder.
+        """
+
+        if len(self.states) >= 50:
+            self.logger.log("Unsolvable game with long route detected, skipping PyGame output.")
+        else:
+            items_map = {
+                self.student_pos: f"{resources}/pikachu.png",
+                **{c: f"{resources}/c.png" for c in self.textbook_pos},
+                self.filippos_pos: f"{resources}/duck.png",
+                self.degree_pos: f"{resources}/degree.png"
+            }
+            CGame(items_map).play(self.states)

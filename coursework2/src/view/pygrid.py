@@ -4,8 +4,11 @@ from dataclasses import dataclass, field
 from pygame import display, draw, Rect, Surface
 
 
-MAGENTA = (255, 0, 255)
-CYAN = (0, 255, 255)
+VISITED = (192, 192, 192)
+SAFE = (153, 255, 153)
+RISKS = (255, 255, 153)
+# BOOKS = (153, 204, 255)
+BOOKS = (255, 153, 153)
 
 
 @dataclass
@@ -56,26 +59,21 @@ class PyGrid:
 
     def move_player(self, move: tuple[float, float]):
         move_coords = tuple(x * self.square_size for x in move)
-        print(move_coords)
         self.player.move(*move_coords)
         self.square(*self.current_square)
         self.current_square[0] += move_coords[0]
         self.current_square[1] += move_coords[1]
         display.flip()
 
-    def update_squares(self, risks: set, safe: set):
-        # for risk in risks:
-        #     obj = self.objects.get(risk)
-        #     # if self.objects.get(risk) == self.current_square:
-        #     #     obj = None
-        #     self.square(
-        #         self.left_margin + (risk[1] * self.square_size),
-        #         self.top_margin + (risk[0] * self.square_size),
-        #         item=obj,
-        #         new_item=False,
-        #         color=CYAN
-        #     )
-        for s in safe:
+    def update_squares(self, state: dict[str, set]):
+        self.color_squares(state.get("visited"), VISITED)
+        self.color_squares(state.get("safe"), SAFE)
+        self.color_squares(state.get("risks"), RISKS)
+        self.color_squares(state.get("books"), BOOKS)
+        display.flip()
+
+    def color_squares(self, squares: set, color: tuple) -> None:
+        for s in squares:
             obj = self.objects.get(s)
             if self.objects.get(s) == self.current_square:
                 obj = self.player
@@ -84,6 +82,5 @@ class PyGrid:
                 self.top_margin + (s[0] * self.square_size),
                 item=obj,
                 new_item=False,
-                color=CYAN
+                color=color
             )
-        display.flip()
