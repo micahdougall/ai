@@ -113,7 +113,6 @@ class GameController:
             self.logger.log("Yawn...C books detected in the vicinity.", warn=True)
 
         # Look for a guaranteed safe option
-        # safe_unexplored = self.grid.safe & set(self.grid.current.unexplored)
         safe_unexplored = self.grid.safe.intersection(
             self.grid.current.options
         )

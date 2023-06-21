@@ -149,12 +149,13 @@ class Grid:
         return False
 
     def safest_options(self, percept: Percept) -> set[tuple[int, int]]:
-        """Finds potentially safe squares by comparing previous percepts
+        """Finds potentially safe squares by comparing previous percepts.
 
         Args:
-            percept:
+            percept: the percept to be cross-referenced.
 
         Returns:
+            a set of options which are more likely to be safe.
 
         """
         options = self.current.options.difference(
@@ -250,10 +251,7 @@ class Grid:
     # def square_probability(self, square: Square, prior: float = None) -> float:
     def _book_probability(self, square: Square) -> float:
         
-        # Allows for prior=0 as named arg
-        # prior = square.book_probability if prior is None else prior
-
-        # Specificity equates to the cominbed likelihood of all other
+        # Specificity equates to the combined likelihood of all other
         # adjacent squares being safe, so that a negative result
         # would be given (ie. no percept). 
         square_probabilities = [
@@ -262,10 +260,7 @@ class Grid:
         specificity = reduce(mul, square_probabilities)
 
         # Uses square's prior probability
-        # return bayes_probability(square.book_prob, specificity)
-        prob = bayes_probability(square.book_prob, specificity)
-        print(f"Updated {square.book_prob} probability to {prob}")
-        square.book_prob = prob
+        square.book_prob = bayes_probability(square.book_prob, specificity)
 
     def _filippos_probability(self, square: Square) -> float:
         
@@ -278,9 +273,7 @@ class Grid:
         specificity = reduce(mul, square_probabilities)
 
         # Uses square's prior probability
-        prob = bayes_probability(square.filippos_prob, specificity)
-        print(f"Updated F {square.filippos_prob} probability to {prob}")
-        square.filippos_prob = prob
+        square.filippos_prob = bayes_probability(square.filippos_prob, specificity)
 
     @override
     def __str__(self):

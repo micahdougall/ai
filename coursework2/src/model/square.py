@@ -42,6 +42,7 @@ class Square:
     
     @property
     def risk(self) -> float:
+        print(f"Square {self.coords} risk is {self.book_prob + self.filippos_prob}")
         return self.book_prob + self.filippos_prob
 
     @property
@@ -100,4 +101,4 @@ class Square:
 
     @override
     def __str__(self) -> str:
-        return f"{self.coords} -> ({self.state.name}) -> {self.book_prob}"
+        return f"{self.coords} -> ({self.state.name}) -> {self.book_prob} -> {self.filippos_prob} -> {self.risk}"
