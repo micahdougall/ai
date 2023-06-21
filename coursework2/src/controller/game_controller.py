@@ -193,7 +193,6 @@ class GameController:
                 key=lambda x: (x.filippos_prob if hunt else x.risk),
                 reverse=hunt
             )
-            print(f"ordered: {ordered}")
             return ordered[0].coords
 
     def move_to(self, to_coords: tuple[int, int]) -> str:

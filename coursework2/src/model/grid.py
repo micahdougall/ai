@@ -18,7 +18,6 @@ class Grid:
     squares: list[Square] = field(init=False)
     current: Square = field(init=False)
     stack: list[tuple[int, int]] = field(default_factory=list)
-    route: list[tuple[int, int]] = field(default_factory=list)
     filippos: set[tuple[int, int]] = field(default_factory=set)
     python_books: int = 1  # Can only use Python book once
     logger: Logger = field(init=False)
@@ -219,24 +218,30 @@ class Grid:
                     *one(self.filippos)
                 ).state = State.FILIPPOS
 
+            # Update all other squares' probability
+            for s in self.squares:
+                if s.coords not in self.filippos:
+                    s.filippos_prob = 0
+
         if Percept.BORING in percepts:
             book_count = len([p for p in percepts if p == Percept.BORING])
 
             # If number of books equals the remaining squares (adjacent)
             # then update them all to books.
             potential_books = self.current.options.intersection(
-                self.unknown.union(self.books, self.risks, self.unknown)
+                self.unknown.union(self.books, self.risks)
             )
-            # if len(potential_books) == book_count:
             for s in potential_books:
                 square = self.get_square(*s)
                 square.state = (
                     State.BOOK
                     if len(potential_books) == book_count
                     else State.RISK
-                ) if square.state != State.FILIPPOS else square.state
+                )
 
     def update_probabilities(self) -> None:
+        """Updates the  probabilities for all the Grid's squares."""
+
         if Percept.BORING in self.current.percepts:
             for square in self.current.options:
                 self._book_probability(
@@ -248,8 +253,21 @@ class Grid:
                     self.get_square(*square)
                 )
 
-    # def square_probability(self, square: Square, prior: float = None) -> float:
-    def _book_probability(self, square: Square) -> float:
+        # Update remaining squares' risk levels by normalizing
+        known_risk_probs = sum(
+            [self.get_square(*s).book_prob for s in self.risks.union(self.books)]
+        )
+        for u in self.unknown:
+            self.get_square(*u).book_prob = (
+                (self.book_count - known_risk_probs) / len(self.unknown)
+            )
+
+    def _book_probability(self, square: Square) -> None:
+        """Updates a square's probability of being a Book-occupied square.
+
+        Args:
+            square: the square to update.
+        """
         
         # Specificity equates to the combined likelihood of all other
         # adjacent squares being safe, so that a negative result
@@ -262,7 +280,12 @@ class Grid:
         # Uses square's prior probability
         square.book_prob = bayes_probability(square.book_prob, specificity)
 
-    def _filippos_probability(self, square: Square) -> float:
+    def _filippos_probability(self, square: Square) -> None:
+        """Updates a square's probability of being a Filippos-occupied square.
+
+        Args:
+            square: the square to update.
+        """
         
         # Specificity equates to the combined likelihood of all other
         # adjacent squares being safe, so that a negative result

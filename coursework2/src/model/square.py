@@ -42,7 +42,6 @@ class Square:
     
     @property
     def risk(self) -> float:
-        print(f"Square {self.coords} risk is {self.book_prob + self.filippos_prob}")
         return self.book_prob + self.filippos_prob
 
     @property

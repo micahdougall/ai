@@ -1,6 +1,6 @@
 # CSF307 Artificial Intelligence - Coursework 2
 <p align="center">
-  <img src="../large/pikachu_win.png" alt="drawing" width="100"/><br><br>
+  <img src="resources/pikachu_win.png" alt="drawing" width="100"/><br><br>
   <img src="https://img.shields.io/github/followers/micahdougall?style=social" alt="drawing" width="100"/>
 </p>
 
@@ -16,6 +16,7 @@ There are essentially three components to the code:
 
 ## Contents
 - [Requirements](#requirements)
+- [Usage](#usage)
 - [Directory Overview](#directory-overview)
     - [Model](#model)
     - [View](#view)
@@ -26,6 +27,7 @@ There are essentially three components to the code:
 - [Directory Tree Wiki](#directory-tree-wiki)
 - [References](#references)
 
+---
 
 ## Requirements
 
@@ -53,6 +55,8 @@ source <new-venv-name>/bin/activate
 # install requirements
 python3 -m pip install -r requirements.txt
 ```
+
+---
 
 ## Usage
 
@@ -91,7 +95,36 @@ To skip the PyGame but print all debug statements for each step:
 # Standard algorithm
 python3 src/main.py -a standard -d -g
 ```
+---
+
 ## AI Implementation
+
+Rather than implement the functionality with the two separate `CWorld` class files, the program uses a `GameController` class to handle the decision-making for each action *depending* on the algorithm type being tested (see [Usage](#usage)).
+
+A [GameController](src/controller/game_controller.py) instance is injected into the CWorld class at runtime where it then fully records the state of the game after each move using a [Grid](src/controller/grid.py) class to store the state.
+
+To manage this, some minor adjustments have been made to the constructor in [cworld.py](src/controller/cworld.py):
+
+```python
+class CWorld:
+    """
+    Amendments to CWorld class include the addition of the game
+    controller in the CWorld constructor, which is then delegated
+    to for choose_action.
+
+    """
+    def __init__(self, controller: GameController, size=4):
+        
+        # Exisiting instance variables
+
+        # Instantiate controller
+        self.controller = controller
+        self.controller.__init__(
+            self.student_pos, self.filippos_pos, self.degree_pos, self.textbook_pos, size
+        )
+```
+
+No other changes have ben made to the game despite a kind of 'duplication' of state management between CWorld and the controller. After instantiation, all state management for solving the problem is using the controller itself.
 
 ### Standard
 
@@ -131,11 +164,11 @@ For example, the third sub-option when BORING is perceived uses the state in [gr
           )
           if shared:
               likely = shared.difference(self.all_safe)
-              self.logger.log(f"Book might be at one of {likely}. ")
               options.difference_update(likely)
-      self.logger.log(f"Potentially safe options are: {options}")
       return options
 ```
+
+For a test of 10,000 runs, the standard implementation performs at around 57.5%.
 
 ### Bayes
 
@@ -200,10 +233,29 @@ def bayes_probability(
 
 ```
 
+Note that the `bayes_probability` function is called for each considered square every time there is an updated percept or state. The *prior* probability at any given stage will be the previous calculation for that square, effectively chaining the probabilities to improve the accuracy of the estimate.
+
+Bizarrely, the overall win rate for Bayes probability is not as good as the standard algorithm, and comes out at around 36.5% for 10,000 runs.
+
+This may be because the standard implementation is itself quite complex and explicitly works through each logical possibility (and takes a cautious approach). Or, as is very likely, the combination of the agent looking for a 'safe' route *and* applying probabilities causes the agent to end up in long routes that end by default.
+
+---
+
+## PyGame
+
+As mentioned, the PyGame implementation is very basic and has some bugs, but hopefully provides a fun visualisation for the solution.
+
+It works by allowing the `GameController` to solve the game in its entirety, *before* invoking the `pygame` function and passing a full history of the game states to the `CGame` class in [run.py](src/view/run.py).
+
+`CGame` will then iterate through the states and update the player position, along with the square colour to indicate the known state of that square: gray for visited, green for safe, yellow for potential risk, and red for a known book square.
+
+**NB: Because of the high likelihood of a game ending almost immediately, it may be worth running the game a few times to see a useful output.**
+
+*To escape the game, press `ESC`, or wait 5 seconds after the last move.*
+
+---
+
 ## Directory Overview
-
-
-## Directory Wiki
 
 For reference, the following tree outlines the purpose of each folder or file in the project directory:
 
